@@ -1,0 +1,1363 @@
+{
+  "day": 17,
+  "concept": "Immutabilité",
+  "exercises": [
+    {
+      "id": "d17-debutant",
+      "day": 17,
+      "level": "debutant",
+      "title": "Le cadeau disparu",
+      "concept": "Copier avant de modifier",
+      "statement": "Un lutin a retiré un cadeau directement dans la liste de l'atelier, et tout le monde a perdu l'original. Pixel te fait promettre : désormais, on travaille sur des **copies**.\n\nÉcris une fonction `{fn}(liste, cadeau)` qui renvoie un dictionnaire avec deux clés :\n\n- `\"avant\"` : la liste d'origine, **exactement comme elle t'a été donnée** ;\n- `\"apres\"` : une nouvelle liste, identique mais **sans la première apparition** de `cadeau`.\n\nSi `cadeau` n'est pas dans la liste, `\"apres\"` est simplement une copie identique. Les autres exemplaires du même cadeau restent en place.\n\nLe juge vérifie que `\"avant\"` est resté intact : ne modifie jamais `liste`, travaille sur une copie.",
+      "fn": {
+        "javascript": "retirerCadeau",
+        "python": "retirer_cadeau"
+      },
+      "starter": {
+        "javascript": "function retirerCadeau(liste, cadeau) {\n  // Renvoie { avant, apres } sans modifier liste\n}\n",
+        "python": "def retirer_cadeau(liste, cadeau):\n    # Renvoie {\"avant\": ..., \"apres\": ...} sans modifier liste\n    pass\n"
+      },
+      "solution": {
+        "javascript": "function retirerCadeau(liste, cadeau) {\n  const apres = [...liste];\n  const position = apres.indexOf(cadeau);\n  if (position !== -1) {\n    apres.splice(position, 1);\n  }\n  return { avant: liste, apres: apres };\n}\n",
+        "python": "def retirer_cadeau(liste, cadeau):\n    apres = list(liste)\n    if cadeau in apres:\n        apres.remove(cadeau)\n    return {\"avant\": liste, \"apres\": apres}\n"
+      },
+      "tests": [
+        {
+          "args": [
+            [
+              "train",
+              "poupee",
+              "ours"
+            ],
+            "poupee"
+          ],
+          "expected": {
+            "avant": [
+              "train",
+              "poupee",
+              "ours"
+            ],
+            "apres": [
+              "train",
+              "ours"
+            ]
+          }
+        },
+        {
+          "args": [
+            [
+              "train",
+              "poupee",
+              "ours"
+            ],
+            "puzzle"
+          ],
+          "expected": {
+            "avant": [
+              "train",
+              "poupee",
+              "ours"
+            ],
+            "apres": [
+              "train",
+              "poupee",
+              "ours"
+            ]
+          }
+        },
+        {
+          "args": [
+            [
+              "ours",
+              "ours",
+              "ours"
+            ],
+            "ours"
+          ],
+          "expected": {
+            "avant": [
+              "ours",
+              "ours",
+              "ours"
+            ],
+            "apres": [
+              "ours",
+              "ours"
+            ]
+          }
+        },
+        {
+          "args": [
+            [
+              "luge"
+            ],
+            "luge"
+          ],
+          "expected": {
+            "avant": [
+              "luge"
+            ],
+            "apres": []
+          }
+        },
+        {
+          "args": [
+            [],
+            "luge"
+          ],
+          "expected": {
+            "avant": [],
+            "apres": []
+          },
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              "a",
+              "b",
+              "a",
+              "c"
+            ],
+            "a"
+          ],
+          "expected": {
+            "avant": [
+              "a",
+              "b",
+              "a",
+              "c"
+            ],
+            "apres": [
+              "b",
+              "a",
+              "c"
+            ]
+          },
+          "hidden": true
+        }
+      ],
+      "hint": "Une copie de liste se fait avec `[...liste]` en JavaScript, `list(liste)` en Python. Travaille ensuite **uniquement** sur la copie : trouve la position du cadeau, retire-le, et renvoie les deux listes."
+    },
+    {
+      "id": "d17-intermediaire",
+      "day": 17,
+      "level": "intermediaire",
+      "title": "Un cadeau de plus",
+      "concept": "Copie profonde",
+      "statement": "Chaque lutin de l'atelier a une fiche : `{\"nom\": \"pixel\", \"cadeaux\": [\"train\"]}`. L'équipe est une liste de fiches. Givrebug ne touche jamais aux copies, seulement aux originaux : alors on ne touche pas aux originaux.\n\nÉcris une fonction `{fn}(equipe, nom, cadeau)` qui renvoie un dictionnaire :\n\n- `\"avant\"` : l'équipe d'origine, **strictement inchangée** ;\n- `\"apres\"` : une nouvelle équipe où le lutin appelé `nom` a reçu `cadeau` **à la fin** de ses cadeaux.\n\nLes noms sont uniques. Si aucun lutin ne porte ce nom, `\"apres\"` est une copie identique de l'équipe.\n\nPiège : copier la liste des fiches ne suffit pas. Les fiches (et leurs listes de cadeaux) sont partagées entre l'original et la copie, donc il faut une copie **profonde**.",
+      "fn": {
+        "javascript": "ajouterCadeau",
+        "python": "ajouter_cadeau"
+      },
+      "starter": {
+        "javascript": "function ajouterCadeau(equipe, nom, cadeau) {\n  // Renvoie { avant, apres } sans modifier equipe\n}\n",
+        "python": "def ajouter_cadeau(equipe, nom, cadeau):\n    # Renvoie {\"avant\": ..., \"apres\": ...} sans modifier equipe\n    pass\n"
+      },
+      "solution": {
+        "javascript": "function ajouterCadeau(equipe, nom, cadeau) {\n  const apres = JSON.parse(JSON.stringify(equipe));\n  for (const lutin of apres) {\n    if (lutin.nom === nom) {\n      lutin.cadeaux.push(cadeau);\n    }\n  }\n  return { avant: equipe, apres: apres };\n}\n",
+        "python": "import copy\n\n\ndef ajouter_cadeau(equipe, nom, cadeau):\n    apres = copy.deepcopy(equipe)\n    for lutin in apres:\n        if lutin[\"nom\"] == nom:\n            lutin[\"cadeaux\"].append(cadeau)\n    return {\"avant\": equipe, \"apres\": apres}\n"
+      },
+      "tests": [
+        {
+          "args": [
+            [
+              {
+                "nom": "pixel",
+                "cadeaux": [
+                  "train"
+                ]
+              },
+              {
+                "nom": "juju",
+                "cadeaux": [
+                  "ours",
+                  "luge"
+                ]
+              },
+              {
+                "nom": "lola",
+                "cadeaux": []
+              }
+            ],
+            "juju",
+            "puzzle"
+          ],
+          "expected": {
+            "avant": [
+              {
+                "nom": "pixel",
+                "cadeaux": [
+                  "train"
+                ]
+              },
+              {
+                "nom": "juju",
+                "cadeaux": [
+                  "ours",
+                  "luge"
+                ]
+              },
+              {
+                "nom": "lola",
+                "cadeaux": []
+              }
+            ],
+            "apres": [
+              {
+                "nom": "pixel",
+                "cadeaux": [
+                  "train"
+                ]
+              },
+              {
+                "nom": "juju",
+                "cadeaux": [
+                  "ours",
+                  "luge",
+                  "puzzle"
+                ]
+              },
+              {
+                "nom": "lola",
+                "cadeaux": []
+              }
+            ]
+          }
+        },
+        {
+          "args": [
+            [
+              {
+                "nom": "pixel",
+                "cadeaux": [
+                  "train"
+                ]
+              },
+              {
+                "nom": "juju",
+                "cadeaux": [
+                  "ours",
+                  "luge"
+                ]
+              },
+              {
+                "nom": "lola",
+                "cadeaux": []
+              }
+            ],
+            "lola",
+            "ballon"
+          ],
+          "expected": {
+            "avant": [
+              {
+                "nom": "pixel",
+                "cadeaux": [
+                  "train"
+                ]
+              },
+              {
+                "nom": "juju",
+                "cadeaux": [
+                  "ours",
+                  "luge"
+                ]
+              },
+              {
+                "nom": "lola",
+                "cadeaux": []
+              }
+            ],
+            "apres": [
+              {
+                "nom": "pixel",
+                "cadeaux": [
+                  "train"
+                ]
+              },
+              {
+                "nom": "juju",
+                "cadeaux": [
+                  "ours",
+                  "luge"
+                ]
+              },
+              {
+                "nom": "lola",
+                "cadeaux": [
+                  "ballon"
+                ]
+              }
+            ]
+          }
+        },
+        {
+          "args": [
+            [
+              {
+                "nom": "pixel",
+                "cadeaux": [
+                  "train"
+                ]
+              },
+              {
+                "nom": "juju",
+                "cadeaux": [
+                  "ours",
+                  "luge"
+                ]
+              },
+              {
+                "nom": "lola",
+                "cadeaux": []
+              }
+            ],
+            "pixel",
+            "train"
+          ],
+          "expected": {
+            "avant": [
+              {
+                "nom": "pixel",
+                "cadeaux": [
+                  "train"
+                ]
+              },
+              {
+                "nom": "juju",
+                "cadeaux": [
+                  "ours",
+                  "luge"
+                ]
+              },
+              {
+                "nom": "lola",
+                "cadeaux": []
+              }
+            ],
+            "apres": [
+              {
+                "nom": "pixel",
+                "cadeaux": [
+                  "train",
+                  "train"
+                ]
+              },
+              {
+                "nom": "juju",
+                "cadeaux": [
+                  "ours",
+                  "luge"
+                ]
+              },
+              {
+                "nom": "lola",
+                "cadeaux": []
+              }
+            ]
+          }
+        },
+        {
+          "args": [
+            [
+              {
+                "nom": "pixel",
+                "cadeaux": [
+                  "train"
+                ]
+              },
+              {
+                "nom": "juju",
+                "cadeaux": [
+                  "ours",
+                  "luge"
+                ]
+              },
+              {
+                "nom": "lola",
+                "cadeaux": []
+              }
+            ],
+            "inconnu",
+            "x"
+          ],
+          "expected": {
+            "avant": [
+              {
+                "nom": "pixel",
+                "cadeaux": [
+                  "train"
+                ]
+              },
+              {
+                "nom": "juju",
+                "cadeaux": [
+                  "ours",
+                  "luge"
+                ]
+              },
+              {
+                "nom": "lola",
+                "cadeaux": []
+              }
+            ],
+            "apres": [
+              {
+                "nom": "pixel",
+                "cadeaux": [
+                  "train"
+                ]
+              },
+              {
+                "nom": "juju",
+                "cadeaux": [
+                  "ours",
+                  "luge"
+                ]
+              },
+              {
+                "nom": "lola",
+                "cadeaux": []
+              }
+            ]
+          }
+        },
+        {
+          "args": [
+            [],
+            "pixel",
+            "train"
+          ],
+          "expected": {
+            "avant": [],
+            "apres": []
+          },
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              {
+                "nom": "a",
+                "cadeaux": [
+                  "x"
+                ]
+              }
+            ],
+            "a",
+            "y"
+          ],
+          "expected": {
+            "avant": [
+              {
+                "nom": "a",
+                "cadeaux": [
+                  "x"
+                ]
+              }
+            ],
+            "apres": [
+              {
+                "nom": "a",
+                "cadeaux": [
+                  "x",
+                  "y"
+                ]
+              }
+            ]
+          },
+          "hidden": true
+        }
+      ],
+      "hint": "Une copie « de surface » (`[...equipe]`, `list(equipe)`) garde les mêmes fiches. Cherche une copie qui duplique aussi ce qu'il y a dedans : `structuredClone` ou `JSON.parse(JSON.stringify(...))` en JavaScript, `copy.deepcopy` en Python (après un `import copy` en haut du fichier). Modifie ensuite la copie."
+    },
+    {
+      "id": "d17-confirme",
+      "day": 17,
+      "level": "confirme",
+      "title": "La machine à remonter le temps",
+      "concept": "Mise à jour immuable par chemin, historique de versions",
+      "statement": "Pixel veut pouvoir revenir en arrière dans le Grand Registre, quoi qu'il arrive. Chaque modification doit donc produire une **nouvelle version**, et toutes les anciennes versions doivent rester **intactes**.\n\nLe registre est un dictionnaire imbriqué : ses valeurs sont des nombres, des textes, des booléens ou d'autres dictionnaires (jamais de listes). Une **modification** est une paire `[chemin, valeur]`, où `chemin` est une liste non vide de clés à descendre : `[[\"atelier\", \"stock\", \"jouets\"], 12]` met `12` à cet endroit.\n\nÉcris une fonction `{fn}(etat, modifs)` qui applique les modifications **dans l'ordre** et renvoie la **liste de toutes les versions** : la version de départ (inchangée), puis une version après chaque modification. Il y a donc `len(modifs) + 1` versions, même si une modification ne change rien.\n\nRègles :\n\n- si une clé intermédiaire du chemin n'existe pas, ou si sa valeur n'est pas un dictionnaire, elle est **remplacée** par un nouveau dictionnaire ;\n- une `valeur` égale à `null` (`None` en Python) signifie **supprimer** la clé visée. Si le chemin n'existe pas jusqu'au bout, rien ne change et rien n'est créé ;\n- un dictionnaire qui devient vide après une suppression **reste en place** ;\n- une `valeur` qui est un dictionnaire est placée telle quelle, et une modification ultérieure ne doit pas la déformer ;\n- sans modification, tu renvoies une liste contenant uniquement la version de départ.\n\nLe juge compare **toutes** les versions : une seule mutation en route et l'historique est faux.",
+      "fn": {
+        "javascript": "historique",
+        "python": "historique"
+      },
+      "starter": {
+        "javascript": "function historique(etat, modifs) {\n  // Renvoie la liste de toutes les versions, sans jamais en modifier une\n}\n",
+        "python": "def historique(etat, modifs):\n    # Renvoie la liste de toutes les versions, sans jamais en modifier une\n    pass\n"
+      },
+      "solution": {
+        "javascript": "function historique(etat, modifs) {\n  const estDico = (x) => typeof x === \"object\" && x !== null && !Array.isArray(x);\n  function maj(noeud, chemin, valeur) {\n    const [cle, ...reste] = chemin;\n    const copie = { ...noeud };\n    if (reste.length === 0) {\n      if (valeur === null) {\n        delete copie[cle];\n      } else {\n        copie[cle] = valeur;\n      }\n      return copie;\n    }\n    const enfant = copie[cle];\n    if (valeur === null && !estDico(enfant)) {\n      return noeud;\n    }\n    copie[cle] = maj(estDico(enfant) ? enfant : {}, reste, valeur);\n    return copie;\n  }\n  const versions = [etat];\n  let courant = etat;\n  for (const [chemin, valeur] of modifs) {\n    courant = maj(courant, chemin, valeur);\n    versions.push(courant);\n  }\n  return versions;\n}\n",
+        "python": "def historique(etat, modifs):\n    def maj(noeud, chemin, valeur):\n        cle, reste = chemin[0], chemin[1:]\n        copie = dict(noeud)\n        if not reste:\n            if valeur is None:\n                copie.pop(cle, None)\n            else:\n                copie[cle] = valeur\n            return copie\n        enfant = copie.get(cle)\n        if valeur is None and not isinstance(enfant, dict):\n            return noeud\n        copie[cle] = maj(enfant if isinstance(enfant, dict) else {}, reste, valeur)\n        return copie\n\n    versions = [etat]\n    courant = etat\n    for chemin, valeur in modifs:\n        courant = maj(courant, chemin, valeur)\n        versions.append(courant)\n    return versions\n"
+      },
+      "tests": [
+        {
+          "args": [
+            {
+              "atelier": {
+                "stock": {
+                  "jouets": 10,
+                  "rubans": 4
+                },
+                "lutins": 3
+              },
+              "registre": "ouvert"
+            },
+            [
+              [
+                [
+                  "atelier",
+                  "stock",
+                  "jouets"
+                ],
+                12
+              ]
+            ]
+          ],
+          "expected": [
+            {
+              "atelier": {
+                "stock": {
+                  "jouets": 10,
+                  "rubans": 4
+                },
+                "lutins": 3
+              },
+              "registre": "ouvert"
+            },
+            {
+              "atelier": {
+                "stock": {
+                  "jouets": 12,
+                  "rubans": 4
+                },
+                "lutins": 3
+              },
+              "registre": "ouvert"
+            }
+          ]
+        },
+        {
+          "args": [
+            {
+              "a": {
+                "x": 1,
+                "y": 2
+              },
+              "b": {
+                "x": 3
+              }
+            },
+            [
+              [
+                [
+                  "a",
+                  "x"
+                ],
+                5
+              ],
+              [
+                [
+                  "b",
+                  "x"
+                ],
+                6
+              ],
+              [
+                [
+                  "a",
+                  "y"
+                ],
+                null
+              ]
+            ]
+          ],
+          "expected": [
+            {
+              "a": {
+                "x": 1,
+                "y": 2
+              },
+              "b": {
+                "x": 3
+              }
+            },
+            {
+              "a": {
+                "x": 5,
+                "y": 2
+              },
+              "b": {
+                "x": 3
+              }
+            },
+            {
+              "a": {
+                "x": 5,
+                "y": 2
+              },
+              "b": {
+                "x": 6
+              }
+            },
+            {
+              "a": {
+                "x": 5
+              },
+              "b": {
+                "x": 6
+              }
+            }
+          ]
+        },
+        {
+          "args": [
+            {},
+            [
+              [
+                [
+                  "a",
+                  "b",
+                  "c"
+                ],
+                1
+              ]
+            ]
+          ],
+          "expected": [
+            {},
+            {
+              "a": {
+                "b": {
+                  "c": 1
+                }
+              }
+            }
+          ]
+        },
+        {
+          "args": [
+            {
+              "a": 3
+            },
+            [
+              [
+                [
+                  "a",
+                  "b"
+                ],
+                4
+              ],
+              [
+                [
+                  "a",
+                  "b"
+                ],
+                5
+              ]
+            ]
+          ],
+          "expected": [
+            {
+              "a": 3
+            },
+            {
+              "a": {
+                "b": 4
+              }
+            },
+            {
+              "a": {
+                "b": 5
+              }
+            }
+          ]
+        },
+        {
+          "args": [
+            {
+              "atelier": {
+                "stock": {
+                  "jouets": 10,
+                  "rubans": 4
+                },
+                "lutins": 3
+              },
+              "registre": "ouvert"
+            },
+            []
+          ],
+          "expected": [
+            {
+              "atelier": {
+                "stock": {
+                  "jouets": 10,
+                  "rubans": 4
+                },
+                "lutins": 3
+              },
+              "registre": "ouvert"
+            }
+          ]
+        },
+        {
+          "args": [
+            {
+              "a": {
+                "x": 1
+              }
+            },
+            [
+              [
+                [
+                  "z",
+                  "y"
+                ],
+                null
+              ],
+              [
+                [
+                  "a",
+                  "q",
+                  "r"
+                ],
+                null
+              ],
+              [
+                [
+                  "a",
+                  "x"
+                ],
+                null
+              ]
+            ]
+          ],
+          "expected": [
+            {
+              "a": {
+                "x": 1
+              }
+            },
+            {
+              "a": {
+                "x": 1
+              }
+            },
+            {
+              "a": {
+                "x": 1
+              }
+            },
+            {
+              "a": {}
+            }
+          ],
+          "hidden": true
+        },
+        {
+          "args": [
+            {
+              "a": {
+                "x": 1
+              }
+            },
+            [
+              [
+                [
+                  "a"
+                ],
+                {
+                  "y": 2
+                }
+              ],
+              [
+                [
+                  "a",
+                  "y"
+                ],
+                3
+              ],
+              [
+                [
+                  "a",
+                  "z"
+                ],
+                {
+                  "k": 1
+                }
+              ],
+              [
+                [
+                  "a",
+                  "z",
+                  "k"
+                ],
+                2
+              ]
+            ]
+          ],
+          "expected": [
+            {
+              "a": {
+                "x": 1
+              }
+            },
+            {
+              "a": {
+                "y": 2
+              }
+            },
+            {
+              "a": {
+                "y": 3
+              }
+            },
+            {
+              "a": {
+                "y": 3,
+                "z": {
+                  "k": 1
+                }
+              }
+            },
+            {
+              "a": {
+                "y": 3,
+                "z": {
+                  "k": 2
+                }
+              }
+            }
+          ],
+          "hidden": true
+        },
+        {
+          "args": [
+            {
+              "p": {
+                "q": {
+                  "r": 1
+                }
+              }
+            },
+            [
+              [
+                [
+                  "p",
+                  "q",
+                  "r"
+                ],
+                2
+              ],
+              [
+                [
+                  "p",
+                  "q"
+                ],
+                {
+                  "r": 9
+                }
+              ],
+              [
+                [
+                  "p"
+                ],
+                null
+              ]
+            ]
+          ],
+          "expected": [
+            {
+              "p": {
+                "q": {
+                  "r": 1
+                }
+              }
+            },
+            {
+              "p": {
+                "q": {
+                  "r": 2
+                }
+              }
+            },
+            {
+              "p": {
+                "q": {
+                  "r": 9
+                }
+              }
+            },
+            {}
+          ],
+          "hidden": true
+        }
+      ],
+      "hint": "Mettre à jour `[a, b, c]`, c'est recopier le niveau `a`, recopier le niveau `b` dedans, et seulement changer `c` dans cette dernière copie. Une fonction récursive qui reçoit le chemin restant fait cela naturellement. Chaque version devient ensuite le point de départ de la suivante."
+    },
+    {
+      "id": "d17-expert",
+      "day": 17,
+      "level": "expert",
+      "title": "Deux lutins, un seul registre",
+      "concept": "Fusion à trois versions, sans rien modifier",
+      "statement": "Cette nuit, deux lutins sont partis chacun avec une **copie** du Grand Registre, et chacun y a fait ses corrections. Au matin, il faut réunir leurs deux versions `a` et `b` en une seule, en s'aidant de la version de départ `base`. Et bien sûr, **sans toucher** à aucune des trois : Pixel te l'a fait promettre.\n\nUn registre est un dictionnaire dont les valeurs sont des nombres, des textes ou d'autres dictionnaires du même genre. Pour chaque clé présente dans au moins une des trois versions, on applique **la première règle qui convient** (une clé absente d'une version y est « absente », et c'est un état comme un autre) :\n\n1. `a` et `b` sont **d'accord** (même valeur, ou absente des deux côtés) : on garde ce sur quoi ils s'accordent.\n2. `a` n'a **rien changé** par rapport à `base` : on garde la version de `b`.\n3. `b` n'a **rien changé** par rapport à `base` : on garde la version de `a`.\n4. `a` et `b` contiennent **tous les deux un dictionnaire** : on fusionne ces deux dictionnaires avec les mêmes règles, clé par clé. La base utilisée est le dictionnaire de `base` pour cette clé ou, si `base` n'en a pas (clé absente, ou valeur qui n'est pas un dictionnaire), le dictionnaire vide.\n5. Sinon, c'est un **conflit** : on garde la version de `a`, et on note le chemin de la clé.\n\n« Garder » une version où la clé est absente, c'est ne pas la mettre dans le résultat : une suppression est une modification comme une autre.\n\nÉcris une fonction `{fn}(base, a, b)` qui renvoie un dictionnaire à deux clés : `\"fusion\"`, le registre réuni, et `\"conflits\"`, la liste des chemins en conflit, **triée par ordre alphabétique**. Un chemin est la suite des clés traversées, séparées par des points : `\"traineau.couleur\"`.\n\nPrécisions : deux dictionnaires sont égaux s'ils ont les mêmes clés avec des valeurs égales, quel que soit l'ordre des clés. Les clés sont des textes en minuscules, sans point. Les trois registres reçus peuvent être vides.\n\nExemple : avec `base = {\"x\": 1, \"y\": 1}`, `a = {\"y\": 1}` et `b = {\"x\": 1, \"y\": 2}`, le lutin A a supprimé `x` (B n'y a pas touché) et le lutin B a changé `y` (A n'y a pas touché) : la réponse est `{\"fusion\": {\"y\": 2}, \"conflits\": []}`. Avec `base = {\"x\": 1}`, `a = {\"x\": 2}` et `b = {\"x\": 3}`, les deux ont changé `x` différemment : `{\"fusion\": {\"x\": 2}, \"conflits\": [\"x\"]}`.\n",
+      "fn": {
+        "javascript": "fusionner",
+        "python": "fusionner"
+      },
+      "starter": {
+        "javascript": "function fusionner(base, a, b) {\n  // Renvoie { fusion, conflits } sans modifier base, a ni b\n}\n",
+        "python": "def fusionner(base, a, b):\n    # Renvoie { fusion, conflits } sans modifier base, a ni b\n    pass\n"
+      },
+      "solution": {
+        "javascript": "function fusionner(base, a, b) {\n  const estDico = (v) => typeof v === \"object\" && v !== null;\n  // Égalité en profondeur ; `undefined` veut dire « clé absente ».\n  const egal = (x, y) => {\n    if (!estDico(x) || !estDico(y)) return x === y;\n    const cles = Object.keys(x);\n    return cles.length === Object.keys(y).length && cles.every((c) => c in y && egal(x[c], y[c]));\n  };\n  const copie = (v) => (estDico(v) ? Object.fromEntries(Object.keys(v).map((c) => [c, copie(v[c])])) : v);\n  const conflits = [];\n\n  const fusion = (vBase, vA, vB, chemin) => {\n    const resultat = {};\n    const cles = new Set([...Object.keys(vBase), ...Object.keys(vA), ...Object.keys(vB)]);\n    for (const cle of cles) {\n      const x = vBase[cle];\n      const y = vA[cle];\n      const z = vB[cle];\n      const ici = chemin ? chemin + \".\" + cle : cle;\n      let garde;\n      if (egal(y, z)) garde = y;\n      else if (egal(y, x)) garde = z;\n      else if (egal(z, x)) garde = y;\n      else if (estDico(y) && estDico(z)) {\n        resultat[cle] = fusion(estDico(x) ? x : {}, y, z, ici);\n        continue;\n      } else {\n        conflits.push(ici);\n        garde = y;\n      }\n      if (garde !== undefined) resultat[cle] = copie(garde);\n    }\n    return resultat;\n  };\n\n  const reuni = fusion(base, a, b, \"\");\n  return { fusion: reuni, conflits: conflits.sort() };\n}\n",
+        "python": "def fusionner(base, a, b):\n    absente = object()  # un marqueur qui ne ressemble à aucune valeur du registre\n    conflits = []\n\n    def copie(v):\n        return {c: copie(x) for c, x in v.items()} if isinstance(v, dict) else v\n\n    def fusion(v_base, v_a, v_b, chemin):\n        resultat = {}\n        for cle in set(v_base) | set(v_a) | set(v_b):\n            x = v_base.get(cle, absente)\n            y = v_a.get(cle, absente)\n            z = v_b.get(cle, absente)\n            ici = chemin + \".\" + cle if chemin else cle\n            # En Python, == compare déjà les dictionnaires en profondeur.\n            if y == z:\n                garde = y\n            elif y == x:\n                garde = z\n            elif z == x:\n                garde = y\n            elif isinstance(y, dict) and isinstance(z, dict):\n                resultat[cle] = fusion(x if isinstance(x, dict) else {}, y, z, ici)\n                continue\n            else:\n                conflits.append(ici)\n                garde = y\n            if garde is not absente:\n                resultat[cle] = copie(garde)\n        return resultat\n\n    reuni = fusion(base, a, b, \"\")\n    return {\"fusion\": reuni, \"conflits\": sorted(conflits)}\n"
+      },
+      "tests": [
+        {
+          "args": [
+            {
+              "traineau": {
+                "places": 2,
+                "couleur": "rouge"
+              },
+              "rennes": 8
+            },
+            {
+              "traineau": {
+                "places": 4,
+                "couleur": "rouge"
+              },
+              "rennes": 8
+            },
+            {
+              "traineau": {
+                "places": 2,
+                "couleur": "or"
+              },
+              "rennes": 9,
+              "luge": 1
+            }
+          ],
+          "expected": {
+            "fusion": {
+              "rennes": 9,
+              "luge": 1,
+              "traineau": {
+                "couleur": "or",
+                "places": 4
+              }
+            },
+            "conflits": []
+          }
+        },
+        {
+          "args": [
+            {
+              "x": 1
+            },
+            {
+              "x": 2
+            },
+            {
+              "x": 3
+            }
+          ],
+          "expected": {
+            "fusion": {
+              "x": 2
+            },
+            "conflits": [
+              "x"
+            ]
+          }
+        },
+        {
+          "args": [
+            {
+              "x": 1,
+              "y": 1
+            },
+            {
+              "y": 1
+            },
+            {
+              "x": 1,
+              "y": 2
+            }
+          ],
+          "expected": {
+            "fusion": {
+              "y": 2
+            },
+            "conflits": []
+          }
+        },
+        {
+          "args": [
+            {
+              "a": {
+                "b": 1
+              }
+            },
+            {
+              "a": {
+                "b": 2,
+                "c": 5
+              }
+            },
+            {
+              "a": {
+                "b": 3,
+                "c": 6,
+                "d": 7
+              }
+            }
+          ],
+          "expected": {
+            "fusion": {
+              "a": {
+                "b": 2,
+                "d": 7,
+                "c": 5
+              }
+            },
+            "conflits": [
+              "a.b",
+              "a.c"
+            ]
+          }
+        },
+        {
+          "args": [
+            {},
+            {},
+            {}
+          ],
+          "expected": {
+            "fusion": {},
+            "conflits": []
+          },
+          "hidden": true
+        },
+        {
+          "args": [
+            {
+              "x": 1
+            },
+            {
+              "x": 1
+            },
+            {
+              "x": 1
+            }
+          ],
+          "expected": {
+            "fusion": {
+              "x": 1
+            },
+            "conflits": []
+          },
+          "hidden": true
+        },
+        {
+          "args": [
+            {
+              "x": 1
+            },
+            {},
+            {}
+          ],
+          "expected": {
+            "fusion": {},
+            "conflits": []
+          },
+          "hidden": true
+        },
+        {
+          "args": [
+            {
+              "x": 1
+            },
+            {},
+            {
+              "x": 2
+            }
+          ],
+          "expected": {
+            "fusion": {},
+            "conflits": [
+              "x"
+            ]
+          },
+          "hidden": true
+        },
+        {
+          "args": [
+            {
+              "x": 1
+            },
+            {
+              "x": 2
+            },
+            {}
+          ],
+          "expected": {
+            "fusion": {
+              "x": 2
+            },
+            "conflits": [
+              "x"
+            ]
+          },
+          "hidden": true
+        },
+        {
+          "args": [
+            {},
+            {
+              "n": "sapin"
+            },
+            {
+              "n": "sapin"
+            }
+          ],
+          "expected": {
+            "fusion": {
+              "n": "sapin"
+            },
+            "conflits": []
+          },
+          "hidden": true
+        },
+        {
+          "args": [
+            {},
+            {
+              "n": {
+                "a": 1
+              }
+            },
+            {
+              "n": {
+                "b": 2
+              }
+            }
+          ],
+          "expected": {
+            "fusion": {
+              "n": {
+                "a": 1,
+                "b": 2
+              }
+            },
+            "conflits": []
+          },
+          "hidden": true
+        },
+        {
+          "args": [
+            {
+              "n": 5
+            },
+            {
+              "n": {
+                "a": 1
+              }
+            },
+            {
+              "n": {
+                "a": 2,
+                "b": 3
+              }
+            }
+          ],
+          "expected": {
+            "fusion": {
+              "n": {
+                "a": 1,
+                "b": 3
+              }
+            },
+            "conflits": [
+              "n.a"
+            ]
+          },
+          "hidden": true
+        },
+        {
+          "args": [
+            {
+              "n": {
+                "a": 1
+              }
+            },
+            {
+              "n": 7
+            },
+            {
+              "n": {
+                "a": 1,
+                "b": 2
+              }
+            }
+          ],
+          "expected": {
+            "fusion": {
+              "n": 7
+            },
+            "conflits": [
+              "n"
+            ]
+          },
+          "hidden": true
+        },
+        {
+          "args": [
+            {
+              "n": {
+                "a": {
+                  "b": {
+                    "c": 1
+                  }
+                }
+              }
+            },
+            {
+              "n": {
+                "a": {
+                  "b": {
+                    "c": 2
+                  }
+                }
+              }
+            },
+            {
+              "n": {
+                "a": {
+                  "b": {
+                    "c": 1,
+                    "d": 4
+                  }
+                },
+                "e": "x"
+              }
+            }
+          ],
+          "expected": {
+            "fusion": {
+              "n": {
+                "e": "x",
+                "a": {
+                  "b": {
+                    "d": 4,
+                    "c": 2
+                  }
+                }
+              }
+            },
+            "conflits": []
+          },
+          "hidden": true
+        },
+        {
+          "args": [
+            {
+              "z": {
+                "k": 1
+              },
+              "a": {
+                "k": 1
+              }
+            },
+            {
+              "z": {
+                "k": 2
+              },
+              "a": {
+                "k": 3
+              }
+            },
+            {
+              "z": {
+                "k": 9
+              },
+              "a": {
+                "k": 8
+              }
+            }
+          ],
+          "expected": {
+            "fusion": {
+              "a": {
+                "k": 3
+              },
+              "z": {
+                "k": 2
+              }
+            },
+            "conflits": [
+              "a.k",
+              "z.k"
+            ]
+          },
+          "hidden": true
+        },
+        {
+          "args": [
+            {
+              "p": {
+                "q": 1
+              }
+            },
+            {
+              "p": {}
+            },
+            {
+              "p": {
+                "q": 1,
+                "r": 2
+              }
+            }
+          ],
+          "expected": {
+            "fusion": {
+              "p": {
+                "r": 2
+              }
+            },
+            "conflits": []
+          },
+          "hidden": true
+        },
+        {
+          "args": [
+            {
+              "p": {
+                "q": {
+                  "r": 1
+                }
+              }
+            },
+            {
+              "p": {
+                "q": {
+                  "r": 1
+                }
+              }
+            },
+            {}
+          ],
+          "expected": {
+            "fusion": {},
+            "conflits": []
+          },
+          "hidden": true
+        }
+      ],
+      "hint": "Il te faut d'abord un moyen de dire « absente », différent de toutes les valeurs possibles, et une fonction qui compare deux valeurs en profondeur. Ensuite, les cinq règles se suivent dans l'ordre, et la quatrième se rappelle elle-même. Construis toujours un nouveau dictionnaire : ne range jamais dans le résultat un morceau que tu comptes encore modifier."
+    }
+  ]
+}

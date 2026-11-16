@@ -1,0 +1,291 @@
+{
+  "day": 12,
+  "concept": "Défi de mi-parcours",
+  "exercises": [
+    {
+      "id": "d12-debutant",
+      "day": 12,
+      "level": "debutant",
+      "title": "Le message givré",
+      "concept": "Défi : chaînes, boucles et conditions",
+      "statement": "À minuit, un message illisible s'affiche sur le Registre : `\"mh vxlv xq vrxyhqlu\"`. Pixel reconnaît un vieux code : chaque lettre a été **décalée** de quelques rangs vers l'avant dans l'alphabet. Avec un décalage de 3, `a` devient `d`, `b` devient `e`… et l'alphabet boucle : `x` devient `a`, `y` devient `b`, `z` devient `c`.\n\nÉcris une fonction `{fn}(message, decalage)` qui **déchiffre** le message : chaque lettre recule de `decalage` rangs (en bouclant de `a` vers `z` si besoin).\n\n- Seules les **lettres minuscules de `a` à `z`** sont décalées.\n- Tout le reste (espaces, ponctuation, chiffres, majuscules, lettres accentuées) est recopié tel quel.\n- `decalage` est un entier entre `0` et `25`. Avec `0`, le message ne change pas.\n- Un message vide donne un message vide.\n\nC'est le défi de mi-parcours : il est un peu plus long que d'habitude, et il réutilise ce que tu as vu depuis le jour 1. Prends ton temps.",
+      "fn": {"javascript":"dechiffrer","python":"dechiffrer"},
+      "starter": {
+        "javascript": "function dechiffrer(message, decalage) {\n  const alphabet = \"abcdefghijklmnopqrstuvwxyz\";\n  // Renvoie le message déchiffré\n}\n",
+        "python": "def dechiffrer(message, decalage):\n    alphabet = \"abcdefghijklmnopqrstuvwxyz\"\n    # Renvoie le message déchiffré\n    pass\n"
+      },
+      "solution": {
+        "javascript": "function dechiffrer(message, decalage) {\n  const alphabet = \"abcdefghijklmnopqrstuvwxyz\";\n  let clair = \"\";\n  for (const caractere of message) {\n    const position = alphabet.indexOf(caractere);\n    if (position === -1) {\n      clair = clair + caractere;\n    } else {\n      clair = clair + alphabet[(position - decalage + 26) % 26];\n    }\n  }\n  return clair;\n}\n",
+        "python": "def dechiffrer(message, decalage):\n    alphabet = \"abcdefghijklmnopqrstuvwxyz\"\n    clair = \"\"\n    for caractere in message:\n        position = alphabet.find(caractere)\n        if position == -1:\n            clair = clair + caractere\n        else:\n            clair = clair + alphabet[(position - decalage + 26) % 26]\n    return clair\n"
+      },
+      "tests": [
+        { "args": ["mh vxlv xq vrxyhqlu",3], "expected": "je suis un souvenir" },
+        { "args": ["bcd yza",1], "expected": "abc xyz" },
+        { "args": ["le givre, 100 ans !",0], "expected": "le givre, 100 ans !" },
+        { "args": ["Pshov k dbyefé vo mbscdkv.",10], "expected": "Pixel a trouvé le cristal." },
+        { "args": ["",7], "expected": "", "hidden": true },
+        { "args": ["yèaqd ds xzbj : 2 zlhr",25], "expected": "zèbre et yack : 2 amis", "hidden": true },
+        { "args": ["yr ivrhk pevfgny qh fbhf-fby",13], "expected": "le vieux cristal du sous-sol", "hidden": true }
+      ],
+      "hint": "La chaîne `alphabet` du code de départ est ton amie : la position d'une lettre dedans est son rang (0 pour `a`, 25 pour `z`). Recule de `decalage` rangs. Si tu tombes sous zéro, rappelle-toi que l'alphabet boucle : le reste de la division (`%`) peut t'aider."
+    },
+    {
+      "id": "d12-intermediaire",
+      "day": 12,
+      "level": "intermediaire",
+      "title": "Percer le code de Givrebug",
+      "concept": "Défi : fréquences, dictionnaires et chaînes",
+      "statement": "Un message chiffré s'affiche sur le Registre. On sait **comment** il a été chiffré, mais pas avec quel décalage : chaque lettre minuscule de `a` à `z` a été avancée de `d` rangs dans l'alphabet (en bouclant de `z` vers `a`), avec `d` inconnu entre `0` et `25`. Tous les autres caractères (espaces, ponctuation, chiffres, majuscules, lettres accentuées) sont restés tels quels.\n\nPixel a une piste : en français, la lettre la plus fréquente est presque toujours le **`e`**. On te garantit que c'est le cas dans le message d'origine, **sans égalité** : la lettre la plus fréquente du message chiffré est donc un `e` déguisé.\n\nÉcris une fonction `{fn}` qui reçoit le message chiffré et renvoie le **message d'origine**.\n\n- Seules les lettres minuscules de `a` à `z` comptent dans les fréquences.\n- Si le message ne contient aucune de ces lettres (ou s'il est vide), renvoie-le tel quel.\n\nC'est le défi de mi-parcours : compter (jour 5), chercher un maximum, manipuler des chaînes (jour 4). Découpe le problème en étapes.",
+      "fn": {"javascript":"percerLeCode","python":"percer_le_code"},
+      "starter": {
+        "javascript": "function percerLeCode(message) {\n  const alphabet = \"abcdefghijklmnopqrstuvwxyz\";\n  // Renvoie le message d'origine\n}\n",
+        "python": "def percer_le_code(message):\n    alphabet = \"abcdefghijklmnopqrstuvwxyz\"\n    # Renvoie le message d'origine\n    pass\n"
+      },
+      "solution": {
+        "javascript": "function percerLeCode(message) {\n  const alphabet = \"abcdefghijklmnopqrstuvwxyz\";\n  const compte = {};\n  let frequente = \"\";\n  for (const caractere of message) {\n    if (alphabet.includes(caractere)) {\n      compte[caractere] = (compte[caractere] || 0) + 1;\n      if (frequente === \"\" || compte[caractere] > compte[frequente]) {\n        frequente = caractere;\n      }\n    }\n  }\n  if (frequente === \"\") {\n    return message;\n  }\n  const decalage = (alphabet.indexOf(frequente) - alphabet.indexOf(\"e\") + 26) % 26;\n  let clair = \"\";\n  for (const caractere of message) {\n    const position = alphabet.indexOf(caractere);\n    if (position === -1) {\n      clair = clair + caractere;\n    } else {\n      clair = clair + alphabet[(position - decalage + 26) % 26];\n    }\n  }\n  return clair;\n}\n",
+        "python": "def percer_le_code(message):\n    alphabet = \"abcdefghijklmnopqrstuvwxyz\"\n    compte = {}\n    frequente = \"\"\n    for caractere in message:\n        if caractere != \"\" and caractere in alphabet:\n            compte[caractere] = compte.get(caractere, 0) + 1\n            if frequente == \"\" or compte[caractere] > compte[frequente]:\n                frequente = caractere\n    if frequente == \"\":\n        return message\n    decalage = (alphabet.find(frequente) - alphabet.find(\"e\") + 26) % 26\n    clair = \"\"\n    for caractere in message:\n        position = alphabet.find(caractere)\n        if position == -1:\n            clair = clair + caractere\n        else:\n            clair = clair + alphabet[(position - decalage + 26) % 26]\n    return clair\n"
+      },
+      "tests": [
+        { "args": ["pi gvmwxep wi vizimppi"], "expected": "le cristal se reveille" },
+        { "args": ["wp rpw opdnpyo opd qpypecpd, pe wp gpye dp wpgp."], "expected": "le gel descend des fenetres, et le vent se leve." },
+        { "args": ["elle est belle, cette etoile"], "expected": "elle est belle, cette etoile" },
+        { "args": ["123 ... ÉTÉ !"], "expected": "123 ... ÉTÉ !" },
+        { "args": [""], "expected": "", "hidden": true },
+        { "args": ["fa ia okqreajo za yappa lwjja : lanokjja ja h'w nalwnaa."], "expected": "je me souviens de cette panne : personne ne l'a reparee.", "hidden": true },
+        { "args": ["zzz"], "expected": "eee", "hidden": true },
+        { "args": ["Phwdk : « kd Rdfhrsqd qdrsd fdké, bgdqbgd dmbnqd ! »"], "expected": "Pixel : « le Registre reste gelé, cherche encore ! »", "hidden": true },
+        { "args": ["j j j   f   g   j"], "expected": "e e e   a   b   e", "hidden": true },
+        { "args": ["f f f BBBBBBB"], "expected": "e e e BBBBBBB", "hidden": true }
+      ],
+      "hint": "Trois étapes : compter les lettres du message chiffré, trouver la plus fréquente, puis en déduire le décalage (de combien de rangs faut-il reculer pour qu'elle redevienne un `e` ?). La dernière étape est un déchiffrement classique, lettre par lettre."
+    },
+    {
+      "id": "d12-confirme",
+      "day": 12,
+      "level": "confirme",
+      "title": "Le code à clé de Givrebug",
+      "concept": "Chiffre à décalage variable : analyse de fréquences par colonne",
+      "statement": "Le message suivant de Givrebug est plus coriace : le décalage **change à chaque lettre**. Pixel a repéré une clé secrète courte, répétée en boucle : la 1re lettre du message est décalée de `d1` rangs, la 2e de `d2`, ... la `longueur`-ième de `d_longueur`, puis la suivante repart de `d1`, et ainsi de suite. Chaque décalage est entre `0` et `25`, et l'alphabet boucle (`z` suivi de `a`) comme pour un décalage simple. Décaler de `d` rangs, c'est avancer dans l'alphabet : avec `d = 1`, `a` devient `b` ; on retrouve le message d'origine en reculant de `d`.\n\nTu connais la **longueur** de la clé, mais pas ses décalages. Pixel mise sur le même pari que d'habitude : dans le message d'origine, la lettre la plus fréquente de chaque « colonne » est un **`e`**.\n\nÉcris une fonction `{fn}(message, longueur)` qui renvoie le **message d'origine**.\n\nRègles :\n\n- Seules les lettres minuscules de `a` à `z` sont chiffrées. Tout le reste (espaces, ponctuation, chiffres, majuscules, lettres accentuées) est recopié tel quel et **ne fait pas avancer la clé** : seules les lettres comptent pour savoir quel décalage s'applique.\n- La colonne `j` (de `0` à `longueur - 1`) regroupe les lettres chiffrées dont le **numéro d'ordre parmi les lettres** (en comptant de `0`) a pour reste `j` dans la division par `longueur`.\n- Dans chaque colonne, la lettre chiffrée la plus fréquente représente un `e` : ça donne le décalage de la colonne. En cas d'**égalité** entre plusieurs lettres dans une colonne, tu gardes celle qui donne le **plus petit décalage**.\n- Une colonne sans aucune lettre (message trop court) a un décalage de `0`.\n- `longueur` est un entier supérieur ou égal à `1`. Un message vide, ou sans lettre, est renvoyé tel quel.\n\nExemple : avec `longueur = 1` et le message `\"ab\"`, `a` et `b` sont à égalité ; `a` donnerait le décalage 22 et `b` le décalage 23, on garde 22, donc le message d'origine est `\"ef\"`.\n\nC'est le défi de mi-parcours, version confirmée : il est plus long que les autres. Découpe-le en étapes.",
+      "fn": {
+        "javascript": "casserVigenere",
+        "python": "casser_vigenere"
+      },
+      "starter": {
+        "javascript": "function casserVigenere(message, longueur) {\n  // Renvoie le message d'origine\n}\n",
+        "python": "def casser_vigenere(message, longueur):\n    # Renvoie le message d'origine\n    pass\n"
+      },
+      "solution": {
+        "javascript": "function casserVigenere(message, longueur) {\n  const alphabet = \"abcdefghijklmnopqrstuvwxyz\";\n  const colonnes = [];\n  for (let i = 0; i < longueur; i++) {\n    colonnes.push(new Array(26).fill(0));\n  }\n  let rang = 0;\n  for (const c of message) {\n    const p = alphabet.indexOf(c);\n    if (p !== -1) {\n      colonnes[rang % longueur][p]++;\n      rang++;\n    }\n  }\n  const decalages = colonnes.map((freq) => {\n    let meilleur = 0;\n    let decalage = 0;\n    for (let p = 0; p < 26; p++) {\n      const d = (p - 4 + 26) % 26;\n      if (freq[p] > meilleur || (freq[p] === meilleur && freq[p] > 0 && d < decalage)) {\n        meilleur = freq[p];\n        decalage = d;\n      }\n    }\n    return decalage;\n  });\n  let clair = \"\";\n  rang = 0;\n  for (const c of message) {\n    const p = alphabet.indexOf(c);\n    if (p === -1) {\n      clair += c;\n    } else {\n      clair += alphabet[(p - decalages[rang % longueur] + 26) % 26];\n      rang++;\n    }\n  }\n  return clair;\n}\n",
+        "python": "def casser_vigenere(message, longueur):\n    alphabet = \"abcdefghijklmnopqrstuvwxyz\"\n    colonnes = [[0] * 26 for _ in range(longueur)]\n    rang = 0\n    for c in message:\n        p = alphabet.find(c)\n        if p != -1:\n            colonnes[rang % longueur][p] += 1\n            rang += 1\n    decalages = []\n    for freq in colonnes:\n        meilleur = 0\n        decalage = 0\n        for p in range(26):\n            d = (p - 4) % 26\n            if freq[p] > meilleur or (freq[p] == meilleur and freq[p] > 0 and d < decalage):\n                meilleur = freq[p]\n                decalage = d\n        decalages.append(decalage)\n    clair = \"\"\n    rang = 0\n    for c in message:\n        p = alphabet.find(c)\n        if p == -1:\n            clair += c\n        else:\n            clair += alphabet[(p - decalages[rang % longueur]) % 26]\n            rang += 1\n    return clair\n"
+      },
+      "tests": [
+        {
+          "args": [
+            "ri nxmdzew jy duyd-ysw yi ckzpopwk ie ri rkp okwnkro yyc ri gopwgkp. vmikp nnicilp rid riezvpy ufk pp xirowexi yk wlox aryd rmck, qpxi yuiwri ckptz pp bmpab wozck.",
+            3
+          ],
+          "expected": "le cristal du sous-sol se reveille et le gel descend sur le village. pixel cherche les lettres que le registre ne sait plus lire, mere noelle relit le vieux livre."
+        },
+        {
+          "args": [
+            "ws rp fimd cow fa psrhs, np fimd hb wzhjiyvf. pp pfmdgop dr feacspwr zid tsrd dim yr gsyg ded isrff, sx wr uiw rgx xn gifys qpzcmcr. bi nusvnusd ang e xr qllfgic. cwbpy finbdmp ys qpfgerr ri rvjvpoik, xnww wr qsor qllaui l pvebhs ppghvp : vz jlhrvl gswerf gsneyp pcpzabi or ze aufedr, sr wnwwdnbx wrg idcogpf ri nbhi. wr qvtfhew qi wzhg-wzy gi crjityzi pg zi rrz hpfqiyq gyc ys ztyzerr. dmirz gsrfgsr zid ysxeesw bhs pp esktfhvp as wlvh twhg ptes, qpes rzrzpp esptg zi gvsyi ywzcr.",
+            4
+          ],
+          "expected": "je ne suis pas un bogue, je suis un souvenir. le cristal se rappelle les gens qui ne sont pas venus, et le gel est ma seule memoire. ne cherchez pas a me chasser. pixel recopie le message de givrebug, mais le code change a chaque lettre : il faudra tester chaque colonne de la phrase, en laissant les espaces de cote. le cristal du sous-sol se reveille et le gel descend sur le village. pixel cherche les lettres que le registre ne sait plus lire, mere noelle relit le vieux livre."
+        },
+        {
+          "args": [
+            "ab",
+            1
+          ],
+          "expected": "ef"
+        },
+        {
+          "args": [
+            "hsfwv zwmwhsm do uwcasqm vo oafzwlcy, wiac tw mwvo kzkvyo i uriiem doblbm : av nseljk bwcbwb kzkymo kgvwfxm vo ts zpjkaw, ov dkqkcifd twc mkziuoa vo kgdm.",
+            3
+          ],
+          "expected": "pixel recopie le message de givrebug, mais le code change a chaque lettre : il faudra tester chaque colonne de la phrase, en laissant les espaces de cote."
+        },
+        {
+          "args": [
+            "xy",
+            5
+          ],
+          "expected": "ee",
+          "hidden": true
+        },
+        {
+          "args": [
+            "Ld fdk, 2024 : sqdr FROID !",
+            1
+          ],
+          "expected": "Le gel, 2024 : tres FROID !",
+          "hidden": true
+        },
+        {
+          "args": [
+            "",
+            3
+          ],
+          "expected": "",
+          "hidden": true
+        },
+        {
+          "args": [
+            "am zvthbxp oj alyd-hwi wp gmsitatb ie am diw smpgpcl pyc am smwaidi. axfbp nwmogst tbw wtbqvph yri wt zbkthboi yt axme etrw wxzb, qpgm kspatb vpaqq pp kqbyi aqsvp. ym ki djqp tlh ck fzvcb, np hcfw fc alygtvfv. wt komdiii wp gimtpatb pph obrd fcf rp hwkx apa siyja, bx wt obp phb je dtcii xtulmct. vb gstzzlpo xxw l bm zllhabv. axfbp ctklttt tb qphaxkp sm dmggmyyr, bifw wt klhp rpxrrt i zllfcb ppiboi : ta nxyogi qidimo gspyri ndtlryt lb pl epoedt, mk plxapeyi tbw phxxgph lb gzim.",
+            5
+          ],
+          "expected": "le cristal du sous-sol se reveille et le gel descend sur le village. pixel cherche les lettres que le registre ne sait plus lire, mere noelle relit le vieux livre. je ne suis pas un bogue, je suis un souvenir. le cristal se rappelle les gens qui ne sont pas venus, et le gel est ma seule memoire. ne cherchez pas a me chasser. pixel recopie le message de givrebug, mais le code change a chaque lettre : il faudra tester chaque colonne de la phrase, en laissant les espaces de cote.",
+          "hidden": true
+        },
+        {
+          "args": [
+            "g",
+            1
+          ],
+          "expected": "e",
+          "hidden": true
+        },
+        { "args": ["ag",1], "expected": "ye", "hidden": true }
+      ],
+      "hint": "Fais trois étapes distinctes : répartir les lettres en colonnes (le compteur ne bouge que sur les lettres), trouver le décalage de chaque colonne à partir de sa lettre la plus fréquente, puis déchiffrer en reparcourant le message avec le même compteur. Pour chaque colonne, un tableau de 26 compteurs est pratique. Attention à l'égalité et aux colonnes vides."
+    },
+    {
+      "id": "d12-expert",
+      "day": 12,
+      "level": "expert",
+      "title": "Le mot que Givrebug n'a pas pu cacher",
+      "concept": "Casser un chiffre à clé répétée avec un mot probable",
+      "statement": "Nouveau message de Givrebug, et cette fois Pixel ne connaît **ni la clé, ni sa longueur**. Mais Mère Noëlle en est sûre : le message d'origine contient un mot précis, `mot`. Un seul mot connu peut suffire à tout faire tomber.\n\nLe chiffre est le même que d'habitude : une clé est une liste de décalages, chacun entre `0` et `25`, répétée en boucle. La 1re **lettre** du message est avancée de `d1` rangs dans l'alphabet, la 2e de `d2`, et ainsi de suite ; après le dernier décalage, on repart du premier. L'alphabet boucle (`z` est suivi de `a`). Seules les lettres minuscules de `a` à `z` sont chiffrées : tout le reste (espaces, chiffres, ponctuation) est recopié tel quel et **ne fait pas avancer la clé**.\n\nÉcris une fonction `{fn}(message, mot, longueurMax)` qui renvoie le **message d'origine**, en choisissant la clé ainsi :\n\n1. Une clé **convient** si, une fois le message déchiffré avec elle, `mot` y apparaît **d'un seul tenant** (ses lettres se suivent, sans rien entre elles).\n2. On garde la clé qui convient la **plus courte** possible, parmi les longueurs de `1` à `longueurMax`.\n3. S'il en reste plusieurs de cette longueur, on garde la **plus petite** : on compare les décalages un par un, de gauche à droite, et le premier qui diffère décide (`[2, 0, 9]` passe avant `[2, 1, 0]`).\n\nSi aucune clé ne convient, renvoie le texte vide `\"\"`.\n\nPrécisions : `mot` n'est jamais vide et ne contient que des lettres de `a` à `z`. `longueurMax` est un entier `>= 1`. Il existe `26` puissance `longueurMax` clés : les essayer toutes n'est pas une option.\n\nExemple : avec le message `\"opfm\"`, le mot `\"noel\"` et `longueurMax = 3`, la clé `[1]` convient : la réponse est `\"noel\"`. Avec `\"abc\"` et le mot `\"zzz\"`, il faudrait trois décalages différents : aucune clé de longueur 1 ou 2 ne convient, la réponse est `\"\"`.\n",
+      "fn": {
+        "javascript": "dechiffrerAvecMot",
+        "python": "dechiffrer_avec_mot"
+      },
+      "starter": {
+        "javascript": "function dechiffrerAvecMot(message, mot, longueurMax) {\n  // Renvoie le message d'origine, ou \"\" si aucune clé ne convient\n}\n",
+        "python": "def dechiffrer_avec_mot(message, mot, longueur_max):\n    # Renvoie le message d'origine, ou \"\" si aucune clé ne convient\n    pass\n"
+      },
+      "solution": {
+        "javascript": "function dechiffrerAvecMot(message, mot, longueurMax) {\n  const estLettre = (c) => c >= \"a\" && c <= \"z\";\n  const code = (c) => c.charCodeAt(0) - 97;\n  // rang[i] : numéro d'ordre du caractère i parmi les lettres (ou -1 si ce n'est pas une lettre)\n  const rang = [];\n  let lettres = 0;\n  for (let i = 0; i < message.length; i++) rang.push(estLettre(message[i]) ? lettres++ : -1);\n\n  const plusPetite = (a, b) => {\n    for (let i = 0; i < a.length; i++) if (a[i] !== b[i]) return a[i] < b[i];\n    return false;\n  };\n\n  for (let longueur = 1; longueur <= longueurMax; longueur++) {\n    let meilleure = null;\n    for (let debut = 0; debut + mot.length <= message.length; debut++) {\n      // Si le mot est caché ici, chaque lettre impose un décalage à une position de la clé.\n      const cle = new Array(longueur).fill(-1);\n      let possible = true;\n      for (let j = 0; j < mot.length && possible; j++) {\n        const c = message[debut + j];\n        if (!estLettre(c)) {\n          possible = false;\n          break;\n        }\n        const decalage = (code(c) - code(mot[j]) + 26) % 26;\n        const position = rang[debut + j] % longueur;\n        if (cle[position] === -1) cle[position] = decalage;\n        else if (cle[position] !== decalage) possible = false;\n      }\n      if (!possible) continue;\n      // Les positions libres valent 0 : c'est ce qui donne la plus petite clé.\n      const complete = cle.map((d) => (d === -1 ? 0 : d));\n      if (meilleure === null || plusPetite(complete, meilleure)) meilleure = complete;\n    }\n    if (meilleure !== null) {\n      let clair = \"\";\n      for (let i = 0; i < message.length; i++) {\n        const c = message[i];\n        clair += estLettre(c) ? String.fromCharCode(((code(c) - meilleure[rang[i] % longueur] + 26) % 26) + 97) : c;\n      }\n      return clair;\n    }\n  }\n  return \"\";\n}\n",
+        "python": "def dechiffrer_avec_mot(message, mot, longueur_max):\n    def est_lettre(c):\n        return \"a\" <= c <= \"z\"\n\n    # rang[i] : numéro d'ordre du caractère i parmi les lettres (ou -1 si ce n'est pas une lettre)\n    rang = []\n    lettres = 0\n    for c in message:\n        if est_lettre(c):\n            rang.append(lettres)\n            lettres += 1\n        else:\n            rang.append(-1)\n\n    for longueur in range(1, longueur_max + 1):\n        meilleure = None\n        for debut in range(len(message) - len(mot) + 1):\n            # Si le mot est caché ici, chaque lettre impose un décalage à une position de la clé.\n            cle = [-1] * longueur\n            possible = True\n            for j, lettre in enumerate(mot):\n                c = message[debut + j]\n                if not est_lettre(c):\n                    possible = False\n                    break\n                decalage = (ord(c) - ord(lettre)) % 26\n                position = rang[debut + j] % longueur\n                if cle[position] == -1:\n                    cle[position] = decalage\n                elif cle[position] != decalage:\n                    possible = False\n                    break\n            if not possible:\n                continue\n            # Les positions libres valent 0 : c'est ce qui donne la plus petite clé.\n            complete = [0 if d == -1 else d for d in cle]\n            if meilleure is None or complete < meilleure:\n                meilleure = complete\n        if meilleure is not None:\n            clair = []\n            for i, c in enumerate(message):\n                if est_lettre(c):\n                    clair.append(chr((ord(c) - 97 - meilleure[rang[i] % longueur]) % 26 + 97))\n                else:\n                    clair.append(c)\n            return \"\".join(clair)\n    return \"\"\n"
+      },
+      "tests": [
+        {
+          "args": [
+            "opfm",
+            "noel",
+            3
+          ],
+          "expected": "noel"
+        },
+        {
+          "args": [
+            "mpbfxy qphm d urvv",
+            "noel",
+            4
+          ],
+          "expected": "joyeux noel a tous"
+        },
+        {
+          "args": [
+            "ri nxmdzew jy duyd-ysw mecji ft wzazptmc : re euyctip ji yuiw t'e ugqlow pzi qortk.",
+            "tournee",
+            5
+          ],
+          "expected": "le cristal du sous-sol garde un souvenir : la tournee de noel n'a jamais ete finie."
+        },
+        {
+          "args": [
+            "abc",
+            "zzz",
+            2
+          ],
+          "expected": ""
+        },
+        {
+          "args": [
+            "",
+            "noel",
+            3
+          ],
+          "expected": "",
+          "hidden": true
+        },
+        {
+          "args": [
+            "rhern, 3 qlapdz rv 1 kbtg : qlafdg-iqtz n ohuhks wegr kh iqhaf rhckm !",
+            "minuit",
+            6
+          ],
+          "expected": "pixel, 3 rennes et 1 luge : rendez-vous a minuit pres du grand sapin !",
+          "hidden": true
+        },
+        {
+          "args": [
+            "le cristal du sous-sol garde un souvenir : la tournee de noel n'a jamais ete finie.",
+            "noel",
+            2
+          ],
+          "expected": "le cristal du sous-sol garde un souvenir : la tournee de noel n'a jamais ete finie.",
+          "hidden": true
+        },
+        {
+          "args": [
+            "un larbcju md bxdb-bxu pjamn dw bxdenwra : uj cxdawnn mn wxnu w'j sjvjrb ncn orwrn.",
+            "souvenir",
+            4
+          ],
+          "expected": "le cristal du sous-sol garde un souvenir : la tournee de noel n'a jamais ete finie.",
+          "hidden": true
+        },
+        {
+          "args": [
+            "qf gnwrj, ma qvgj",
+            "luge",
+            3
+          ],
+          "expected": "le givre, la luge",
+          "hidden": true
+        },
+        {
+          "args": [
+            "qkaiq, 3 sgqrjt gw 1 pzhg : uisegc-ztvu d qnowlx usgv hz htdri tcsms !",
+            "sapin",
+            4
+          ],
+          "expected": "sxbus, 3 fhctwu sy 1 cati : hjegtd-lviv p sapink veii il jgedk gdeof !",
+          "hidden": true
+        },
+        {
+          "args": [
+            "bdbd bdbd",
+            "ab",
+            2
+          ],
+          "expected": "baba baba",
+          "hidden": true
+        },
+        {
+          "args": [
+            "ch wzjekdf lv efxm-apx xdllf ge vicwqell : tb ffxlvfq uh hwfx e'd dinmzv ybf rzqcm.",
+            "cristal",
+            8
+          ],
+          "expected": "le cristal du sous-sol garde un souvenir : la tournee de noel n'a jamais ete finie.",
+          "hidden": true
+        },
+        {
+          "args": [
+            "x-y-z",
+            "xyz",
+            2
+          ],
+          "expected": "",
+          "hidden": true
+        }
+      ],
+      "hint": "N'essaie pas les clés : essaie les **emplacements**. Si le mot se trouve à un endroit précis du message, chacune de ses lettres t'impose un décalage pour une position de la clé. Deux exigences différentes pour la même position, et l'emplacement est impossible. Et les positions de la clé que le mot ne touche pas ? Pense à la règle 3."
+    }
+  ]
+}

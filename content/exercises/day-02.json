@@ -1,0 +1,1054 @@
+{
+  "day": 2,
+  "concept": "Conditions",
+  "exercises": [
+    {
+      "id": "d02-debutant",
+      "day": 2,
+      "level": "debutant",
+      "title": "Sage ou pas sage ?",
+      "concept": "Condition if / else",
+      "statement": "Pour chaque enfant, le Registre connaît le nombre de bonnes actions et le nombre de bêtises.\n\nTa fonction `{fn}` reçoit ces deux nombres, dans cet ordre, et renvoie le texte `\"cadeau\"` s'il y a **strictement plus** de bonnes actions que de bêtises, et `\"charbon\"` sinon.\n\nEn cas d'égalité, le lutin reste prudent : `\"charbon\"`.",
+      "fn": { "javascript": "verdict", "python": "verdict" },
+      "starter": {
+        "javascript": "function verdict(bonnesActions, betises) {\n  // Renvoie \"cadeau\" ou \"charbon\"\n}\n",
+        "python": "def verdict(bonnes_actions, betises):\n    # Renvoie \"cadeau\" ou \"charbon\"\n    pass\n"
+      },
+      "solution": {
+        "javascript": "function verdict(bonnesActions, betises) {\n  if (bonnesActions > betises) {\n    return \"cadeau\";\n  }\n  return \"charbon\";\n}\n",
+        "python": "def verdict(bonnes_actions, betises):\n    if bonnes_actions > betises:\n        return \"cadeau\"\n    return \"charbon\"\n"
+      },
+      "tests": [
+        { "args": [5, 2], "expected": "cadeau" },
+        { "args": [1, 4], "expected": "charbon" },
+        { "args": [3, 3], "expected": "charbon" },
+        { "args": [0, 0], "expected": "charbon" },
+        { "args": [10, 9], "expected": "cadeau", "hidden": true }
+      ],
+      "hint": "Compare les deux nombres avec `>`. Le cas d'égalité tombe naturellement dans le « sinon »."
+    },
+    {
+      "id": "d02-intermediaire",
+      "day": 2,
+      "level": "intermediaire",
+      "title": "Le chant des lutins",
+      "concept": "Boucle et conditions combinées",
+      "statement": "Le chant des lutins compte de 1 à `n`. À chaque nombre :\n\n- si c'est un multiple de 3 **et** de 5, on chante `\"JingleBells\"` ;\n- sinon, si c'est un multiple de 3, on chante `\"Jingle\"` ;\n- sinon, si c'est un multiple de 5, on chante `\"Bells\"` ;\n- sinon, on écrit le nombre lui-même, **sous forme de texte** (`\"7\"`).\n\nÉcris une fonction `{fn}` qui renvoie la **liste** des `n` éléments. Pour `n = 0`, la liste est vide.",
+      "fn": { "javascript": "chantLutins", "python": "chant_lutins" },
+      "starter": {
+        "javascript": "function chantLutins(n) {\n  // Renvoie la liste des n éléments du chant\n}\n",
+        "python": "def chant_lutins(n):\n    # Renvoie la liste des n éléments du chant\n    pass\n"
+      },
+      "solution": {
+        "javascript": "function chantLutins(n) {\n  const chant = [];\n  for (let i = 1; i <= n; i++) {\n    if (i % 15 === 0) {\n      chant.push(\"JingleBells\");\n    } else if (i % 3 === 0) {\n      chant.push(\"Jingle\");\n    } else if (i % 5 === 0) {\n      chant.push(\"Bells\");\n    } else {\n      chant.push(String(i));\n    }\n  }\n  return chant;\n}\n",
+        "python": "def chant_lutins(n):\n    chant = []\n    for i in range(1, n + 1):\n        if i % 15 == 0:\n            chant.append(\"JingleBells\")\n        elif i % 3 == 0:\n            chant.append(\"Jingle\")\n        elif i % 5 == 0:\n            chant.append(\"Bells\")\n        else:\n            chant.append(str(i))\n    return chant\n"
+      },
+      "tests": [
+        { "args": [5], "expected": ["1", "2", "Jingle", "4", "Bells"] },
+        { "args": [1], "expected": ["1"] },
+        { "args": [0], "expected": [] },
+        { "args": [15], "expected": ["1", "2", "Jingle", "4", "Bells", "Jingle", "7", "8", "Jingle", "Bells", "11", "Jingle", "13", "14", "JingleBells"] },
+        { "args": [6], "expected": ["1", "2", "Jingle", "4", "Bells", "Jingle"], "hidden": true }
+      ],
+      "hint": "Teste d'abord le cas « multiple de 3 et de 5 », sinon il sera masqué par un des autres. L'opérateur `%` donne le reste d'une division."
+    },
+    {
+      "id": "d02-confirme",
+      "day": 2,
+      "level": "confirme",
+      "title": "Le chant qui trébuche",
+      "concept": "Règles de décision avec priorités",
+      "statement": "Le chant des lutins a été réécrit : Givrebug a glissé des règles dans la partition. Le chant compte de 1 à `n`, et pour chaque nombre `i` on applique ces règles, **dans cet ordre de priorité** :\n\n1. si l'élément précédent du chant était `\"Pouf\"`, on chante `\"Chut\"` (le silence prime sur tout, même si `i` contient un 7) ;\n2. sinon, si l'écriture de `i` en base 10 contient le chiffre `7`, on chante `\"Pouf\"` ;\n3. sinon, on parcourt la liste `regles` : chaque règle est un couple `[diviseur, mot]`, et on **colle** dans l'ordre de la liste les mots de toutes les règles dont le diviseur divise `i` ;\n4. si aucun mot n'a été collé, on écrit `i` lui-même **sous forme de texte**.\n\nÉcris `{fn}(n, regles)` qui renvoie la liste des `n` éléments. Pour `n = 0`, la liste est vide ; `regles` peut être vide. Les diviseurs sont des entiers supérieurs ou égaux à 1, les mots ne sont jamais vides, et ce ne sont jamais `\"Pouf\"` ni `\"Chut\"`.\n\nExemple : avec `n = 10` et `[[3, \"Jingle\"], [5, \"Bells\"]]`, le 7 est un `\"Pouf\"` et le 8 est un `\"Chut\"`.",
+      "fn": {
+        "javascript": "chantAvance",
+        "python": "chant_avance"
+      },
+      "starter": {
+        "javascript": "function chantAvance(n, regles) {\n  // Renvoie la liste des n éléments du chant\n}\n",
+        "python": "def chant_avance(n, regles):\n    # Renvoie la liste des n éléments du chant\n    pass\n"
+      },
+      "solution": {
+        "javascript": "function chantAvance(n, regles) {\n  const chant = [];\n  let apresPouf = false;\n  for (let i = 1; i <= n; i++) {\n    let mot = \"\";\n    if (apresPouf) {\n      mot = \"Chut\";\n    } else if (String(i).includes(\"7\")) {\n      mot = \"Pouf\";\n    } else {\n      for (const [diviseur, texte] of regles) {\n        if (i % diviseur === 0) {\n          mot += texte;\n        }\n      }\n      if (mot === \"\") {\n        mot = String(i);\n      }\n    }\n    apresPouf = !apresPouf && mot === \"Pouf\" && String(i).includes(\"7\");\n    chant.push(mot);\n  }\n  return chant;\n}\n",
+        "python": "def chant_avance(n, regles):\n    chant = []\n    apres_pouf = False\n    for i in range(1, n + 1):\n        mot = \"\"\n        if apres_pouf:\n            mot = \"Chut\"\n        elif \"7\" in str(i):\n            mot = \"Pouf\"\n        else:\n            for diviseur, texte in regles:\n                if i % diviseur == 0:\n                    mot += texte\n            if mot == \"\":\n                mot = str(i)\n        apres_pouf = (not apres_pouf) and mot == \"Pouf\" and \"7\" in str(i)\n        chant.append(mot)\n    return chant\n"
+      },
+      "tests": [
+        {
+          "args": [
+            10,
+            [
+              [
+                3,
+                "Jingle"
+              ],
+              [
+                5,
+                "Bells"
+              ]
+            ]
+          ],
+          "expected": [
+            "1",
+            "2",
+            "Jingle",
+            "4",
+            "Bells",
+            "Jingle",
+            "Pouf",
+            "Chut",
+            "Jingle",
+            "Bells"
+          ]
+        },
+        {
+          "args": [
+            15,
+            [
+              [
+                5,
+                "Bells"
+              ],
+              [
+                3,
+                "Jingle"
+              ]
+            ]
+          ],
+          "expected": [
+            "1",
+            "2",
+            "Jingle",
+            "4",
+            "Bells",
+            "Jingle",
+            "Pouf",
+            "Chut",
+            "Jingle",
+            "Bells",
+            "11",
+            "Jingle",
+            "13",
+            "14",
+            "BellsJingle"
+          ]
+        },
+        {
+          "args": [
+            0,
+            [
+              [
+                2,
+                "Tic"
+              ]
+            ]
+          ],
+          "expected": []
+        },
+        {
+          "args": [
+            3,
+            []
+          ],
+          "expected": [
+            "1",
+            "2",
+            "3"
+          ]
+        },
+        {
+          "args": [
+            30,
+            [
+              [
+                2,
+                "Tic"
+              ],
+              [
+                3,
+                "Tac"
+              ],
+              [
+                4,
+                "Dong"
+              ]
+            ]
+          ],
+          "expected": [
+            "1",
+            "Tic",
+            "Tac",
+            "TicDong",
+            "5",
+            "TicTac",
+            "Pouf",
+            "Chut",
+            "Tac",
+            "Tic",
+            "11",
+            "TicTacDong",
+            "13",
+            "Tic",
+            "Tac",
+            "TicDong",
+            "Pouf",
+            "Chut",
+            "19",
+            "TicDong",
+            "Tac",
+            "Tic",
+            "23",
+            "TicTacDong",
+            "25",
+            "Tic",
+            "Pouf",
+            "Chut",
+            "29",
+            "TicTac"
+          ]
+        },
+        {
+          "args": [
+            80,
+            [
+              [
+                2,
+                "Tic"
+              ],
+              [
+                3,
+                "Tac"
+              ]
+            ]
+          ],
+          "expected": [
+            "1",
+            "Tic",
+            "Tac",
+            "Tic",
+            "5",
+            "TicTac",
+            "Pouf",
+            "Chut",
+            "Tac",
+            "Tic",
+            "11",
+            "TicTac",
+            "13",
+            "Tic",
+            "Tac",
+            "Tic",
+            "Pouf",
+            "Chut",
+            "19",
+            "Tic",
+            "Tac",
+            "Tic",
+            "23",
+            "TicTac",
+            "25",
+            "Tic",
+            "Pouf",
+            "Chut",
+            "29",
+            "TicTac",
+            "31",
+            "Tic",
+            "Tac",
+            "Tic",
+            "35",
+            "TicTac",
+            "Pouf",
+            "Chut",
+            "Tac",
+            "Tic",
+            "41",
+            "TicTac",
+            "43",
+            "Tic",
+            "Tac",
+            "Tic",
+            "Pouf",
+            "Chut",
+            "49",
+            "Tic",
+            "Tac",
+            "Tic",
+            "53",
+            "TicTac",
+            "55",
+            "Tic",
+            "Pouf",
+            "Chut",
+            "59",
+            "TicTac",
+            "61",
+            "Tic",
+            "Tac",
+            "Tic",
+            "65",
+            "TicTac",
+            "Pouf",
+            "Chut",
+            "Tac",
+            "Pouf",
+            "Chut",
+            "Pouf",
+            "Chut",
+            "Pouf",
+            "Chut",
+            "Pouf",
+            "Chut",
+            "Pouf",
+            "Chut",
+            "Tic"
+          ],
+          "hidden": true
+        },
+        {
+          "args": [
+            7,
+            [
+              [
+                7,
+                "Sept"
+              ]
+            ]
+          ],
+          "expected": [
+            "1",
+            "2",
+            "3",
+            "4",
+            "5",
+            "6",
+            "Pouf"
+          ],
+          "hidden": true
+        },
+        {
+          "args": [
+            1,
+            [
+              [
+                1,
+                "Un"
+              ]
+            ]
+          ],
+          "expected": [
+            "Un"
+          ],
+          "hidden": true
+        }
+      ],
+      "hint": "Garde en mémoire, d'un tour de boucle à l'autre, une seule information : le dernier élément était-il un « Pouf » ? Teste les règles dans l'ordre de priorité de l'énoncé, et pense à l'élément qui suit un « Chut »."
+    },
+    {
+      "id": "d02-expert",
+      "day": 2,
+      "level": "expert",
+      "title": "Les règles qui se chevauchent",
+      "concept": "Règles en cascade sur de grands intervalles",
+      "statement": "Le Registre connaît `n` enfants, numérotés de `1` à `n`. Au départ, ils sont tous notés `\"sage\"`. Puis les lutins dictent leurs règles, **dans l'ordre** : chaque règle `[debut, fin, verdict]` donne le verdict `verdict` à tous les enfants numérotés de `debut` à `fin` (bornes incluses). Une règle dictée plus tard **écrase** les précédentes là où elles se chevauchent.\n\nÉcris une fonction `{fn}(n, regles)` qui renvoie le résultat final sous forme de **tranches** : une liste de `[debut, fin, verdict]`, triée par `debut` croissant, qui couvre tous les enfants de `1` à `n` sans trou ni chevauchement. Deux tranches voisines n'ont **jamais le même verdict** : si c'est le cas, elles doivent être fusionnées en une seule.\n\nPrécisions :\n- `n` est un entier `>= 1`, et pour chaque règle `1 <= debut <= fin <= n`. Un verdict est un texte en minuscules.\n- `n` peut atteindre **un milliard** : pas question de garder une case par enfant. Le nombre de règles, lui, reste raisonnable (quelques centaines au plus).\n- Sans aucune règle, la réponse est `[[1, n, \"sage\"]]`.\n\nExemple : avec `n = 10` et les règles `[[3, 7, \"charbon\"], [5, 5, \"sage\"], [6, 9, \"cadeau\"]]`, la réponse est `[[1, 2, \"sage\"], [3, 4, \"charbon\"], [5, 5, \"sage\"], [6, 9, \"cadeau\"], [10, 10, \"sage\"]]`.\n",
+      "fn": {
+        "javascript": "resumerRegles",
+        "python": "resumer_regles"
+      },
+      "starter": {
+        "javascript": "function resumerRegles(n, regles) {\n  // Renvoie les tranches [debut, fin, verdict] qui couvrent les enfants 1 à n\n}\n",
+        "python": "def resumer_regles(n, regles):\n    # Renvoie les tranches [debut, fin, verdict] qui couvrent les enfants 1 à n\n    pass\n"
+      },
+      "solution": {
+        "javascript": "function resumerRegles(n, regles) {\n  // Le verdict ne peut changer qu'au début d'une règle, ou juste après sa fin.\n  const bornes = new Set([1, n + 1]);\n  for (const [debut, fin] of regles) {\n    bornes.add(debut);\n    bornes.add(fin + 1);\n  }\n  const coupes = [...bornes].sort((a, b) => a - b);\n  const tranches = [];\n  for (let i = 0; i + 1 < coupes.length; i++) {\n    const debut = coupes[i];\n    const fin = coupes[i + 1] - 1;\n    let verdict = \"sage\";\n    for (let k = regles.length - 1; k >= 0; k--) {\n      if (regles[k][0] <= debut && debut <= regles[k][1]) {\n        verdict = regles[k][2];\n        break;\n      }\n    }\n    const derniere = tranches[tranches.length - 1];\n    if (derniere && derniere[2] === verdict) derniere[1] = fin;\n    else tranches.push([debut, fin, verdict]);\n  }\n  return tranches;\n}\n",
+        "python": "def resumer_regles(n, regles):\n    # Le verdict ne peut changer qu'au début d'une règle, ou juste après sa fin.\n    bornes = {1, n + 1}\n    for debut, fin, _ in regles:\n        bornes.add(debut)\n        bornes.add(fin + 1)\n    coupes = sorted(bornes)\n    tranches = []\n    for i in range(len(coupes) - 1):\n        debut = coupes[i]\n        fin = coupes[i + 1] - 1\n        verdict = \"sage\"\n        for regle in reversed(regles):\n            if regle[0] <= debut <= regle[1]:\n                verdict = regle[2]\n                break\n        if tranches and tranches[-1][2] == verdict:\n            tranches[-1][1] = fin\n        else:\n            tranches.append([debut, fin, verdict])\n    return tranches\n"
+      },
+      "tests": [
+        {
+          "args": [
+            10,
+            [
+              [
+                3,
+                7,
+                "charbon"
+              ],
+              [
+                5,
+                5,
+                "sage"
+              ],
+              [
+                6,
+                9,
+                "cadeau"
+              ]
+            ]
+          ],
+          "expected": [
+            [
+              1,
+              2,
+              "sage"
+            ],
+            [
+              3,
+              4,
+              "charbon"
+            ],
+            [
+              5,
+              5,
+              "sage"
+            ],
+            [
+              6,
+              9,
+              "cadeau"
+            ],
+            [
+              10,
+              10,
+              "sage"
+            ]
+          ]
+        },
+        {
+          "args": [
+            5,
+            [
+              [
+                1,
+                5,
+                "charbon"
+              ],
+              [
+                2,
+                4,
+                "charbon"
+              ]
+            ]
+          ],
+          "expected": [
+            [
+              1,
+              5,
+              "charbon"
+            ]
+          ]
+        },
+        {
+          "args": [
+            4,
+            []
+          ],
+          "expected": [
+            [
+              1,
+              4,
+              "sage"
+            ]
+          ]
+        },
+        {
+          "args": [
+            6,
+            [
+              [
+                1,
+                3,
+                "cadeau"
+              ],
+              [
+                4,
+                6,
+                "cadeau"
+              ]
+            ]
+          ],
+          "expected": [
+            [
+              1,
+              6,
+              "cadeau"
+            ]
+          ]
+        },
+        {
+          "args": [
+            1,
+            [
+              [
+                1,
+                1,
+                "charbon"
+              ]
+            ]
+          ],
+          "expected": [
+            [
+              1,
+              1,
+              "charbon"
+            ]
+          ],
+          "hidden": true
+        },
+        {
+          "args": [
+            8,
+            [
+              [
+                2,
+                3,
+                "charbon"
+              ],
+              [
+                2,
+                3,
+                "sage"
+              ]
+            ]
+          ],
+          "expected": [
+            [
+              1,
+              8,
+              "sage"
+            ]
+          ],
+          "hidden": true
+        },
+        {
+          "args": [
+            30,
+            [
+              [
+                28,
+                28,
+                "sage"
+              ],
+              [
+                12,
+                14,
+                "cadeau"
+              ],
+              [
+                9,
+                12,
+                "sage"
+              ],
+              [
+                19,
+                21,
+                "orange"
+              ],
+              [
+                21,
+                27,
+                "cadeau"
+              ],
+              [
+                18,
+                22,
+                "sage"
+              ]
+            ]
+          ],
+          "expected": [
+            [
+              1,
+              12,
+              "sage"
+            ],
+            [
+              13,
+              14,
+              "cadeau"
+            ],
+            [
+              15,
+              22,
+              "sage"
+            ],
+            [
+              23,
+              27,
+              "cadeau"
+            ],
+            [
+              28,
+              30,
+              "sage"
+            ]
+          ],
+          "hidden": true
+        },
+        {
+          "args": [
+            40,
+            [
+              [
+                2,
+                5,
+                "cadeau"
+              ],
+              [
+                25,
+                29,
+                "charbon"
+              ],
+              [
+                36,
+                36,
+                "charbon"
+              ],
+              [
+                2,
+                3,
+                "charbon"
+              ],
+              [
+                9,
+                17,
+                "cadeau"
+              ],
+              [
+                33,
+                35,
+                "orange"
+              ],
+              [
+                27,
+                35,
+                "cadeau"
+              ],
+              [
+                38,
+                39,
+                "orange"
+              ],
+              [
+                11,
+                17,
+                "orange"
+              ],
+              [
+                34,
+                37,
+                "cadeau"
+              ]
+            ]
+          ],
+          "expected": [
+            [
+              1,
+              1,
+              "sage"
+            ],
+            [
+              2,
+              3,
+              "charbon"
+            ],
+            [
+              4,
+              5,
+              "cadeau"
+            ],
+            [
+              6,
+              8,
+              "sage"
+            ],
+            [
+              9,
+              10,
+              "cadeau"
+            ],
+            [
+              11,
+              17,
+              "orange"
+            ],
+            [
+              18,
+              24,
+              "sage"
+            ],
+            [
+              25,
+              26,
+              "charbon"
+            ],
+            [
+              27,
+              37,
+              "cadeau"
+            ],
+            [
+              38,
+              39,
+              "orange"
+            ],
+            [
+              40,
+              40,
+              "sage"
+            ]
+          ],
+          "hidden": true
+        },
+        {
+          "args": [
+            60,
+            [
+              [
+                60,
+                60,
+                "orange"
+              ],
+              [
+                58,
+                59,
+                "orange"
+              ],
+              [
+                32,
+                37,
+                "charbon"
+              ],
+              [
+                57,
+                59,
+                "orange"
+              ],
+              [
+                20,
+                28,
+                "orange"
+              ],
+              [
+                20,
+                23,
+                "cadeau"
+              ],
+              [
+                60,
+                60,
+                "cadeau"
+              ],
+              [
+                47,
+                47,
+                "sage"
+              ],
+              [
+                4,
+                5,
+                "cadeau"
+              ],
+              [
+                38,
+                39,
+                "charbon"
+              ],
+              [
+                55,
+                56,
+                "charbon"
+              ],
+              [
+                57,
+                58,
+                "sage"
+              ],
+              [
+                4,
+                9,
+                "charbon"
+              ],
+              [
+                16,
+                16,
+                "sage"
+              ]
+            ]
+          ],
+          "expected": [
+            [
+              1,
+              3,
+              "sage"
+            ],
+            [
+              4,
+              9,
+              "charbon"
+            ],
+            [
+              10,
+              19,
+              "sage"
+            ],
+            [
+              20,
+              23,
+              "cadeau"
+            ],
+            [
+              24,
+              28,
+              "orange"
+            ],
+            [
+              29,
+              31,
+              "sage"
+            ],
+            [
+              32,
+              39,
+              "charbon"
+            ],
+            [
+              40,
+              54,
+              "sage"
+            ],
+            [
+              55,
+              56,
+              "charbon"
+            ],
+            [
+              57,
+              58,
+              "sage"
+            ],
+            [
+              59,
+              59,
+              "orange"
+            ],
+            [
+              60,
+              60,
+              "cadeau"
+            ]
+          ],
+          "hidden": true
+        },
+        {
+          "args": [
+            12,
+            [
+              [
+                2,
+                2,
+                "sage"
+              ],
+              [
+                6,
+                6,
+                "charbon"
+              ],
+              [
+                12,
+                12,
+                "orange"
+              ],
+              [
+                10,
+                10,
+                "charbon"
+              ],
+              [
+                1,
+                1,
+                "sage"
+              ],
+              [
+                5,
+                6,
+                "sage"
+              ],
+              [
+                5,
+                5,
+                "cadeau"
+              ],
+              [
+                7,
+                8,
+                "orange"
+              ],
+              [
+                4,
+                4,
+                "sage"
+              ],
+              [
+                1,
+                2,
+                "orange"
+              ],
+              [
+                8,
+                10,
+                "charbon"
+              ],
+              [
+                6,
+                7,
+                "orange"
+              ]
+            ]
+          ],
+          "expected": [
+            [
+              1,
+              2,
+              "orange"
+            ],
+            [
+              3,
+              4,
+              "sage"
+            ],
+            [
+              5,
+              5,
+              "cadeau"
+            ],
+            [
+              6,
+              7,
+              "orange"
+            ],
+            [
+              8,
+              10,
+              "charbon"
+            ],
+            [
+              11,
+              11,
+              "sage"
+            ],
+            [
+              12,
+              12,
+              "orange"
+            ]
+          ],
+          "hidden": true
+        },
+        {
+          "args": [
+            1000000000,
+            [
+              [
+                1,
+                1000000000,
+                "charbon"
+              ],
+              [
+                500000000,
+                500000000,
+                "cadeau"
+              ],
+              [
+                999999999,
+                1000000000,
+                "sage"
+              ]
+            ]
+          ],
+          "expected": [
+            [
+              1,
+              499999999,
+              "charbon"
+            ],
+            [
+              500000000,
+              500000000,
+              "cadeau"
+            ],
+            [
+              500000001,
+              999999998,
+              "charbon"
+            ],
+            [
+              999999999,
+              1000000000,
+              "sage"
+            ]
+          ],
+          "hidden": true
+        },
+        {
+          "args": [
+            1000000000,
+            [
+              [
+                2,
+                999999999,
+                "orange"
+              ],
+              [
+                400000000,
+                600000000,
+                "sage"
+              ],
+              [
+                450000000,
+                550000000,
+                "orange"
+              ]
+            ]
+          ],
+          "expected": [
+            [
+              1,
+              1,
+              "sage"
+            ],
+            [
+              2,
+              399999999,
+              "orange"
+            ],
+            [
+              400000000,
+              449999999,
+              "sage"
+            ],
+            [
+              450000000,
+              550000000,
+              "orange"
+            ],
+            [
+              550000001,
+              600000000,
+              "sage"
+            ],
+            [
+              600000001,
+              999999999,
+              "orange"
+            ],
+            [
+              1000000000,
+              1000000000,
+              "sage"
+            ]
+          ],
+          "hidden": true
+        }
+      ],
+      "hint": "Le verdict ne peut changer qu'à quelques endroits précis : lesquels ? Entre deux de ces endroits, tous les enfants ont le même verdict, et il suffit de regarder un seul d'entre eux. N'oublie pas de recoller les tranches voisines qui se ressemblent."
+    }
+  ]
+}

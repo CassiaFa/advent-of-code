@@ -1,0 +1,2181 @@
+{
+  "day": 16,
+  "concept": "Filtrer, transformer, résumer (map, filter, reduce)",
+  "exercises": [
+    {
+      "id": "d16-debutant",
+      "day": 16,
+      "level": "debutant",
+      "title": "Les gros jouets d'abord",
+      "concept": "Filtrer puis sommer",
+      "statement": "Quatre mille jouets, une seule nuit : Pixel veut d'abord connaître le poids total des **gros** jouets. Un jouet est gros si son poids est **supérieur ou égal** à un `seuil`.\n\nÉcris une fonction `{fn}(poids, seuil)` qui reçoit la liste des poids (des entiers positifs ou nuls, en grammes) et renvoie la **somme des poids des gros jouets**.\n\nExemple : avec les poids `[120, 30, 500, 80]` et le seuil `100`, les gros jouets pèsent `120` et `500` : la réponse est `620`. S'il n'y a aucun gros jouet, ou aucun jouet du tout, la réponse est `0`.",
+      "fn": {
+        "javascript": "poidsDesGros",
+        "python": "poids_des_gros"
+      },
+      "starter": {
+        "javascript": "function poidsDesGros(poids, seuil) {\n  // Renvoie la somme des poids supérieurs ou égaux au seuil\n}\n",
+        "python": "def poids_des_gros(poids, seuil):\n    # Renvoie la somme des poids supérieurs ou égaux au seuil\n    pass\n"
+      },
+      "solution": {
+        "javascript": "function poidsDesGros(poids, seuil) {\n  let total = 0;\n  for (const p of poids) {\n    if (p >= seuil) {\n      total = total + p;\n    }\n  }\n  return total;\n}\n",
+        "python": "def poids_des_gros(poids, seuil):\n    total = 0\n    for p in poids:\n        if p >= seuil:\n            total = total + p\n    return total\n"
+      },
+      "tests": [
+        {
+          "args": [
+            [
+              120,
+              30,
+              500,
+              80
+            ],
+            100
+          ],
+          "expected": 620
+        },
+        {
+          "args": [
+            [
+              10,
+              20,
+              30
+            ],
+            100
+          ],
+          "expected": 0
+        },
+        {
+          "args": [
+            [
+              100,
+              100,
+              99
+            ],
+            100
+          ],
+          "expected": 200
+        },
+        {
+          "args": [
+            [],
+            5
+          ],
+          "expected": 0
+        },
+        {
+          "args": [
+            [
+              0,
+              0,
+              0
+            ],
+            0
+          ],
+          "expected": 0,
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              7
+            ],
+            7
+          ],
+          "expected": 7,
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              1000,
+              2000,
+              3000
+            ],
+            2000
+          ],
+          "expected": 5000,
+          "hidden": true
+        }
+      ],
+      "hint": "Une variable `total` qui démarre à 0, une boucle sur les poids, et une condition : on n'ajoute que les poids qui atteignent le seuil. Attention à l'égalité : un poids égal au seuil compte."
+    },
+    {
+      "id": "d16-intermediaire",
+      "day": 16,
+      "level": "intermediaire",
+      "title": "Les comptes par rayon",
+      "concept": "Filtrer, transformer, regrouper",
+      "statement": "Givrebug a mélangé tous les rayons de l'entrepôt. Chaque jouet est un objet avec les clés `\"categorie\"` (texte), `\"prix\"` (entier), `\"quantite\"` (entier, peut valoir `0`) et `\"defectueux\"` (`true` ou `false`).\n\nÉcris une fonction `{fn}(jouets)` qui renvoie un objet (dictionnaire) donnant, pour chaque catégorie, la **valeur totale du stock**, soit la somme de `prix * quantite` de ses jouets.\n\n- Les jouets **défectueux** sont ignorés complètement.\n- Une catégorie apparaît dans le résultat dès qu'elle a **au moins un jouet non défectueux**, même si son total vaut `0` (par exemple à cause d'une quantité nulle).\n- Une catégorie qui n'a que des jouets défectueux n'apparaît pas.\n- Aucun jouet : objet vide.",
+      "fn": {
+        "javascript": "valeurParCategorie",
+        "python": "valeur_par_categorie"
+      },
+      "starter": {
+        "javascript": "function valeurParCategorie(jouets) {\n  // Renvoie { categorie: valeur totale du stock }\n}\n",
+        "python": "def valeur_par_categorie(jouets):\n    # Renvoie { categorie: valeur totale du stock }\n    pass\n"
+      },
+      "solution": {
+        "javascript": "function valeurParCategorie(jouets) {\n  const totaux = {};\n  for (const jouet of jouets) {\n    if (jouet.defectueux) {\n      continue;\n    }\n    const valeur = jouet.prix * jouet.quantite;\n    if (totaux[jouet.categorie] === undefined) {\n      totaux[jouet.categorie] = 0;\n    }\n    totaux[jouet.categorie] += valeur;\n  }\n  return totaux;\n}\n",
+        "python": "def valeur_par_categorie(jouets):\n    totaux = {}\n    for jouet in jouets:\n        if jouet[\"defectueux\"]:\n            continue\n        valeur = jouet[\"prix\"] * jouet[\"quantite\"]\n        if jouet[\"categorie\"] not in totaux:\n            totaux[jouet[\"categorie\"]] = 0\n        totaux[jouet[\"categorie\"]] += valeur\n    return totaux\n"
+      },
+      "tests": [
+        {
+          "args": [
+            [
+              {
+                "categorie": "peluche",
+                "prix": 12,
+                "quantite": 3,
+                "defectueux": false
+              },
+              {
+                "categorie": "train",
+                "prix": 40,
+                "quantite": 2,
+                "defectueux": false
+              },
+              {
+                "categorie": "peluche",
+                "prix": 5,
+                "quantite": 10,
+                "defectueux": false
+              }
+            ]
+          ],
+          "expected": {
+            "peluche": 86,
+            "train": 80
+          }
+        },
+        {
+          "args": [
+            [
+              {
+                "categorie": "puzzle",
+                "prix": 9,
+                "quantite": 4,
+                "defectueux": true
+              },
+              {
+                "categorie": "puzzle",
+                "prix": 9,
+                "quantite": 1,
+                "defectueux": false
+              }
+            ]
+          ],
+          "expected": {
+            "puzzle": 9
+          }
+        },
+        {
+          "args": [
+            [
+              {
+                "categorie": "robot",
+                "prix": 30,
+                "quantite": 5,
+                "defectueux": true
+              }
+            ]
+          ],
+          "expected": {}
+        },
+        {
+          "args": [
+            [
+              {
+                "categorie": "ballon",
+                "prix": 3,
+                "quantite": 0,
+                "defectueux": false
+              }
+            ]
+          ],
+          "expected": {
+            "ballon": 0
+          }
+        },
+        {
+          "args": [
+            []
+          ],
+          "expected": {},
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              {
+                "categorie": "a",
+                "prix": 1,
+                "quantite": 1,
+                "defectueux": false
+              },
+              {
+                "categorie": "b",
+                "prix": 2,
+                "quantite": 2,
+                "defectueux": true
+              },
+              {
+                "categorie": "c",
+                "prix": 3,
+                "quantite": 3,
+                "defectueux": false
+              },
+              {
+                "categorie": "a",
+                "prix": 10,
+                "quantite": 10,
+                "defectueux": false
+              },
+              {
+                "categorie": "c",
+                "prix": 0,
+                "quantite": 9,
+                "defectueux": false
+              }
+            ]
+          ],
+          "expected": {
+            "a": 101,
+            "c": 9
+          },
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              {
+                "categorie": "jeu",
+                "prix": 1000000,
+                "quantite": 1000000,
+                "defectueux": false
+              },
+              {
+                "categorie": "jeu",
+                "prix": 1,
+                "quantite": 1,
+                "defectueux": false
+              }
+            ]
+          ],
+          "expected": {
+            "jeu": 1000000000001
+          },
+          "hidden": true
+        }
+      ],
+      "hint": "Trois gestes : ignorer les jouets défectueux, calculer `prix * quantite` pour chacun des autres, puis ajouter ce résultat au total de sa catégorie dans un dictionnaire. Une catégorie qui n'a pas encore de total doit démarrer à 0 : crée-la au moment où tu rencontres un premier jouet valable."
+    },
+    {
+      "id": "d16-confirme",
+      "day": 16,
+      "level": "confirme",
+      "title": "Le rapport des ateliers",
+      "concept": "Regrouper, agréger, classer",
+      "statement": "Trois cents lutins, plusieurs ateliers : Mère Noëlle veut un rapport. Tu reçois la liste des **relevés** de la nuit. Chaque relevé est un objet avec `\"atelier\"` (texte en minuscules sans accent), `\"lutin\"` (texte en minuscules sans accent), `\"jouets\"` (entier fabriqués, peut valoir `0`) et `\"defauts\"` (entier, jouets ratés).\n\nÉcris une fonction `{fn}(releves, n)` qui renvoie le **classement des `n` meilleurs ateliers**, sous forme d'une liste d'objets `{\"atelier\": ..., \"total\": ..., \"meilleur\": ...}`, meilleur en premier.\n\nRègles :\n\n1. Un relevé où `defauts` est **strictement supérieur** à `jouets` est une erreur de saisie : il est **ignoré en entier** (comme s'il n'existait pas). Un atelier qui n'a aucun relevé valable n'apparaît pas.\n2. Pour un relevé valable, les jouets **nets** valent `jouets - defauts` (donc `0` ou plus).\n3. Le `total` d'un atelier est la somme des jouets nets de ses relevés valables. Un atelier dont le total vaut `0` apparaît quand même, s'il a au moins un relevé valable.\n4. Le `meilleur` d'un atelier est son lutin dont le total de jouets nets (tous ses relevés valables dans cet atelier, additionnés) est le plus élevé. En cas d'égalité entre lutins, on prend celui dont le nom vient **en premier dans l'ordre alphabétique**.\n5. Le classement des ateliers se fait par `total` décroissant. En cas d'égalité, celui qui a le **moins de défauts** au total (somme des `defauts` de ses relevés valables) passe devant ; si c'est encore égal, l'ordre alphabétique des noms d'ateliers tranche.\n6. On ne garde que les `n` premiers (`n` vaut `0` ou plus) : s'il y a moins de `n` ateliers, on les renvoie tous.\n\nAucun relevé, ou `n` à `0` : liste vide.",
+      "fn": {
+        "javascript": "rapportAteliers",
+        "python": "rapport_ateliers"
+      },
+      "starter": {
+        "javascript": "function rapportAteliers(releves, n) {\n  // Renvoie les n meilleurs ateliers : [{atelier, total, meilleur}, ...]\n}\n",
+        "python": "def rapport_ateliers(releves, n):\n    # Renvoie les n meilleurs ateliers : [{atelier, total, meilleur}, ...]\n    pass\n"
+      },
+      "solution": {
+        "javascript": "function rapportAteliers(releves, n) {\n  const ateliers = new Map();\n  for (const r of releves) {\n    if (r.defauts > r.jouets) {\n      continue;\n    }\n    if (!ateliers.has(r.atelier)) {\n      ateliers.set(r.atelier, { nom: r.atelier, total: 0, defauts: 0, lutins: new Map() });\n    }\n    const a = ateliers.get(r.atelier);\n    const net = r.jouets - r.defauts;\n    a.total += net;\n    a.defauts += r.defauts;\n    a.lutins.set(r.lutin, (a.lutins.get(r.lutin) || 0) + net);\n  }\n  const rapport = [];\n  for (const a of ateliers.values()) {\n    let meilleur = null;\n    for (const [lutin, score] of a.lutins) {\n      if (meilleur === null || score > a.lutins.get(meilleur) || (score === a.lutins.get(meilleur) && lutin < meilleur)) {\n        meilleur = lutin;\n      }\n    }\n    rapport.push({ nom: a.nom, total: a.total, defauts: a.defauts, meilleur: meilleur });\n  }\n  rapport.sort((x, y) => {\n    if (x.total !== y.total) return y.total - x.total;\n    if (x.defauts !== y.defauts) return x.defauts - y.defauts;\n    return x.nom < y.nom ? -1 : 1;\n  });\n  return rapport.slice(0, n).map((a) => ({ atelier: a.nom, total: a.total, meilleur: a.meilleur }));\n}\n",
+        "python": "def rapport_ateliers(releves, n):\n    ateliers = {}\n    for r in releves:\n        if r[\"defauts\"] > r[\"jouets\"]:\n            continue\n        if r[\"atelier\"] not in ateliers:\n            ateliers[r[\"atelier\"]] = {\"nom\": r[\"atelier\"], \"total\": 0, \"defauts\": 0, \"lutins\": {}}\n        a = ateliers[r[\"atelier\"]]\n        net = r[\"jouets\"] - r[\"defauts\"]\n        a[\"total\"] += net\n        a[\"defauts\"] += r[\"defauts\"]\n        a[\"lutins\"][r[\"lutin\"]] = a[\"lutins\"].get(r[\"lutin\"], 0) + net\n    rapport = []\n    for a in ateliers.values():\n        meilleur = None\n        for lutin, score in a[\"lutins\"].items():\n            if meilleur is None or score > a[\"lutins\"][meilleur] or (score == a[\"lutins\"][meilleur] and lutin < meilleur):\n                meilleur = lutin\n        rapport.append({\"nom\": a[\"nom\"], \"total\": a[\"total\"], \"defauts\": a[\"defauts\"], \"meilleur\": meilleur})\n    rapport.sort(key=lambda a: (-a[\"total\"], a[\"defauts\"], a[\"nom\"]))\n    return [{\"atelier\": a[\"nom\"], \"total\": a[\"total\"], \"meilleur\": a[\"meilleur\"]} for a in rapport[:n]]\n"
+      },
+      "tests": [
+        {
+          "args": [
+            [
+              {
+                "atelier": "bois",
+                "lutin": "pixel",
+                "jouets": 10,
+                "defauts": 2
+              },
+              {
+                "atelier": "bois",
+                "lutin": "nina",
+                "jouets": 9,
+                "defauts": 0
+              },
+              {
+                "atelier": "tissu",
+                "lutin": "zou",
+                "jouets": 20,
+                "defauts": 5
+              }
+            ],
+            2
+          ],
+          "expected": [
+            {
+              "atelier": "bois",
+              "total": 17,
+              "meilleur": "nina"
+            },
+            {
+              "atelier": "tissu",
+              "total": 15,
+              "meilleur": "zou"
+            }
+          ]
+        },
+        {
+          "args": [
+            [
+              {
+                "atelier": "peinture",
+                "lutin": "lea",
+                "jouets": 13,
+                "defauts": 3
+              },
+              {
+                "atelier": "metal",
+                "lutin": "tom",
+                "jouets": 11,
+                "defauts": 1
+              },
+              {
+                "atelier": "bois",
+                "lutin": "ana",
+                "jouets": 11,
+                "defauts": 1
+              },
+              {
+                "atelier": "verre",
+                "lutin": "uma",
+                "jouets": 40,
+                "defauts": 30
+              }
+            ],
+            5
+          ],
+          "expected": [
+            {
+              "atelier": "bois",
+              "total": 10,
+              "meilleur": "ana"
+            },
+            {
+              "atelier": "metal",
+              "total": 10,
+              "meilleur": "tom"
+            },
+            {
+              "atelier": "peinture",
+              "total": 10,
+              "meilleur": "lea"
+            },
+            {
+              "atelier": "verre",
+              "total": 10,
+              "meilleur": "uma"
+            }
+          ]
+        },
+        {
+          "args": [
+            [
+              {
+                "atelier": "bois",
+                "lutin": "pixel",
+                "jouets": 5,
+                "defauts": 0
+              },
+              {
+                "atelier": "bois",
+                "lutin": "nina",
+                "jouets": 3,
+                "defauts": 0
+              },
+              {
+                "atelier": "bois",
+                "lutin": "nina",
+                "jouets": 2,
+                "defauts": 0
+              },
+              {
+                "atelier": "bois",
+                "lutin": "zoe",
+                "jouets": 1,
+                "defauts": 0
+              }
+            ],
+            1
+          ],
+          "expected": [
+            {
+              "atelier": "bois",
+              "total": 11,
+              "meilleur": "nina"
+            }
+          ]
+        },
+        {
+          "args": [
+            [
+              {
+                "atelier": "verre",
+                "lutin": "x",
+                "jouets": 3,
+                "defauts": 4
+              },
+              {
+                "atelier": "bois",
+                "lutin": "y",
+                "jouets": 1,
+                "defauts": 0
+              }
+            ],
+            3
+          ],
+          "expected": [
+            {
+              "atelier": "bois",
+              "total": 1,
+              "meilleur": "y"
+            }
+          ]
+        },
+        {
+          "args": [
+            [],
+            3
+          ],
+          "expected": [],
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              {
+                "atelier": "bois",
+                "lutin": "pixel",
+                "jouets": 5,
+                "defauts": 0
+              }
+            ],
+            0
+          ],
+          "expected": [],
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              {
+                "atelier": "etoile",
+                "lutin": "b",
+                "jouets": 4,
+                "defauts": 4
+              },
+              {
+                "atelier": "etoile",
+                "lutin": "a",
+                "jouets": 0,
+                "defauts": 0
+              },
+              {
+                "atelier": "lune",
+                "lutin": "c",
+                "jouets": 0,
+                "defauts": 1
+              }
+            ],
+            4
+          ],
+          "expected": [
+            {
+              "atelier": "etoile",
+              "total": 0,
+              "meilleur": "a"
+            }
+          ],
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              {
+                "atelier": "a",
+                "lutin": "m",
+                "jouets": 6,
+                "defauts": 1
+              },
+              {
+                "atelier": "b",
+                "lutin": "n",
+                "jouets": 6,
+                "defauts": 1
+              },
+              {
+                "atelier": "c",
+                "lutin": "o",
+                "jouets": 8,
+                "defauts": 3
+              },
+              {
+                "atelier": "d",
+                "lutin": "p",
+                "jouets": 9,
+                "defauts": 0
+              },
+              {
+                "atelier": "a",
+                "lutin": "m",
+                "jouets": 1,
+                "defauts": 0
+              },
+              {
+                "atelier": "e",
+                "lutin": "q",
+                "jouets": 6,
+                "defauts": 1
+              }
+            ],
+            4
+          ],
+          "expected": [
+            {
+              "atelier": "d",
+              "total": 9,
+              "meilleur": "p"
+            },
+            {
+              "atelier": "a",
+              "total": 6,
+              "meilleur": "m"
+            },
+            {
+              "atelier": "b",
+              "total": 5,
+              "meilleur": "n"
+            },
+            {
+              "atelier": "e",
+              "total": 5,
+              "meilleur": "q"
+            }
+          ],
+          "hidden": true
+        },
+        { "args": [[{"atelier":"bois","lutin":"ana","jouets":4,"defauts":0},{"atelier":"bois","lutin":"zoe","jouets":4,"defauts":0}],1], "expected": [{"atelier":"bois","total":8,"meilleur":"ana"}], "hidden": true },
+        { "args": [[{"atelier":"a","lutin":"x","jouets":5,"defauts":0},{"atelier":"a","lutin":"y","jouets":1,"defauts":9},{"atelier":"b","lutin":"z","jouets":5,"defauts":0}],2], "expected": [{"atelier":"a","total":5,"meilleur":"x"},{"atelier":"b","total":5,"meilleur":"z"}], "hidden": true }
+      ],
+      "hint": "Fais-le par étages. 1) Écarte les relevés invalides et regroupe par atelier : total, défauts, et un petit dictionnaire lutin -> jouets nets. 2) Pour chaque atelier, cherche le meilleur lutin en gérant l'égalité. 3) Trie les ateliers avec trois critères dans l'ordre (total décroissant, défauts croissants, nom), puis coupe à `n`. Un relevé écarté ne doit laisser aucune trace, pas même un atelier vide."
+    },
+    {
+      "id": "d16-expert",
+      "day": 16,
+      "level": "expert",
+      "title": "Les meilleures cadences",
+      "concept": "Regrouper, trier, puis faire glisser une fenêtre",
+      "statement": "Mère Noëlle veut récompenser les lutins capables d'un **coup de collier** : pas ceux qui ont fabriqué le plus de jouets sur toute la nuit, mais ceux qui en ont fabriqué le plus sur une courte période.\n\nTu reçois la liste des `releves` de la nuit, **dans le désordre**. Chaque relevé est un triplet `[minute, lutin, jouets]` : à la minute `minute` (un entier `>= 0`), le lutin `lutin` a terminé `jouets` jouets (un entier `>= 0`). Un même lutin peut avoir plusieurs relevés à la même minute.\n\nLa **cadence** d'un lutin est le plus grand nombre de jouets qu'il a terminés pendant `duree` minutes **consécutives** : on additionne tous ses relevés dont la minute est comprise entre `t` et `t + duree - 1` (bornes incluses), et on garde le meilleur total parmi tous les `t` possibles.\n\nÉcris une fonction `{fn}(releves, duree, n)` qui renvoie les `n` meilleures cadences, sous la forme d'une liste de paires `[lutin, cadence]`, triée par **cadence décroissante**. En cas d'égalité, les lutins sont rangés par **ordre alphabétique**.\n\nPrécisions : `duree` est un entier `>= 1`, `n` un entier `>= 0`. S'il y a moins de `n` lutins, renvoie-les tous. Les noms sont en minuscules, sans accent. Les minutes peuvent être très grandes : n'essaie pas tous les `t` un par un.\n\nExemple : avec les relevés `[[0, \"pixel\", 3], [4, \"pixel\", 2], [5, \"pixel\", 4], [9, \"pixel\", 1], [2, \"flocon\", 5], [30, \"flocon\", 5]]`, `duree = 5` et `n = 2`, la meilleure période de Pixel va de la minute 4 à la minute 8 (`2 + 4 = 6` jouets), et Flocon ne dépasse jamais `5` : la réponse est `[[\"pixel\", 6], [\"flocon\", 5]]`.\n",
+      "fn": {
+        "javascript": "meilleuresCadences",
+        "python": "meilleures_cadences"
+      },
+      "starter": {
+        "javascript": "function meilleuresCadences(releves, duree, n) {\n  // Renvoie les n meilleures paires [lutin, cadence]\n}\n",
+        "python": "def meilleures_cadences(releves, duree, n):\n    # Renvoie les n meilleures paires [lutin, cadence]\n    pass\n"
+      },
+      "solution": {
+        "javascript": "function meilleuresCadences(releves, duree, n) {\n  // 1. Regrouper les relevés par lutin.\n  const parLutin = new Map();\n  for (const [minute, lutin, jouets] of releves) {\n    if (!parLutin.has(lutin)) parLutin.set(lutin, []);\n    parLutin.get(lutin).push([minute, jouets]);\n  }\n  // 2. Résumer chaque groupe : la meilleure somme sur une fenêtre de `duree` minutes.\n  const cadences = [...parLutin].map(([lutin, liste]) => {\n    liste.sort((a, b) => a[0] - b[0]);\n    let debut = 0;\n    let somme = 0;\n    let meilleure = 0;\n    for (const [minute, jouets] of liste) {\n      somme += jouets;\n      while (liste[debut][0] < minute - duree + 1) {\n        somme -= liste[debut][1];\n        debut++;\n      }\n      if (somme > meilleure) meilleure = somme;\n    }\n    return [lutin, meilleure];\n  });\n  // 3. Classer : cadence décroissante, puis nom croissant.\n  cadences.sort((a, b) => b[1] - a[1] || (a[0] < b[0] ? -1 : a[0] > b[0] ? 1 : 0));\n  return cadences.slice(0, n);\n}\n",
+        "python": "def meilleures_cadences(releves, duree, n):\n    # 1. Regrouper les relevés par lutin.\n    par_lutin = {}\n    for minute, lutin, jouets in releves:\n        par_lutin.setdefault(lutin, []).append((minute, jouets))\n    # 2. Résumer chaque groupe : la meilleure somme sur une fenêtre de `duree` minutes.\n    cadences = []\n    for lutin, liste in par_lutin.items():\n        liste.sort(key=lambda releve: releve[0])\n        debut = 0\n        somme = 0\n        meilleure = 0\n        for minute, jouets in liste:\n            somme += jouets\n            while liste[debut][0] < minute - duree + 1:\n                somme -= liste[debut][1]\n                debut += 1\n            meilleure = max(meilleure, somme)\n        cadences.append([lutin, meilleure])\n    # 3. Classer : cadence décroissante, puis nom croissant.\n    cadences.sort(key=lambda paire: (-paire[1], paire[0]))\n    return cadences[:n]\n"
+      },
+      "tests": [
+        {
+          "args": [
+            [
+              [
+                0,
+                "pixel",
+                3
+              ],
+              [
+                4,
+                "pixel",
+                2
+              ],
+              [
+                5,
+                "pixel",
+                4
+              ],
+              [
+                9,
+                "pixel",
+                1
+              ],
+              [
+                2,
+                "flocon",
+                5
+              ],
+              [
+                30,
+                "flocon",
+                5
+              ]
+            ],
+            5,
+            2
+          ],
+          "expected": [
+            [
+              "pixel",
+              6
+            ],
+            [
+              "flocon",
+              5
+            ]
+          ]
+        },
+        {
+          "args": [
+            [
+              [
+                10,
+                "ana",
+                2
+              ],
+              [
+                10,
+                "ana",
+                3
+              ],
+              [
+                11,
+                "bob",
+                5
+              ]
+            ],
+            1,
+            5
+          ],
+          "expected": [
+            [
+              "ana",
+              5
+            ],
+            [
+              "bob",
+              5
+            ]
+          ]
+        },
+        {
+          "args": [
+            [
+              [
+                3,
+                "zoe",
+                4
+              ],
+              [
+                1,
+                "ali",
+                4
+              ]
+            ],
+            10,
+            1
+          ],
+          "expected": [
+            [
+              "ali",
+              4
+            ]
+          ]
+        },
+        {
+          "args": [
+            [
+              [
+                0,
+                "a",
+                1
+              ],
+              [
+                10,
+                "a",
+                1
+              ],
+              [
+                20,
+                "a",
+                1
+              ]
+            ],
+            11,
+            3
+          ],
+          "expected": [
+            [
+              "a",
+              2
+            ]
+          ]
+        },
+        {
+          "args": [
+            [],
+            5,
+            3
+          ],
+          "expected": [],
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              [
+                5,
+                "a",
+                7
+              ]
+            ],
+            3,
+            0
+          ],
+          "expected": [],
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              [
+                0,
+                "a",
+                0
+              ],
+              [
+                1,
+                "b",
+                0
+              ]
+            ],
+            2,
+            2
+          ],
+          "expected": [
+            [
+              "a",
+              0
+            ],
+            [
+              "b",
+              0
+            ]
+          ],
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              [
+                11,
+                "flocon",
+                7
+              ],
+              [
+                9,
+                "flocon",
+                3
+              ],
+              [
+                14,
+                "pixel",
+                6
+              ],
+              [
+                27,
+                "givre",
+                4
+              ],
+              [
+                7,
+                "givre",
+                3
+              ],
+              [
+                0,
+                "flocon",
+                4
+              ],
+              [
+                26,
+                "flocon",
+                2
+              ],
+              [
+                30,
+                "givre",
+                9
+              ],
+              [
+                9,
+                "pixel",
+                3
+              ],
+              [
+                30,
+                "givre",
+                4
+              ],
+              [
+                0,
+                "pixel",
+                9
+              ],
+              [
+                21,
+                "givre",
+                0
+              ],
+              [
+                14,
+                "flocon",
+                9
+              ],
+              [
+                20,
+                "givre",
+                4
+              ],
+              [
+                7,
+                "flocon",
+                5
+              ],
+              [
+                8,
+                "flocon",
+                1
+              ],
+              [
+                11,
+                "flocon",
+                6
+              ],
+              [
+                16,
+                "givre",
+                2
+              ],
+              [
+                30,
+                "givre",
+                4
+              ],
+              [
+                18,
+                "pixel",
+                4
+              ]
+            ],
+            4,
+            2
+          ],
+          "expected": [
+            [
+              "flocon",
+              22
+            ],
+            [
+              "givre",
+              21
+            ]
+          ],
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              [
+                5,
+                "a",
+                8
+              ],
+              [
+                23,
+                "b",
+                7
+              ],
+              [
+                9,
+                "c",
+                4
+              ],
+              [
+                20,
+                "d",
+                7
+              ],
+              [
+                4,
+                "b",
+                7
+              ],
+              [
+                46,
+                "a",
+                7
+              ],
+              [
+                53,
+                "d",
+                0
+              ],
+              [
+                58,
+                "d",
+                1
+              ],
+              [
+                29,
+                "e",
+                1
+              ],
+              [
+                31,
+                "a",
+                2
+              ],
+              [
+                45,
+                "b",
+                6
+              ],
+              [
+                57,
+                "c",
+                0
+              ],
+              [
+                34,
+                "a",
+                6
+              ],
+              [
+                38,
+                "c",
+                7
+              ],
+              [
+                32,
+                "a",
+                3
+              ],
+              [
+                20,
+                "a",
+                1
+              ],
+              [
+                34,
+                "a",
+                3
+              ],
+              [
+                0,
+                "d",
+                0
+              ],
+              [
+                58,
+                "a",
+                0
+              ],
+              [
+                60,
+                "d",
+                2
+              ],
+              [
+                57,
+                "c",
+                3
+              ],
+              [
+                11,
+                "e",
+                0
+              ],
+              [
+                15,
+                "e",
+                3
+              ],
+              [
+                58,
+                "a",
+                1
+              ],
+              [
+                41,
+                "b",
+                4
+              ],
+              [
+                24,
+                "d",
+                0
+              ],
+              [
+                25,
+                "d",
+                7
+              ],
+              [
+                29,
+                "c",
+                0
+              ],
+              [
+                3,
+                "a",
+                3
+              ],
+              [
+                27,
+                "c",
+                8
+              ],
+              [
+                24,
+                "a",
+                3
+              ],
+              [
+                7,
+                "d",
+                1
+              ],
+              [
+                18,
+                "a",
+                7
+              ],
+              [
+                27,
+                "b",
+                6
+              ],
+              [
+                15,
+                "b",
+                2
+              ],
+              [
+                56,
+                "d",
+                6
+              ],
+              [
+                32,
+                "b",
+                6
+              ],
+              [
+                11,
+                "c",
+                7
+              ],
+              [
+                52,
+                "b",
+                6
+              ],
+              [
+                13,
+                "d",
+                0
+              ]
+            ],
+            10,
+            3
+          ],
+          "expected": [
+            [
+              "b",
+              19
+            ],
+            [
+              "a",
+              14
+            ],
+            [
+              "d",
+              14
+            ]
+          ],
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              [
+                62,
+                "lutin2",
+                9
+              ],
+              [
+                37,
+                "lutin1",
+                1
+              ],
+              [
+                96,
+                "lutin2",
+                7
+              ],
+              [
+                30,
+                "lutin10",
+                7
+              ],
+              [
+                26,
+                "lutin10",
+                7
+              ],
+              [
+                64,
+                "lutin1",
+                7
+              ],
+              [
+                70,
+                "lutin1",
+                1
+              ],
+              [
+                92,
+                "lutin10",
+                5
+              ],
+              [
+                7,
+                "lutin2",
+                1
+              ],
+              [
+                63,
+                "lutin10",
+                0
+              ],
+              [
+                65,
+                "lutin2",
+                8
+              ],
+              [
+                21,
+                "lutin1",
+                5
+              ],
+              [
+                51,
+                "lutin2",
+                6
+              ],
+              [
+                8,
+                "lutin1",
+                3
+              ],
+              [
+                58,
+                "lutin1",
+                0
+              ],
+              [
+                80,
+                "lutin1",
+                3
+              ],
+              [
+                42,
+                "lutin2",
+                9
+              ],
+              [
+                79,
+                "lutin1",
+                0
+              ],
+              [
+                34,
+                "lutin10",
+                0
+              ],
+              [
+                49,
+                "lutin10",
+                0
+              ],
+              [
+                18,
+                "lutin10",
+                8
+              ],
+              [
+                88,
+                "lutin1",
+                3
+              ],
+              [
+                64,
+                "lutin10",
+                8
+              ],
+              [
+                84,
+                "lutin10",
+                4
+              ],
+              [
+                65,
+                "lutin1",
+                9
+              ],
+              [
+                78,
+                "lutin10",
+                3
+              ],
+              [
+                60,
+                "lutin10",
+                7
+              ],
+              [
+                44,
+                "lutin1",
+                7
+              ],
+              [
+                95,
+                "lutin10",
+                2
+              ],
+              [
+                13,
+                "lutin1",
+                0
+              ],
+              [
+                11,
+                "lutin2",
+                4
+              ],
+              [
+                83,
+                "lutin10",
+                1
+              ],
+              [
+                19,
+                "lutin1",
+                2
+              ],
+              [
+                78,
+                "lutin10",
+                1
+              ],
+              [
+                92,
+                "lutin1",
+                5
+              ],
+              [
+                26,
+                "lutin10",
+                6
+              ],
+              [
+                11,
+                "lutin1",
+                1
+              ],
+              [
+                59,
+                "lutin1",
+                0
+              ],
+              [
+                73,
+                "lutin1",
+                2
+              ],
+              [
+                86,
+                "lutin10",
+                2
+              ],
+              [
+                98,
+                "lutin1",
+                6
+              ],
+              [
+                5,
+                "lutin2",
+                1
+              ],
+              [
+                87,
+                "lutin2",
+                6
+              ],
+              [
+                33,
+                "lutin1",
+                9
+              ],
+              [
+                49,
+                "lutin10",
+                3
+              ],
+              [
+                45,
+                "lutin10",
+                7
+              ],
+              [
+                47,
+                "lutin2",
+                0
+              ],
+              [
+                44,
+                "lutin1",
+                1
+              ],
+              [
+                27,
+                "lutin2",
+                6
+              ],
+              [
+                100,
+                "lutin1",
+                9
+              ],
+              [
+                27,
+                "lutin2",
+                8
+              ],
+              [
+                43,
+                "lutin1",
+                8
+              ],
+              [
+                51,
+                "lutin2",
+                0
+              ],
+              [
+                83,
+                "lutin1",
+                6
+              ],
+              [
+                30,
+                "lutin2",
+                2
+              ],
+              [
+                51,
+                "lutin1",
+                6
+              ],
+              [
+                5,
+                "lutin2",
+                7
+              ],
+              [
+                83,
+                "lutin1",
+                2
+              ],
+              [
+                0,
+                "lutin1",
+                3
+              ],
+              [
+                85,
+                "lutin10",
+                4
+              ]
+            ],
+            1,
+            3
+          ],
+          "expected": [
+            [
+              "lutin2",
+              14
+            ],
+            [
+              "lutin10",
+              13
+            ],
+            [
+              "lutin1",
+              9
+            ]
+          ],
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              [
+                39,
+                "d",
+                0
+              ],
+              [
+                3,
+                "a",
+                8
+              ],
+              [
+                34,
+                "a",
+                2
+              ],
+              [
+                20,
+                "a",
+                9
+              ],
+              [
+                34,
+                "c",
+                7
+              ],
+              [
+                9,
+                "d",
+                4
+              ],
+              [
+                36,
+                "d",
+                8
+              ],
+              [
+                5,
+                "b",
+                9
+              ],
+              [
+                2,
+                "c",
+                4
+              ],
+              [
+                19,
+                "d",
+                5
+              ],
+              [
+                4,
+                "c",
+                6
+              ],
+              [
+                19,
+                "d",
+                0
+              ],
+              [
+                7,
+                "a",
+                5
+              ],
+              [
+                25,
+                "c",
+                7
+              ],
+              [
+                18,
+                "b",
+                4
+              ],
+              [
+                0,
+                "d",
+                0
+              ],
+              [
+                46,
+                "b",
+                1
+              ],
+              [
+                26,
+                "b",
+                9
+              ],
+              [
+                14,
+                "c",
+                6
+              ],
+              [
+                36,
+                "a",
+                4
+              ],
+              [
+                50,
+                "a",
+                5
+              ],
+              [
+                10,
+                "c",
+                6
+              ],
+              [
+                37,
+                "c",
+                5
+              ],
+              [
+                48,
+                "b",
+                2
+              ],
+              [
+                41,
+                "b",
+                8
+              ],
+              [
+                2,
+                "a",
+                4
+              ],
+              [
+                0,
+                "a",
+                8
+              ],
+              [
+                6,
+                "c",
+                3
+              ],
+              [
+                6,
+                "a",
+                7
+              ],
+              [
+                31,
+                "c",
+                0
+              ],
+              [
+                0,
+                "a",
+                4
+              ],
+              [
+                43,
+                "d",
+                1
+              ],
+              [
+                21,
+                "d",
+                9
+              ],
+              [
+                30,
+                "d",
+                3
+              ],
+              [
+                38,
+                "b",
+                4
+              ],
+              [
+                10,
+                "b",
+                2
+              ],
+              [
+                11,
+                "d",
+                5
+              ],
+              [
+                4,
+                "b",
+                0
+              ],
+              [
+                41,
+                "b",
+                2
+              ],
+              [
+                48,
+                "d",
+                1
+              ],
+              [
+                44,
+                "c",
+                4
+              ],
+              [
+                27,
+                "c",
+                5
+              ],
+              [
+                50,
+                "d",
+                3
+              ],
+              [
+                21,
+                "b",
+                7
+              ],
+              [
+                1,
+                "a",
+                5
+              ],
+              [
+                1,
+                "d",
+                8
+              ],
+              [
+                26,
+                "d",
+                9
+              ],
+              [
+                5,
+                "b",
+                3
+              ],
+              [
+                34,
+                "b",
+                0
+              ],
+              [
+                11,
+                "a",
+                2
+              ],
+              [
+                16,
+                "b",
+                5
+              ],
+              [
+                31,
+                "a",
+                7
+              ],
+              [
+                8,
+                "b",
+                5
+              ],
+              [
+                30,
+                "d",
+                5
+              ],
+              [
+                46,
+                "c",
+                3
+              ],
+              [
+                18,
+                "d",
+                0
+              ],
+              [
+                26,
+                "a",
+                3
+              ],
+              [
+                40,
+                "d",
+                2
+              ],
+              [
+                0,
+                "b",
+                9
+              ],
+              [
+                38,
+                "b",
+                0
+              ],
+              [
+                37,
+                "a",
+                8
+              ],
+              [
+                12,
+                "b",
+                6
+              ],
+              [
+                17,
+                "a",
+                7
+              ],
+              [
+                3,
+                "c",
+                4
+              ],
+              [
+                20,
+                "c",
+                3
+              ],
+              [
+                15,
+                "a",
+                8
+              ],
+              [
+                18,
+                "b",
+                4
+              ],
+              [
+                20,
+                "c",
+                1
+              ],
+              [
+                15,
+                "a",
+                7
+              ],
+              [
+                3,
+                "c",
+                3
+              ],
+              [
+                17,
+                "d",
+                8
+              ],
+              [
+                9,
+                "c",
+                8
+              ],
+              [
+                3,
+                "c",
+                6
+              ],
+              [
+                0,
+                "b",
+                5
+              ],
+              [
+                5,
+                "c",
+                5
+              ],
+              [
+                23,
+                "d",
+                8
+              ],
+              [
+                19,
+                "b",
+                9
+              ],
+              [
+                7,
+                "b",
+                9
+              ],
+              [
+                46,
+                "a",
+                9
+              ],
+              [
+                8,
+                "d",
+                8
+              ]
+            ],
+            100,
+            10
+          ],
+          "expected": [
+            [
+              "a",
+              112
+            ],
+            [
+              "b",
+              103
+            ],
+            [
+              "d",
+              87
+            ],
+            [
+              "c",
+              86
+            ]
+          ],
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              [
+                47,
+                "x",
+                3
+              ],
+              [
+                155,
+                "x",
+                3
+              ],
+              [
+                179,
+                "y",
+                8
+              ],
+              [
+                63,
+                "x",
+                2
+              ],
+              [
+                108,
+                "y",
+                0
+              ],
+              [
+                24,
+                "x",
+                5
+              ],
+              [
+                142,
+                "y",
+                3
+              ],
+              [
+                162,
+                "x",
+                9
+              ],
+              [
+                26,
+                "x",
+                1
+              ],
+              [
+                169,
+                "x",
+                2
+              ],
+              [
+                37,
+                "x",
+                6
+              ],
+              [
+                111,
+                "y",
+                4
+              ],
+              [
+                59,
+                "x",
+                2
+              ],
+              [
+                87,
+                "y",
+                9
+              ],
+              [
+                101,
+                "y",
+                8
+              ],
+              [
+                60,
+                "y",
+                6
+              ],
+              [
+                183,
+                "x",
+                5
+              ],
+              [
+                182,
+                "x",
+                6
+              ],
+              [
+                97,
+                "y",
+                5
+              ],
+              [
+                36,
+                "y",
+                3
+              ],
+              [
+                109,
+                "y",
+                9
+              ],
+              [
+                194,
+                "x",
+                3
+              ],
+              [
+                111,
+                "x",
+                9
+              ],
+              [
+                96,
+                "y",
+                1
+              ],
+              [
+                2,
+                "x",
+                7
+              ],
+              [
+                168,
+                "y",
+                5
+              ],
+              [
+                117,
+                "x",
+                9
+              ],
+              [
+                197,
+                "x",
+                4
+              ],
+              [
+                20,
+                "x",
+                9
+              ],
+              [
+                94,
+                "y",
+                9
+              ],
+              [
+                130,
+                "y",
+                9
+              ],
+              [
+                15,
+                "x",
+                6
+              ],
+              [
+                27,
+                "y",
+                6
+              ],
+              [
+                60,
+                "y",
+                1
+              ],
+              [
+                108,
+                "y",
+                3
+              ],
+              [
+                130,
+                "y",
+                4
+              ],
+              [
+                92,
+                "y",
+                7
+              ],
+              [
+                131,
+                "x",
+                3
+              ],
+              [
+                86,
+                "x",
+                3
+              ],
+              [
+                22,
+                "y",
+                4
+              ],
+              [
+                134,
+                "y",
+                2
+              ],
+              [
+                168,
+                "y",
+                9
+              ],
+              [
+                166,
+                "x",
+                6
+              ],
+              [
+                87,
+                "y",
+                2
+              ],
+              [
+                39,
+                "x",
+                5
+              ],
+              [
+                172,
+                "y",
+                4
+              ],
+              [
+                158,
+                "x",
+                0
+              ],
+              [
+                85,
+                "y",
+                9
+              ],
+              [
+                64,
+                "x",
+                5
+              ],
+              [
+                143,
+                "y",
+                4
+              ]
+            ],
+            25,
+            1
+          ],
+          "expected": [
+            [
+              "y",
+              62
+            ]
+          ],
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              [
+                1000000000,
+                "a",
+                4
+              ],
+              [
+                999999990,
+                "a",
+                5
+              ],
+              [
+                0,
+                "a",
+                8
+              ],
+              [
+                999999991,
+                "b",
+                9
+              ]
+            ],
+            11,
+            2
+          ],
+          "expected": [
+            [
+              "a",
+              9
+            ],
+            [
+              "b",
+              9
+            ]
+          ],
+          "hidden": true
+        }
+      ],
+      "hint": "Trois étapes qui s'enchaînent : regrouper les relevés par lutin, résumer chaque groupe en un seul nombre, puis classer. Pour le résumé, trie les relevés du lutin par minute : la meilleure période commence forcément à la minute d'un relevé. Fais alors avancer le début et la fin de la période sans jamais revenir en arrière."
+    }
+  ]
+}

@@ -1,0 +1,66 @@
+{
+  "intro": "Huit questions, sans langage précis, pour te proposer un niveau. Tu pourras toujours le changer ensuite. Pas de panique si tu hésites : « Je ne sais pas » est une réponse honnête.",
+  "thresholds": [
+    { "minScore": 0, "level": "debutant" },
+    { "minScore": 4, "level": "intermediaire" },
+    { "minScore": 7, "level": "confirme" }
+  ],
+  "questions": [
+    {
+      "id": "q1",
+      "prompt": "On exécute ces lignes dans l'ordre :\n\n`x = 5`\n`y = x * 2`\n`x = 3`\n\nQue vaut `y` à la fin ?",
+      "options": ["3", "6", "10", "Je ne sais pas"],
+      "answer": 2,
+      "explain": "`y` est calculé quand `x` vaut 5 : il vaut donc 10. Changer `x` ensuite ne recalcule pas `y`."
+    },
+    {
+      "id": "q2",
+      "prompt": "Que vaut `total` à la fin ?\n\n`total = 0`\n`pour i de 1 à 4 :`\n`    total = total + i`",
+      "options": ["4", "10", "24", "Je ne sais pas"],
+      "answer": 1,
+      "explain": "1 + 2 + 3 + 4 = 10. La boucle ajoute chaque valeur de `i` à `total`."
+    },
+    {
+      "id": "q3",
+      "prompt": "Dans la liste `[7, 4, 9]`, en comptant à partir de 0, quel est l'élément d'indice 1 ?",
+      "options": ["7", "4", "9", "Je ne sais pas"],
+      "answer": 1,
+      "explain": "Les indices commencent à 0 : 7 est en position 0, 4 en position 1, 9 en position 2."
+    },
+    {
+      "id": "q4",
+      "prompt": "On cherche un nom dans une liste de `n` noms **non triée**, en la parcourant depuis le début. Au pire, combien de comparaisons faut-il ?",
+      "options": ["1", "Environ log(n)", "n", "Je ne sais pas"],
+      "answer": 2,
+      "explain": "Sans ordre, le nom peut se trouver en dernier ou être absent : il faut tout regarder. On dit que c'est linéaire, en O(n)."
+    },
+    {
+      "id": "q5",
+      "prompt": "Que renvoie `f(4)` ?\n\n`f(n) :`\n`    si n == 0 : renvoyer 1`\n`    sinon : renvoyer n * f(n - 1)`",
+      "options": ["4", "10", "24", "Je ne sais pas"],
+      "answer": 2,
+      "explain": "C'est la factorielle : 4 × 3 × 2 × 1 = 24. La fonction s'appelle elle-même jusqu'au cas de base `n == 0`."
+    },
+    {
+      "id": "q6",
+      "prompt": "Tu veux compter combien de fois chaque mot apparaît dans un texte. Quelle structure de données est la plus naturelle ?",
+      "options": ["Une liste triée", "Un dictionnaire (mot → nombre)", "Un tableau de booléens", "Je ne sais pas"],
+      "answer": 1,
+      "explain": "Un dictionnaire associe directement une clé (le mot) à une valeur (le compteur), avec un accès rapide."
+    },
+    {
+      "id": "q7",
+      "prompt": "Une liste de 1 000 numéros est **triée**. On cherche un numéro en regardant celui du milieu, puis en recommençant sur la bonne moitié. Au pire, combien de numéros faut-il regarder ?",
+      "options": ["Environ 10", "Environ 500", "1 000", "Je ne sais pas"],
+      "answer": 0,
+      "explain": "Chaque regard élimine la moitié de ce qui reste : 1 000, 500, 250… En une dizaine d'étapes, il ne reste qu'un numéro. C'est la recherche dichotomique, en O(log n)."
+    },
+    {
+      "id": "q8",
+      "prompt": "Une fonction récursive est très lente parce qu'elle recalcule sans cesse les mêmes résultats intermédiaires. Quelle technique règle le problème ?",
+      "options": ["Trier les données avant de commencer", "Garder chaque résultat déjà calculé pour le réutiliser", "Remplacer les listes par des chaînes", "Je ne sais pas"],
+      "answer": 1,
+      "explain": "C'est la mémoïsation : on note chaque résultat la première fois (souvent dans un dictionnaire) et on le relit au lieu de le recalculer."
+    }
+  ]
+}

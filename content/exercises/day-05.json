@@ -1,0 +1,816 @@
+{
+  "day": 5,
+  "concept": "Dictionnaires",
+  "exercises": [
+    {
+      "id": "d05-debutant",
+      "day": 5,
+      "level": "debutant",
+      "title": "L'inventaire des jouets",
+      "concept": "Compter avec un dictionnaire",
+      "statement": "Le Registre reçoit la liste des jouets sortis de l'atelier, par exemple `[\"train\", \"robot\", \"train\"]`.\n\nÉcris une fonction `{fn}` qui renvoie un **dictionnaire** (un objet en JavaScript) où chaque clé est un nom de jouet et chaque valeur le nombre de fois où il apparaît.\n\nPour `[\"train\", \"robot\", \"train\"]`, le résultat est `{\"train\": 2, \"robot\": 1}`. L'ordre des clés n'a pas d'importance. Pour une liste vide, renvoie un dictionnaire vide.",
+      "fn": { "javascript": "compterJouets", "python": "compter_jouets" },
+      "starter": {
+        "javascript": "function compterJouets(jouets) {\n  // Renvoie un objet { jouet: nombre }\n}\n",
+        "python": "def compter_jouets(jouets):\n    # Renvoie un dictionnaire { jouet: nombre }\n    pass\n"
+      },
+      "solution": {
+        "javascript": "function compterJouets(jouets) {\n  const compte = {};\n  for (const jouet of jouets) {\n    if (jouet in compte) {\n      compte[jouet] = compte[jouet] + 1;\n    } else {\n      compte[jouet] = 1;\n    }\n  }\n  return compte;\n}\n",
+        "python": "def compter_jouets(jouets):\n    compte = {}\n    for jouet in jouets:\n        if jouet in compte:\n            compte[jouet] = compte[jouet] + 1\n        else:\n            compte[jouet] = 1\n    return compte\n"
+      },
+      "tests": [
+        { "args": [["train", "robot", "train"]], "expected": { "train": 2, "robot": 1 } },
+        { "args": [[]], "expected": {} },
+        { "args": [["poupée"]], "expected": { "poupée": 1 } },
+        { "args": [["ours", "ours", "ours", "puzzle", "ours"]], "expected": { "ours": 4, "puzzle": 1 }, "hidden": true }
+      ],
+      "hint": "Pour chaque jouet : s'il est déjà une clé du dictionnaire, ajoute 1 à sa valeur ; sinon, crée la clé avec la valeur 1."
+    },
+    {
+      "id": "d05-intermediaire",
+      "day": 5,
+      "level": "intermediaire",
+      "title": "Les étiquettes mélangées",
+      "concept": "Regrouper par clé canonique",
+      "statement": "Givrebug a mélangé les lettres des étiquettes : deux mots sont des **anagrammes** s'ils utilisent exactement les mêmes lettres (`\"sapin\"` et `\"pains\"`).\n\nÉcris une fonction `{fn}` qui reçoit une liste de mots et renvoie la liste des **groupes d'anagrammes**, avec ces règles :\n\n- on ne garde que les groupes d'**au moins 2 mots** ;\n- dans chaque groupe, les mots sont triés par ordre alphabétique ;\n- les groupes sont triés selon leur **premier mot** ;\n- la comparaison de lettres est sensible à la casse et aux accents (on suppose que les mots sont déjà en minuscules).",
+      "fn": { "javascript": "groupesAnagrammes", "python": "groupes_anagrammes" },
+      "starter": {
+        "javascript": "function groupesAnagrammes(mots) {\n  // Renvoie une liste de groupes (listes) de mots anagrammes\n}\n",
+        "python": "def groupes_anagrammes(mots):\n    # Renvoie une liste de groupes (listes) de mots anagrammes\n    pass\n"
+      },
+      "solution": {
+        "javascript": "function groupesAnagrammes(mots) {\n  const groupes = {};\n  for (const mot of mots) {\n    const cle = [...mot].sort().join(\"\");\n    if (!(cle in groupes)) {\n      groupes[cle] = [];\n    }\n    groupes[cle].push(mot);\n  }\n  const resultat = [];\n  for (const cle in groupes) {\n    if (groupes[cle].length >= 2) {\n      resultat.push(groupes[cle].sort());\n    }\n  }\n  resultat.sort((x, y) => (x[0] < y[0] ? -1 : x[0] > y[0] ? 1 : 0));\n  return resultat;\n}\n",
+        "python": "def groupes_anagrammes(mots):\n    groupes = {}\n    for mot in mots:\n        cle = \"\".join(sorted(mot))\n        if cle not in groupes:\n            groupes[cle] = []\n        groupes[cle].append(mot)\n    resultat = []\n    for cle in groupes:\n        if len(groupes[cle]) >= 2:\n            resultat.append(sorted(groupes[cle]))\n    resultat.sort(key=lambda groupe: groupe[0])\n    return resultat\n"
+      },
+      "tests": [
+        { "args": [["sapin", "pains", "ange", "nage", "noël", "pinas", "lutin"]], "expected": [["ange", "nage"], ["pains", "pinas", "sapin"]] },
+        { "args": [[]], "expected": [] },
+        { "args": [["a", "b"]], "expected": [] },
+        { "args": [["cadeau", "cuadea", "rien"]], "expected": [["cadeau", "cuadea"]], "hidden": true }
+      ],
+      "hint": "Deux anagrammes ont la même liste de lettres une fois **triées** : utilise ce mot trié comme clé d'un dictionnaire, et range chaque mot dans la liste de sa clé. Pense à l'ordre final des groupes."
+    },
+    {
+      "id": "d05-confirme",
+      "day": 5,
+      "level": "confirme",
+      "title": "Les meilleurs jouets par étagère",
+      "concept": "Comptage à deux niveaux et classement",
+      "statement": "Pour ranger l'entrepôt, Pixel relève les entrées du Registre : chaque relevé est un triplet `[etagere, jouet, quantite]` (une étagère, un nom de jouet, un entier `quantite >= 1`). Le même jouet peut être relevé plusieurs fois sur la même étagère, et sur des étagères différentes.\n\nÉcris `{fn}(releves, k)` qui renvoie un **dictionnaire** (un objet en JavaScript) : pour chaque étagère présente dans les relevés, la liste de ses `k` meilleurs jouets sous la forme de paires `[jouet, total]`, avec ces règles :\n\n- `total` est la **somme des quantités** de ce jouet **sur cette étagère** (les étagères ne se mélangent pas) ;\n- les jouets sont classés par `total` **décroissant** ;\n- à total égal, par nom de jouet dans l'ordre alphabétique habituel (comparaison de textes standard ; les noms sont en minuscules, sans accent) ;\n- on ne garde que les `k` premiers (`k >= 1`), ou tous s'il y en a moins ;\n- une étagère absente des relevés n'apparaît pas dans le résultat. Sans relevé, renvoie un dictionnaire vide.\n\nL'ordre des clés du dictionnaire n'a pas d'importance.\n\nExemple : `[[\"A\", \"train\", 2], [\"A\", \"robot\", 1], [\"A\", \"train\", 1]]` avec `k = 1` donne `{\"A\": [[\"train\", 3]]}`.",
+      "fn": {
+        "javascript": "meilleursJouets",
+        "python": "meilleurs_jouets"
+      },
+      "starter": {
+        "javascript": "function meilleursJouets(releves, k) {\n  // Renvoie { etagere: [[jouet, total], ...] }\n}\n",
+        "python": "def meilleurs_jouets(releves, k):\n    # Renvoie { etagere: [[jouet, total], ...] }\n    pass\n"
+      },
+      "solution": {
+        "javascript": "function meilleursJouets(releves, k) {\n  const totaux = {};\n  for (const [etagere, jouet, quantite] of releves) {\n    if (!(etagere in totaux)) {\n      totaux[etagere] = {};\n    }\n    totaux[etagere][jouet] = (totaux[etagere][jouet] || 0) + quantite;\n  }\n  const resultat = {};\n  for (const etagere in totaux) {\n    const paires = Object.entries(totaux[etagere]);\n    paires.sort((x, y) => {\n      if (x[1] !== y[1]) {\n        return y[1] - x[1];\n      }\n      return x[0] < y[0] ? -1 : x[0] > y[0] ? 1 : 0;\n    });\n    resultat[etagere] = paires.slice(0, k);\n  }\n  return resultat;\n}\n",
+        "python": "def meilleurs_jouets(releves, k):\n    totaux = {}\n    for etagere, jouet, quantite in releves:\n        if etagere not in totaux:\n            totaux[etagere] = {}\n        totaux[etagere][jouet] = totaux[etagere].get(jouet, 0) + quantite\n    resultat = {}\n    for etagere in totaux:\n        paires = [[jouet, total] for jouet, total in totaux[etagere].items()]\n        paires.sort(key=lambda p: (-p[1], p[0]))\n        resultat[etagere] = paires[:k]\n    return resultat\n"
+      },
+      "tests": [
+        {
+          "args": [
+            [
+              [
+                "A",
+                "train",
+                2
+              ],
+              [
+                "A",
+                "robot",
+                1
+              ],
+              [
+                "A",
+                "train",
+                1
+              ]
+            ],
+            1
+          ],
+          "expected": {
+            "A": [
+              [
+                "train",
+                3
+              ]
+            ]
+          }
+        },
+        {
+          "args": [
+            [
+              [
+                "A",
+                "train",
+                2
+              ],
+              [
+                "B",
+                "train",
+                5
+              ],
+              [
+                "A",
+                "robot",
+                3
+              ],
+              [
+                "B",
+                "ours",
+                5
+              ],
+              [
+                "A",
+                "puzzle",
+                3
+              ]
+            ],
+            2
+          ],
+          "expected": {
+            "A": [
+              [
+                "puzzle",
+                3
+              ],
+              [
+                "robot",
+                3
+              ]
+            ],
+            "B": [
+              [
+                "ours",
+                5
+              ],
+              [
+                "train",
+                5
+              ]
+            ]
+          }
+        },
+        {
+          "args": [
+            [],
+            3
+          ],
+          "expected": {}
+        },
+        {
+          "args": [
+            [
+              [
+                "Z",
+                "ours",
+                4
+              ]
+            ],
+            5
+          ],
+          "expected": {
+            "Z": [
+              [
+                "ours",
+                4
+              ]
+            ]
+          }
+        },
+        {
+          "args": [
+            [
+              [
+                "A",
+                "ours",
+                1
+              ],
+              [
+                "A",
+                "train",
+                1
+              ],
+              [
+                "A",
+                "robot",
+                1
+              ],
+              [
+                "B",
+                "ours",
+                2
+              ]
+            ],
+            2
+          ],
+          "expected": {
+            "A": [
+              [
+                "ours",
+                1
+              ],
+              [
+                "robot",
+                1
+              ]
+            ],
+            "B": [
+              [
+                "ours",
+                2
+              ]
+            ]
+          },
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              [
+                "A",
+                "a",
+                1
+              ],
+              [
+                "B",
+                "a",
+                1
+              ],
+              [
+                "A",
+                "b",
+                1
+              ],
+              [
+                "B",
+                "c",
+                2
+              ],
+              [
+                "A",
+                "a",
+                1
+              ],
+              [
+                "C",
+                "d",
+                9
+              ]
+            ],
+            1
+          ],
+          "expected": {
+            "A": [
+              [
+                "a",
+                2
+              ]
+            ],
+            "B": [
+              [
+                "c",
+                2
+              ]
+            ],
+            "C": [
+              [
+                "d",
+                9
+              ]
+            ]
+          },
+          "hidden": true
+        }
+      ],
+      "hint": "Un dictionnaire de dictionnaires : étagère, puis jouet, qui contient la somme des quantités. Ensuite, pour chaque étagère, trie les paires avec un critère à deux étages (total, puis nom) avant de couper aux `k` premières."
+    },
+    {
+      "id": "d05-expert",
+      "day": 5,
+      "level": "expert",
+      "title": "L'étagère qui oublie",
+      "concept": "Dictionnaires : compteurs et dernier passage",
+      "statement": "Pour retrouver vite les jouets les plus demandés, Pixel installe une **petite étagère** à l'entrée de l'entrepôt. Elle n'a que `places` places, et elle est vide au départ. Les lutins viennent demander des jouets, un par un, dans l'ordre de la liste `demandes`.\n\nÀ chaque demande :\n- si le jouet est **déjà sur l'étagère**, son compteur de demandes augmente de 1 ;\n- sinon, on va le chercher au fond de l'entrepôt et on le pose sur l'étagère, avec un compteur à `1`. Si l'étagère est pleine, il faut **d'abord** en retirer un jouet : celui dont le **compteur est le plus petit**. En cas d'égalité, on retire celui qui a été **demandé le moins récemment** parmi les ex æquo.\n\nUn jouet retiré est oublié : s'il revient plus tard sur l'étagère, son compteur repart de `1`.\n\nÉcris une fonction `{fn}(demandes, places)` qui renvoie la **liste des jouets retirés** de l'étagère, dans l'ordre où ils l'ont été (le même jouet peut y figurer plusieurs fois).\n\nPrécisions : `places` est un entier `>= 1`. Les noms sont des textes en minuscules. Sans demande, ou si l'étagère n'est jamais pleine, renvoie la liste vide.\n\nExemple : avec `[\"luge\", \"train\", \"luge\", \"poupee\", \"train\", \"luge\"]` et `2` places, la poupée chasse le train (demandé une fois, contre deux pour la luge), puis le train revient et chasse la poupée : `[\"train\", \"poupee\"]`. Avec `[\"a\", \"b\", \"c\"]` et `2` places, `a` et `b` sont à égalité : `a`, demandé le moins récemment, s'en va : `[\"a\"]`.\n",
+      "fn": {
+        "javascript": "objetsOublies",
+        "python": "objets_oublies"
+      },
+      "starter": {
+        "javascript": "function objetsOublies(demandes, places) {\n  // Renvoie la liste des objets retirés de l'étagère, dans l'ordre\n}\n",
+        "python": "def objets_oublies(demandes, places):\n    # Renvoie la liste des objets retirés de l'étagère, dans l'ordre\n    pass\n"
+      },
+      "solution": {
+        "javascript": "function objetsOublies(demandes, places) {\n  const etagere = new Map(); // jouet -> { compteur, dernier }\n  const retires = [];\n  demandes.forEach((jouet, instant) => {\n    const fiche = etagere.get(jouet);\n    if (fiche) {\n      fiche.compteur++;\n      fiche.dernier = instant;\n      return;\n    }\n    if (etagere.size === places) {\n      let victime = null;\n      for (const [nom, f] of etagere) {\n        const v = victime === null ? null : etagere.get(victime);\n        if (v === null || f.compteur < v.compteur || (f.compteur === v.compteur && f.dernier < v.dernier)) victime = nom;\n      }\n      etagere.delete(victime);\n      retires.push(victime);\n    }\n    etagere.set(jouet, { compteur: 1, dernier: instant });\n  });\n  return retires;\n}\n",
+        "python": "def objets_oublies(demandes, places):\n    etagere = {}  # jouet -> [compteur, dernier passage]\n    retires = []\n    for instant, jouet in enumerate(demandes):\n        if jouet in etagere:\n            etagere[jouet][0] += 1\n            etagere[jouet][1] = instant\n            continue\n        if len(etagere) == places:\n            # Le plus petit compteur, puis le passage le plus ancien.\n            victime = min(etagere, key=lambda nom: (etagere[nom][0], etagere[nom][1]))\n            del etagere[victime]\n            retires.append(victime)\n        etagere[jouet] = [1, instant]\n    return retires\n"
+      },
+      "tests": [
+        {
+          "args": [
+            [
+              "luge",
+              "train",
+              "luge",
+              "poupee",
+              "train",
+              "luge"
+            ],
+            2
+          ],
+          "expected": [
+            "train",
+            "poupee"
+          ]
+        },
+        {
+          "args": [
+            [
+              "a",
+              "b",
+              "c"
+            ],
+            2
+          ],
+          "expected": [
+            "a"
+          ]
+        },
+        {
+          "args": [
+            [
+              "sapin",
+              "sapin",
+              "sapin"
+            ],
+            1
+          ],
+          "expected": []
+        },
+        {
+          "args": [
+            [
+              "a",
+              "b",
+              "a",
+              "c",
+              "b",
+              "d",
+              "a"
+            ],
+            3
+          ],
+          "expected": [
+            "c"
+          ]
+        },
+        {
+          "args": [
+            [],
+            3
+          ],
+          "expected": [],
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              "a",
+              "b",
+              "c",
+              "d"
+            ],
+            1
+          ],
+          "expected": [
+            "a",
+            "b",
+            "c"
+          ],
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              "a",
+              "b",
+              "c"
+            ],
+            5
+          ],
+          "expected": [],
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              "a",
+              "a",
+              "b",
+              "c",
+              "a",
+              "b",
+              "c",
+              "d",
+              "d",
+              "d",
+              "e"
+            ],
+            2
+          ],
+          "expected": [
+            "b",
+            "c",
+            "b",
+            "c",
+            "a"
+          ],
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              "e",
+              "c",
+              "f",
+              "c",
+              "g",
+              "f",
+              "g",
+              "f",
+              "f",
+              "e",
+              "a",
+              "g",
+              "d",
+              "g",
+              "b",
+              "f",
+              "a",
+              "b",
+              "a",
+              "c",
+              "d",
+              "g",
+              "b",
+              "d",
+              "e",
+              "a",
+              "e",
+              "b",
+              "a",
+              "f"
+            ],
+            3
+          ],
+          "expected": [
+            "e",
+            "c",
+            "e",
+            "a",
+            "d",
+            "b",
+            "a",
+            "b",
+            "a",
+            "c",
+            "d",
+            "b",
+            "d",
+            "e",
+            "a",
+            "e",
+            "b"
+          ],
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              "b",
+              "d",
+              "c",
+              "b",
+              "g",
+              "g",
+              "d",
+              "b",
+              "g",
+              "g",
+              "a",
+              "b",
+              "e",
+              "e",
+              "d",
+              "b",
+              "b",
+              "a",
+              "g",
+              "a",
+              "b",
+              "g",
+              "b",
+              "b",
+              "g",
+              "b",
+              "c",
+              "c",
+              "b",
+              "e",
+              "f",
+              "f",
+              "b",
+              "b",
+              "f",
+              "b",
+              "d",
+              "c",
+              "a",
+              "c",
+              "d",
+              "b",
+              "b",
+              "c",
+              "a",
+              "c",
+              "c",
+              "g",
+              "e",
+              "e"
+            ],
+            4
+          ],
+          "expected": [
+            "c",
+            "a",
+            "e",
+            "a",
+            "c",
+            "e",
+            "f",
+            "c",
+            "a",
+            "c",
+            "a",
+            "c"
+          ],
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              "a",
+              "e",
+              "f",
+              "f",
+              "c",
+              "a",
+              "c",
+              "c",
+              "g",
+              "c",
+              "d",
+              "f",
+              "c",
+              "b",
+              "d",
+              "d",
+              "f",
+              "b",
+              "a",
+              "c",
+              "a",
+              "f",
+              "c",
+              "g",
+              "d",
+              "a",
+              "e",
+              "g",
+              "d",
+              "c",
+              "d",
+              "e",
+              "g",
+              "a",
+              "d",
+              "a",
+              "f",
+              "b",
+              "e",
+              "b",
+              "a",
+              "g",
+              "b",
+              "g",
+              "d",
+              "c",
+              "e",
+              "c",
+              "e",
+              "c",
+              "g",
+              "d",
+              "a",
+              "e",
+              "f",
+              "g",
+              "g",
+              "c",
+              "g",
+              "c",
+              "a",
+              "d",
+              "a",
+              "b",
+              "c",
+              "e",
+              "e",
+              "c",
+              "b",
+              "c"
+            ],
+            2
+          ],
+          "expected": [
+            "a",
+            "e",
+            "c",
+            "a",
+            "f",
+            "g",
+            "d",
+            "f",
+            "b",
+            "d",
+            "f",
+            "b",
+            "a",
+            "f",
+            "g",
+            "d",
+            "a",
+            "e",
+            "g",
+            "d",
+            "e",
+            "g",
+            "a",
+            "d",
+            "a",
+            "f",
+            "b",
+            "e",
+            "b",
+            "a",
+            "g",
+            "b",
+            "g",
+            "d",
+            "e",
+            "g",
+            "d",
+            "a",
+            "e",
+            "f",
+            "g",
+            "a",
+            "d",
+            "a",
+            "b",
+            "e"
+          ],
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              "c",
+              "f",
+              "e",
+              "a",
+              "c",
+              "f",
+              "c",
+              "c",
+              "b",
+              "g",
+              "a",
+              "f",
+              "b",
+              "f",
+              "f",
+              "c",
+              "d",
+              "b",
+              "f",
+              "a",
+              "a",
+              "e",
+              "e",
+              "d",
+              "a",
+              "b",
+              "f",
+              "e",
+              "c",
+              "g",
+              "c",
+              "d",
+              "f",
+              "d",
+              "b",
+              "a",
+              "f",
+              "a",
+              "g",
+              "d",
+              "c",
+              "g",
+              "b",
+              "b",
+              "f",
+              "e",
+              "b",
+              "f",
+              "g",
+              "d",
+              "a",
+              "b",
+              "d",
+              "c",
+              "b",
+              "a",
+              "g",
+              "d",
+              "c",
+              "b",
+              "d",
+              "e",
+              "g",
+              "b",
+              "e",
+              "d",
+              "d",
+              "f",
+              "f",
+              "c",
+              "d",
+              "c",
+              "c",
+              "d",
+              "d",
+              "b",
+              "a",
+              "d",
+              "g",
+              "e",
+              "b",
+              "f",
+              "d",
+              "g",
+              "c",
+              "b",
+              "a",
+              "d",
+              "c",
+              "e"
+            ],
+            5
+          ],
+          "expected": [
+            "e",
+            "g",
+            "d",
+            "e",
+            "d",
+            "e",
+            "g",
+            "d",
+            "g",
+            "d",
+            "g",
+            "e",
+            "g",
+            "d",
+            "g",
+            "d",
+            "e",
+            "g",
+            "e",
+            "d",
+            "g",
+            "e",
+            "d",
+            "g",
+            "d"
+          ],
+          "hidden": true
+        }
+      ],
+      "hint": "Pour chaque jouet présent sur l'étagère, tu as besoin de deux informations : combien de fois il a été demandé depuis son arrivée, et à quel moment il l'a été pour la dernière fois. Un numéro de demande qui augmente à chaque passage fait une très bonne horloge."
+    }
+  ]
+}

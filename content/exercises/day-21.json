@@ -1,0 +1,560 @@
+{
+  "day": 21,
+  "concept": "Mémoïsation",
+  "exercises": [
+    {
+      "id": "d21-debutant",
+      "level": "debutant",
+      "title": "La comptine du solstice",
+      "concept": "Noter les résultats déjà calculés",
+      "statement": "C'est le solstice, la nuit la plus longue de l'année, et le cristal chante la comptine du premier calendrier du Pôle. Elle a une drôle de règle : le couplet 1 compte **2 mots**, le couplet 2 compte **3 mots**, puis chaque couplet se construit en récitant **d'abord le couplet précédent, puis celui d'avant**.\n\nLe couplet 3 compte donc 3 + 2 = 5 mots, le couplet 4 en compte 5 + 3 = 8, le couplet 5 en compte 8 + 5 = 13, et ainsi de suite.\n\nÉcris une fonction `{fn}(n)` qui renvoie le **nombre de mots du couplet `n`**, avec `n` entre `1` et `70`.\n\nAttention : si tu recalcules tout depuis le début à chaque fois, le Registre s'essouffle bien avant le couplet 70. Pixel te souffle la parade : **note chaque résultat dès que tu le connais**, et ne le recalcule jamais.\n",
+      "fn": {
+        "javascript": "longueurCouplet",
+        "python": "longueur_couplet"
+      },
+      "starter": {
+        "javascript": "function longueurCouplet(n) {\n  // Renvoie le nombre de mots du couplet n\n}\n",
+        "python": "def longueur_couplet(n):\n    # Renvoie le nombre de mots du couplet n\n    pass\n"
+      },
+      "solution": {
+        "javascript": "function longueurCouplet(n, memo = {}) {\n  if (n <= 2) {\n    return n + 1;\n  }\n  if (!(n in memo)) {\n    memo[n] = longueurCouplet(n - 1, memo) + longueurCouplet(n - 2, memo);\n  }\n  return memo[n];\n}\n",
+        "python": "def longueur_couplet(n, memo=None):\n    if memo is None:\n        memo = {}\n    if n <= 2:\n        return n + 1\n    if n not in memo:\n        memo[n] = longueur_couplet(n - 1, memo) + longueur_couplet(n - 2, memo)\n    return memo[n]\n"
+      },
+      "hint": "Les couplets 1 et 2 sont ta base : tu connais leur réponse sans rien calculer. Pour les autres, tu as besoin des deux réponses précédentes. Garde-les dans un « carnet » (un dictionnaire consulté avant de calculer), ou fais avancer deux variables couplet après couplet.",
+      "tests": [
+        {
+          "args": [
+            1
+          ],
+          "expected": 2
+        },
+        {
+          "args": [
+            2
+          ],
+          "expected": 3
+        },
+        {
+          "args": [
+            5
+          ],
+          "expected": 13
+        },
+        {
+          "args": [
+            10
+          ],
+          "expected": 144
+        },
+        {
+          "args": [
+            40
+          ],
+          "expected": 267914296,
+          "hidden": true
+        },
+        {
+          "args": [
+            70
+          ],
+          "expected": 498454011879264,
+          "hidden": true
+        }
+      ],
+      "day": 21
+    },
+    {
+      "id": "d21-intermediaire",
+      "level": "intermediaire",
+      "title": "L'escalier gelé",
+      "concept": "Compter des façons de faire",
+      "statement": "Pour atteindre le cristal, il faut monter un escalier gelé de `nbMarches` marches, numérotées de `1` à `nbMarches`. Tu pars du sol (la marche `0`) et tu montes par bonds de **1, 2 ou 3 marches**. Certaines marches, listées dans `interdites`, sont couvertes de givre : on ne peut jamais y poser le pied (on peut en revanche sauter par-dessus).\n\nÉcris une fonction `{fn}(nbMarches, interdites)` (`nb_marches` en Python) qui renvoie le **nombre de façons différentes** d'arriver sur la dernière marche. Deux façons sont différentes si la suite des marches où tu poses le pied n'est pas la même.\n\n- Avec `nbMarches` égal à `0`, tu es déjà arrivé : il y a `1` façon.\n- Si la dernière marche est interdite, il y a `0` façon.\n- `interdites` peut être vide ; elle ne contient que des numéros entre `1` et `nbMarches`, sans doublon. Et `nbMarches` ne dépasse pas `50`.\n\nExemple : avec 3 marches et aucune interdite, il y a 4 façons (1+1+1, 1+2, 2+1 et 3). Avec la marche 2 interdite, il n'en reste que 2 (1+2 et 3).\n\nÀ 50 marches, énumérer tous les trajets prendrait une éternité : souviens-toi de ce que tu as déjà compté.\n",
+      "fn": {
+        "javascript": "compterMontees",
+        "python": "compter_montees"
+      },
+      "starter": {
+        "javascript": "function compterMontees(nbMarches, interdites) {\n  // Renvoie le nombre de façons d'atteindre la dernière marche\n}\n",
+        "python": "def compter_montees(nb_marches, interdites):\n    # Renvoie le nombre de façons d'atteindre la dernière marche\n    pass\n"
+      },
+      "solution": {
+        "javascript": "function compterMontees(nbMarches, interdites) {\n  const bloquees = new Set(interdites);\n  const facons = new Array(nbMarches + 1).fill(0);\n  facons[0] = 1;\n  for (let k = 1; k <= nbMarches; k++) {\n    if (bloquees.has(k)) {\n      continue;\n    }\n    for (let bond = 1; bond <= 3; bond++) {\n      if (k - bond >= 0) {\n        facons[k] += facons[k - bond];\n      }\n    }\n  }\n  return facons[nbMarches];\n}\n",
+        "python": "def compter_montees(nb_marches, interdites):\n    bloquees = set(interdites)\n    facons = [0] * (nb_marches + 1)\n    facons[0] = 1\n    for k in range(1, nb_marches + 1):\n        if k in bloquees:\n            continue\n        for bond in (1, 2, 3):\n            if k - bond >= 0:\n                facons[k] += facons[k - bond]\n    return facons[nb_marches]\n"
+      },
+      "hint": "Pour arriver sur la marche k, tu viens forcément de la marche k-1, k-2 ou k-3. Le nombre de façons d'arriver en k est donc la somme de celles de ces trois marches, sauf si k est interdite (alors 0). Calcule les marches dans l'ordre en gardant chaque réponse.",
+      "tests": [
+        {
+          "args": [
+            3,
+            []
+          ],
+          "expected": 4
+        },
+        {
+          "args": [
+            3,
+            [
+              2
+            ]
+          ],
+          "expected": 2
+        },
+        {
+          "args": [
+            4,
+            [
+              2
+            ]
+          ],
+          "expected": 3
+        },
+        {
+          "args": [
+            0,
+            []
+          ],
+          "expected": 1
+        },
+        {
+          "args": [
+            5,
+            [
+              1,
+              2,
+              3
+            ]
+          ],
+          "expected": 0,
+          "hidden": true
+        },
+        {
+          "args": [
+            6,
+            [
+              6
+            ]
+          ],
+          "expected": 0,
+          "hidden": true
+        },
+        {
+          "args": [
+            50,
+            []
+          ],
+          "expected": 10562230626642,
+          "hidden": true
+        },
+        {
+          "args": [
+            30,
+            [
+              7,
+              8,
+              19,
+              20
+            ]
+          ],
+          "expected": 532824,
+          "hidden": true
+        },
+        {
+          "args": [
+            1,
+            []
+          ],
+          "expected": 1,
+          "hidden": true
+        }
+      ],
+      "day": 21
+    },
+    {
+      "id": "d21-confirme",
+      "level": "confirme",
+      "title": "Le refrain caché",
+      "concept": "Mémoïsation à deux paramètres",
+      "statement": "Dans la comptine du solstice, un refrain se cache dans le couplet : ses lettres y apparaissent **dans le bon ordre**, mais pas forcément côte à côte. Par exemple, le refrain `bag` se cache de 5 façons dans le couplet `babgbag`.\n\nÉcris une fonction `{fn}(couplet, refrain)` qui renvoie le **nombre de façons** de former `refrain` en choisissant des lettres de `couplet`, de gauche à droite, sans jamais revenir en arrière.\n\nRègles :\n- Deux façons sont différentes dès qu'elles n'utilisent pas exactement les mêmes **positions** du couplet, même si les lettres sont identiques. Ainsi `rabbit` se cache 3 fois dans `rabbbit` (trois `b` au choix pour en garder deux), et `aa` se cache 3 fois dans `aaa`.\n- Un refrain vide se forme d'**une** seule façon (ne rien choisir), même dans un couplet vide.\n- Si le refrain est plus long que le couplet, la réponse est `0`.\n- Les deux textes ne contiennent que des lettres minuscules de `a` à `z`, et chacun fait au plus **40** lettres : la réponse reste donc un entier raisonnable.\n\nEssayer toutes les combinaisons de positions est bien trop lent : une version lente sera arrêtée avant la fin.\n",
+      "fn": {
+        "javascript": "compterRefrains",
+        "python": "compter_refrains"
+      },
+      "starter": {
+        "javascript": "function compterRefrains(couplet, refrain) {\n  // Renvoie le nombre de façons de cacher le refrain dans le couplet\n}\n",
+        "python": "def compter_refrains(couplet, refrain):\n    # Renvoie le nombre de façons de cacher le refrain dans le couplet\n    pass\n"
+      },
+      "solution": {
+        "javascript": "function compterRefrains(couplet, refrain) {\n  const n = couplet.length;\n  const m = refrain.length;\n  // facons[i][j] : façons de former les j premières lettres du refrain avec les i premières du couplet\n  const facons = [];\n  for (let i = 0; i <= n; i++) {\n    facons.push(new Array(m + 1).fill(0));\n    facons[i][0] = 1;\n  }\n  for (let i = 1; i <= n; i++) {\n    for (let j = 1; j <= m; j++) {\n      facons[i][j] = facons[i - 1][j];\n      if (couplet[i - 1] === refrain[j - 1]) {\n        facons[i][j] += facons[i - 1][j - 1];\n      }\n    }\n  }\n  return facons[n][m];\n}\n",
+        "python": "def compter_refrains(couplet, refrain):\n    n = len(couplet)\n    m = len(refrain)\n    # facons[i][j] : façons de former les j premières lettres du refrain avec les i premières du couplet\n    facons = [[0] * (m + 1) for _ in range(n + 1)]\n    for i in range(n + 1):\n        facons[i][0] = 1\n    for i in range(1, n + 1):\n        for j in range(1, m + 1):\n            facons[i][j] = facons[i - 1][j]\n            if couplet[i - 1] == refrain[j - 1]:\n                facons[i][j] += facons[i - 1][j - 1]\n    return facons[n][m]\n"
+      },
+      "hint": "Pose-toi la question pour les i premières lettres du couplet et les j premières du refrain. Que peux-tu faire de la dernière lettre du couplet ?",
+      "tests": [
+        {
+          "args": [
+            "rabbbit",
+            "rabbit"
+          ],
+          "expected": 3
+        },
+        {
+          "args": [
+            "babgbag",
+            "bag"
+          ],
+          "expected": 5
+        },
+        {
+          "args": [
+            "aaa",
+            "aa"
+          ],
+          "expected": 3
+        },
+        {
+          "args": [
+            "etoile",
+            "lune"
+          ],
+          "expected": 0
+        },
+        {
+          "args": [
+            "",
+            ""
+          ],
+          "expected": 1,
+          "hidden": true
+        },
+        {
+          "args": [
+            "flocon",
+            ""
+          ],
+          "expected": 1,
+          "hidden": true
+        },
+        {
+          "args": [
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "aaaaaaaaaaaaaaa"
+          ],
+          "expected": 155117520,
+          "hidden": true
+        },
+        {
+          "args": [
+            "ab",
+            "abc"
+          ],
+          "expected": 0,
+          "hidden": true
+        },
+        {
+          "args": [
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "aaaaaaaaaaaaaaaaaaaa"
+          ],
+          "expected": 137846528820,
+          "hidden": true
+        },
+        {
+          "args": [
+            "cristalcristal",
+            "cristal"
+          ],
+          "expected": 8,
+          "hidden": true
+        }
+      ],
+      "day": 21
+    },
+    {
+      "id": "d21-expert",
+      "day": 21,
+      "level": "expert",
+      "title": "La comptine à deux voix",
+      "concept": "Mémoïsation sur un intervalle : jeu à deux joueurs",
+      "statement": "Le cristal chante la comptine du solstice, et deux lutins se la disputent. Les notes sont alignées sur la partition, chacune avec sa **valeur** (un entier, parfois négatif : une fausse note fait perdre des points). Les deux chanteurs jouent **chacun leur tour**. À son tour, un chanteur doit prendre **une ou deux notes**, à **une seule extrémité** de ce qui reste de la partition : soit au début, soit à la fin. Il marque la somme des notes qu'il prend. La partie s'arrête quand il n'y a plus de note.\n\nLes deux chanteurs sont très malins : chacun joue de façon à finir avec la **plus grande avance possible** sur l'autre.\n\nÉcris une fonction `{fn}(notes)` qui renvoie l'**avance du premier chanteur** à la fin de la partie : son score moins celui du second. Le résultat peut être négatif.\n\nPrécisions :\n- Prendre deux notes, c'est prendre les deux premières ou les deux dernières : jamais une de chaque côté.\n- On est obligé de prendre au moins une note, même si elle est négative. S'il ne reste qu'une note, on prend celle-là.\n- Une partition vide donne `0`.\n- La partition peut compter quelques dizaines de notes : explorer toutes les parties possibles une par une prendrait jusqu'au solstice suivant.\n\nExemple : avec `[5, 3, 7]`, le premier chanteur prend les deux dernières notes (`3 + 7 = 10`) et laisse le `5` au second : son avance est `5`. Avec `[1, 100, 1]`, il prend `1` et `100` d'un même côté et finit avec `100` d'avance.\n",
+      "fn": {
+        "javascript": "avanceMaximale",
+        "python": "avance_maximale"
+      },
+      "starter": {
+        "javascript": "function avanceMaximale(notes) {\n  // Renvoie l'avance du premier chanteur si les deux jouent au mieux\n}\n",
+        "python": "def avance_maximale(notes):\n    # Renvoie l'avance du premier chanteur si les deux jouent au mieux\n    pass\n"
+      },
+      "solution": {
+        "javascript": "function avanceMaximale(notes) {\n  const memo = new Map();\n  // Meilleure avance pour celui qui joue, quand il reste les notes de `debut` à `fin` (incluses).\n  function avance(debut, fin) {\n    if (debut > fin) return 0;\n    const cle = debut * 1000 + fin;\n    if (memo.has(cle)) return memo.get(cle);\n    // Ce que je prends, moins la meilleure avance de l'autre sur ce que je lui laisse.\n    let meilleure = notes[debut] - avance(debut + 1, fin);\n    meilleure = Math.max(meilleure, notes[fin] - avance(debut, fin - 1));\n    if (fin > debut) {\n      meilleure = Math.max(meilleure, notes[debut] + notes[debut + 1] - avance(debut + 2, fin));\n      meilleure = Math.max(meilleure, notes[fin] + notes[fin - 1] - avance(debut, fin - 2));\n    }\n    memo.set(cle, meilleure);\n    return meilleure;\n  }\n  return avance(0, notes.length - 1);\n}\n",
+        "python": "def avance_maximale(notes):\n    memo = {}\n\n    # Meilleure avance pour celui qui joue, quand il reste les notes de `debut` à `fin` (incluses).\n    def avance(debut, fin):\n        if debut > fin:\n            return 0\n        if (debut, fin) in memo:\n            return memo[(debut, fin)]\n        # Ce que je prends, moins la meilleure avance de l'autre sur ce que je lui laisse.\n        meilleure = notes[debut] - avance(debut + 1, fin)\n        meilleure = max(meilleure, notes[fin] - avance(debut, fin - 1))\n        if fin > debut:\n            meilleure = max(meilleure, notes[debut] + notes[debut + 1] - avance(debut + 2, fin))\n            meilleure = max(meilleure, notes[fin] + notes[fin - 1] - avance(debut, fin - 2))\n        memo[(debut, fin)] = meilleure\n        return meilleure\n\n    return avance(0, len(notes) - 1)\n"
+      },
+      "tests": [
+        {
+          "args": [
+            [
+              5,
+              3,
+              7
+            ]
+          ],
+          "expected": 5
+        },
+        {
+          "args": [
+            [
+              4
+            ]
+          ],
+          "expected": 4
+        },
+        {
+          "args": [
+            [
+              1,
+              100,
+              1
+            ]
+          ],
+          "expected": 100
+        },
+        {
+          "args": [
+            [
+              2,
+              9,
+              1,
+              8,
+              3
+            ]
+          ],
+          "expected": 1
+        },
+        {
+          "args": [
+            []
+          ],
+          "expected": 0,
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              3,
+              3
+            ]
+          ],
+          "expected": 6,
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              -5
+            ]
+          ],
+          "expected": -5,
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              -2,
+              -9,
+              -4
+            ]
+          ],
+          "expected": -7,
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              1,
+              2,
+              3,
+              4,
+              5,
+              6,
+              7,
+              8
+            ]
+          ],
+          "expected": 8,
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              10,
+              -20,
+              30,
+              -40,
+              50
+            ]
+          ],
+          "expected": 90,
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              0,
+              16,
+              16,
+              30,
+              8,
+              20,
+              3,
+              20,
+              22,
+              1,
+              22,
+              23
+            ]
+          ],
+          "expected": 31,
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              5,
+              -10,
+              -10,
+              13,
+              27,
+              17,
+              -6,
+              -1,
+              4,
+              4,
+              -8,
+              17,
+              16,
+              29,
+              18,
+              -8,
+              11,
+              24,
+              21,
+              -3
+            ]
+          ],
+          "expected": 20,
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              13,
+              -9,
+              -1,
+              -5,
+              -3,
+              -9,
+              19,
+              0,
+              25,
+              11,
+              15,
+              21,
+              -1,
+              1,
+              -8,
+              20,
+              5,
+              -6,
+              2,
+              3,
+              27,
+              -6,
+              -3,
+              25,
+              20,
+              25,
+              14,
+              2,
+              11,
+              -1,
+              24,
+              16,
+              8,
+              13,
+              18
+            ]
+          ],
+          "expected": 26,
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              22,
+              14,
+              10,
+              21,
+              14,
+              7,
+              -9,
+              -5,
+              0,
+              21,
+              -10,
+              21,
+              -6,
+              25,
+              28,
+              23,
+              4,
+              26,
+              28,
+              10,
+              25,
+              29,
+              -3,
+              1,
+              0,
+              30,
+              12,
+              11,
+              12,
+              28,
+              9,
+              5,
+              -4,
+              0,
+              -6,
+              1,
+              17,
+              13,
+              0,
+              -8,
+              23,
+              5,
+              16,
+              0,
+              27,
+              -10,
+              12,
+              21,
+              22,
+              14,
+              5,
+              5,
+              0,
+              25,
+              -6,
+              18,
+              16,
+              20,
+              -7,
+              8
+            ]
+          ],
+          "expected": 28,
+          "hidden": true
+        }
+      ],
+      "hint": "Une partie en cours se résume à deux nombres : où commence et où finit ce qui reste de la partition. Pose-toi la question « quelle avance peut obtenir celui qui joue maintenant ? ». Après son coup, c'est l'autre qui se pose exactement la même question, sur un reste plus court. Les mêmes restes reviennent très souvent : note chaque réponse la première fois."
+    }
+  ]
+}

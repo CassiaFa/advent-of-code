@@ -1,0 +1,321 @@
+{
+  "day": 10,
+  "concept": "Instructions et piles",
+  "exercises": [
+    {
+      "id": "d10-debutant",
+      "day": 10,
+      "level": "debutant",
+      "title": "Le four à 900 degrés",
+      "concept": "Exécuter une liste d'étapes",
+      "statement": "Une recette, c'est presque un programme : une liste d'étapes à suivre dans l'ordre. Ici, chaque étape est une paire `[action, degres]` :\n\n- `[\"chauffer\", 50]` augmente la température du four de 50 degrés ;\n- `[\"refroidir\", 20]` la diminue de 20 degrés.\n\nÉcris une fonction `{fn}` qui reçoit la liste des étapes et renvoie la **température finale** du four. Le four démarre à `0` degré et ne descend **jamais en dessous de 0** : si une étape devait le faire passer sous zéro, il reste à `0`.\n\nUne recette sans étape laisse le four à `0`. Il n'y a pas d'autre action que ces deux-là, et les degrés sont des entiers positifs ou nuls.",
+      "fn": {"javascript":"temperatureFinale","python":"temperature_finale"},
+      "starter": {
+        "javascript": "function temperatureFinale(etapes) {\n  // Renvoie la température du four après toutes les étapes\n}\n",
+        "python": "def temperature_finale(etapes):\n    # Renvoie la température du four après toutes les étapes\n    pass\n"
+      },
+      "solution": {
+        "javascript": "function temperatureFinale(etapes) {\n  let temperature = 0;\n  for (const etape of etapes) {\n    if (etape[0] === \"chauffer\") {\n      temperature = temperature + etape[1];\n    } else {\n      temperature = temperature - etape[1];\n    }\n    if (temperature < 0) {\n      temperature = 0;\n    }\n  }\n  return temperature;\n}\n",
+        "python": "def temperature_finale(etapes):\n    temperature = 0\n    for etape in etapes:\n        if etape[0] == \"chauffer\":\n            temperature = temperature + etape[1]\n        else:\n            temperature = temperature - etape[1]\n        if temperature < 0:\n            temperature = 0\n    return temperature\n"
+      },
+      "tests": [
+        { "args": [[["chauffer",180]]], "expected": 180 },
+        { "args": [[["chauffer",900],["refroidir",720]]], "expected": 180 },
+        { "args": [[["refroidir",50],["chauffer",30]]], "expected": 30 },
+        { "args": [[]], "expected": 0 },
+        { "args": [[["chauffer",100],["refroidir",150],["chauffer",20],["refroidir",5]]], "expected": 15, "hidden": true },
+        { "args": [[["chauffer",0],["refroidir",0]]], "expected": 0, "hidden": true }
+      ],
+      "hint": "Une variable pour la température, une boucle sur les étapes. Dans chaque étape, le premier élément dit quoi faire et le second de combien. Vérifie le plancher à zéro après **chaque** étape, pas seulement à la fin."
+    },
+    {
+      "id": "d10-intermediaire",
+      "day": 10,
+      "level": "intermediaire",
+      "title": "Annuler, refaire",
+      "concept": "Piles",
+      "statement": "Mère Noëlle dicte sa recette, mais elle se reprend souvent. Tu reçois la liste de ce qu'elle dit, dans l'ordre. Chaque élément est soit un **ingrédient** (un texte quelconque), soit l'un de ces deux mots :\n\n- `\"annuler\"` : retire le **dernier ingrédient** encore présent dans la recette ;\n- `\"refaire\"` : remet le **dernier ingrédient annulé** à la fin de la recette.\n\nRègles précises :\n\n- `\"annuler\"` sur une recette vide ne fait rien ;\n- `\"refaire\"` ne fait rien s'il n'y a rien à refaire ;\n- plusieurs `\"annuler\"` de suite remontent le temps ; plusieurs `\"refaire\"` de suite le redescendent dans l'ordre inverse ;\n- dès qu'un **nouvel ingrédient** est dicté, tout ce qui avait été annulé est oublié : on ne peut plus le refaire.\n\nÉcris une fonction `{fn}` qui renvoie la liste finale des ingrédients, dans l'ordre. Aucun ingrédient ne s'appelle `\"annuler\"` ou `\"refaire\"`.\n\nExemple : `[\"farine\", \"sel\", \"annuler\", \"sucre\"]` donne `[\"farine\", \"sucre\"]`.",
+      "fn": {"javascript":"dicterRecette","python":"dicter_recette"},
+      "starter": {
+        "javascript": "function dicterRecette(paroles) {\n  // Renvoie la liste finale des ingrédients\n}\n",
+        "python": "def dicter_recette(paroles):\n    # Renvoie la liste finale des ingrédients\n    pass\n"
+      },
+      "solution": {
+        "javascript": "function dicterRecette(paroles) {\n  const recette = [];\n  const annules = [];\n  for (const parole of paroles) {\n    if (parole === \"annuler\") {\n      if (recette.length > 0) {\n        annules.push(recette.pop());\n      }\n    } else if (parole === \"refaire\") {\n      if (annules.length > 0) {\n        recette.push(annules.pop());\n      }\n    } else {\n      recette.push(parole);\n      annules.length = 0;\n    }\n  }\n  return recette;\n}\n",
+        "python": "def dicter_recette(paroles):\n    recette = []\n    annules = []\n    for parole in paroles:\n        if parole == \"annuler\":\n            if recette:\n                annules.append(recette.pop())\n        elif parole == \"refaire\":\n            if annules:\n                recette.append(annules.pop())\n        else:\n            recette.append(parole)\n            annules.clear()\n    return recette\n"
+      },
+      "tests": [
+        { "args": [["farine","sel","annuler","sucre"]], "expected": ["farine","sucre"] },
+        { "args": [["annuler","beurre","refaire"]], "expected": ["beurre"] },
+        { "args": [["farine","oeufs","annuler","annuler","refaire"]], "expected": ["farine"] },
+        { "args": [["farine","annuler","sucre","refaire"]], "expected": ["sucre"] },
+        { "args": [[]], "expected": [] },
+        { "args": [["a","b","c","annuler","annuler","refaire","refaire","refaire","annuler"]], "expected": ["a","b"], "hidden": true },
+        { "args": [["miel","annuler","refaire","annuler","refaire","cannelle"]], "expected": ["miel","cannelle"], "hidden": true },
+        { "args": [["annuler","refaire","annuler"]], "expected": [], "hidden": true }
+      ],
+      "hint": "Deux piles : une pour la recette, une pour ce qui a été annulé. « Annuler » déplace le sommet de la première vers la seconde ; « refaire » fait le trajet inverse. Reste à décider ce qui arrive à la seconde pile quand un nouvel ingrédient arrive."
+    },
+    {
+      "id": "d10-confirme",
+      "day": 10,
+      "level": "confirme",
+      "title": "Les notes de la recette",
+      "concept": "Pile : parenthèses de plusieurs sortes et guillemets",
+      "statement": "Mère Noëlle griffonne ses recettes avec des remarques entre parenthèses `( )`, des quantités entre crochets `[ ]`, des variantes entre accolades `{ }`, et des citations entre guillemets `\"`. Givrebug a effacé des signes au hasard : il faut retrouver **où** ça ne va plus.\n\nÉcris une fonction `{fn}(texte)` qui renvoie la **position** (à partir de `0`) de la première erreur, ou `-1` si le texte est correct. On lit le texte de gauche à droite :\n\n- Une parenthèse, un crochet ou une accolade ouvrante doit être refermé par **le signe correspondant**, et dans le bon ordre : `([)]` est faux.\n- Un fermant qui arrive alors qu'**aucun** ouvrant n'est en attente, ou qui ne correspond **pas** au dernier ouvrant en attente, est une erreur : la position renvoyée est **la sienne**. La lecture s'arrête là.\n- Un `\"` ouvre une citation, refermée par le `\"` suivant. **À l'intérieur d'une citation**, les parenthèses, crochets et accolades sont du texte ordinaire, et un `\\` **protège le caractère qui le suit** (`\\\"` ne ferme donc pas la citation, et `\\\\` est un antislash ordinaire). En dehors d'une citation, `\\` n'a rien de spécial.\n- Si le texte se termine alors qu'une citation est restée ouverte, la position renvoyée est celle du `\"` **ouvrant**. Cette erreur passe **avant** celle des ouvrants non refermés.\n- Sinon, si le texte se termine alors que des ouvrants attendent encore, la position renvoyée est celle du **dernier** (le plus récent) ouvrant resté sans fermant.\n- Tous les autres caractères sont ignorés. Un texte vide est correct. Le texte ne contient pas d'émoji : une position est simplement le rang du caractère.\n\nExemple : dans `((a)`, la première parenthèse n'est jamais refermée : la réponse est `0`.",
+      "fn": {
+        "javascript": "premiereErreur",
+        "python": "premiere_erreur"
+      },
+      "starter": {
+        "javascript": "function premiereErreur(texte) {\n  // Renvoie la position de la première erreur, ou -1\n}\n",
+        "python": "def premiere_erreur(texte):\n    # Renvoie la position de la première erreur, ou -1\n    pass\n"
+      },
+      "solution": {
+        "javascript": "function premiereErreur(texte) {\n  const ouvrants = \"([{\";\n  const fermants = \")]}\";\n  const pile = [];\n  let guillemet = -1;\n  for (let i = 0; i < texte.length; i++) {\n    const c = texte[i];\n    if (guillemet !== -1) {\n      if (c === \"\\\\\") {\n        i++;\n      } else if (c === '\"') {\n        guillemet = -1;\n      }\n    } else if (c === '\"') {\n      guillemet = i;\n    } else if (ouvrants.includes(c)) {\n      pile.push(i);\n    } else if (fermants.includes(c)) {\n      if (pile.length === 0 || ouvrants.indexOf(texte[pile[pile.length - 1]]) !== fermants.indexOf(c)) {\n        return i;\n      }\n      pile.pop();\n    }\n  }\n  if (guillemet !== -1) {\n    return guillemet;\n  }\n  return pile.length > 0 ? pile[pile.length - 1] : -1;\n}\n",
+        "python": "def premiere_erreur(texte):\n    ouvrants = \"([{\"\n    fermants = \")]}\"\n    pile = []\n    guillemet = -1\n    i = 0\n    while i < len(texte):\n        c = texte[i]\n        if guillemet != -1:\n            if c == \"\\\\\":\n                i += 1\n            elif c == '\"':\n                guillemet = -1\n        elif c == '\"':\n            guillemet = i\n        elif c in ouvrants:\n            pile.append(i)\n        elif c in fermants:\n            if not pile or ouvrants.index(texte[pile[-1]]) != fermants.index(c):\n                return i\n            pile.pop()\n        i += 1\n    if guillemet != -1:\n        return guillemet\n    return pile[-1] if pile else -1\n"
+      },
+      "tests": [
+        {
+          "args": [
+            "(a[b]{c})"
+          ],
+          "expected": -1
+        },
+        {
+          "args": [
+            "(a]"
+          ],
+          "expected": 2
+        },
+        {
+          "args": [
+            "((a)"
+          ],
+          "expected": 0
+        },
+        {
+          "args": [
+            "sel \"(\" ok"
+          ],
+          "expected": -1
+        },
+        {
+          "args": [
+            "x [ \"]"
+          ],
+          "expected": 4
+        },
+        {
+          "args": [
+            ""
+          ],
+          "expected": -1,
+          "hidden": true
+        },
+        {
+          "args": [
+            "{[(])}"
+          ],
+          "expected": 3,
+          "hidden": true
+        },
+        {
+          "args": [
+            "\"a\\\"(\" )"
+          ],
+          "expected": 7,
+          "hidden": true
+        },
+        {
+          "args": [
+            "(\"a)"
+          ],
+          "expected": 1,
+          "hidden": true
+        },
+        {
+          "args": [
+            "tout (est [bien] {ici}) ."
+          ],
+          "expected": -1,
+          "hidden": true
+        },
+        {
+          "args": [
+            "a)"
+          ],
+          "expected": 1,
+          "hidden": true
+        },
+        {
+          "args": [
+            "{ ( ["
+          ],
+          "expected": 4,
+          "hidden": true
+        },
+        {
+          "args": [
+            "\"x\\\\\" ("
+          ],
+          "expected": 6,
+          "hidden": true
+        },
+        { "args": ["\\\"("], "expected": 1, "hidden": true }
+      ],
+      "hint": "Une pile d'ouvrants en attente suffit, mais range-y les positions, pas les signes : tu pourras retrouver le signe avec le texte. Ajoute une variable qui dit si tu es dans une citation et à quelle position elle a commencé ; dans une citation, tu ne regardes que le guillemet fermant et l'antislash (qui fait sauter un caractère)."
+    },
+    {
+      "id": "d10-expert",
+      "day": 10,
+      "level": "expert",
+      "title": "L'addition de Mère Noëlle",
+      "concept": "Deux piles pour évaluer une expression",
+      "statement": "Sur un coin de table, Mère Noëlle a griffonné le calcul des quantités de la fournée : des nombres, des `+`, des `-`, des `*` et des parenthèses. Le Registre, lui, ne sait lire que de gauche à droite : il lui faut une méthode pour respecter les priorités.\n\nÉcris une fonction `{fn}(texte)` qui renvoie la **valeur** (un entier) de l'expression. Tu n'as **pas le droit** de confier le calcul au langage (pas de `eval` ni d'équivalent) : c'est justement ce qu'on te demande d'écrire.\n\nRègles :\n- Les nombres sont des entiers écrits avec des chiffres (`0`, `7`, `120`).\n- La multiplication `*` passe **avant** l'addition `+` et la soustraction `-`. À priorité égale, on calcule **de gauche à droite** : `10 - 2 - 3` vaut `5`.\n- Les parenthèses passent avant tout, et peuvent s'emboîter.\n- Un `-` placé au début de l'expression, juste après une parenthèse ouvrante ou juste après un autre opérateur est un **signe moins** : il change le signe de ce qui le suit directement (un nombre, une parenthèse, ou un autre signe moins). Il est prioritaire sur la multiplication : `2 * -3` vaut `-6`, et `-(4 - 6) * 3` vaut `6`.\n- Les espaces sont ignorées, où qu'elles soient.\n\nPrécisions : l'expression est toujours bien formée, et aucun résultat intermédiaire ne dépasse un milliard en valeur absolue.\n\nExemples : `2 + 3 * 4` vaut `14`, et `(2 + 3) * 4` vaut `20`.\n",
+      "fn": {
+        "javascript": "calculer",
+        "python": "calculer"
+      },
+      "starter": {
+        "javascript": "function calculer(texte) {\n  // Renvoie la valeur de l'expression\n}\n",
+        "python": "def calculer(texte):\n    # Renvoie la valeur de l'expression\n    pass\n"
+      },
+      "solution": {
+        "javascript": "function calculer(texte) {\n  const nombres = [];\n  const operateurs = []; // \"+\", \"-\", \"*\", \"(\" ou \"~\" (le signe moins)\n  const priorite = { \"+\": 1, \"-\": 1, \"*\": 2, \"~\": 3 };\n  const appliquer = () => {\n    const op = operateurs.pop();\n    if (op === \"~\") {\n      nombres.push(-nombres.pop());\n      return;\n    }\n    const b = nombres.pop();\n    const a = nombres.pop();\n    nombres.push(op === \"+\" ? a + b : op === \"-\" ? a - b : a * b);\n  };\n  let attendUnNombre = true; // vrai au début, après \"(\" et après un opérateur\n  let i = 0;\n  while (i < texte.length) {\n    const c = texte[i];\n    if (c === \" \") {\n      i++;\n    } else if (c >= \"0\" && c <= \"9\") {\n      let n = 0;\n      while (i < texte.length && texte[i] >= \"0\" && texte[i] <= \"9\") {\n        n = n * 10 + Number(texte[i]);\n        i++;\n      }\n      nombres.push(n);\n      attendUnNombre = false;\n    } else if (c === \"(\") {\n      operateurs.push(c);\n      attendUnNombre = true;\n      i++;\n    } else if (c === \")\") {\n      while (operateurs[operateurs.length - 1] !== \"(\") appliquer();\n      operateurs.pop();\n      attendUnNombre = false;\n      i++;\n    } else if (c === \"-\" && attendUnNombre) {\n      operateurs.push(\"~\");\n      i++;\n    } else {\n      while (operateurs.length && operateurs[operateurs.length - 1] !== \"(\" && priorite[operateurs[operateurs.length - 1]] >= priorite[c]) appliquer();\n      operateurs.push(c);\n      attendUnNombre = true;\n      i++;\n    }\n  }\n  while (operateurs.length) appliquer();\n  return nombres[0];\n}\n",
+        "python": "def calculer(texte):\n    nombres = []\n    operateurs = []  # \"+\", \"-\", \"*\", \"(\" ou \"~\" (le signe moins)\n    priorite = {\"+\": 1, \"-\": 1, \"*\": 2, \"~\": 3}\n\n    def appliquer():\n        op = operateurs.pop()\n        if op == \"~\":\n            nombres.append(-nombres.pop())\n            return\n        b = nombres.pop()\n        a = nombres.pop()\n        nombres.append(a + b if op == \"+\" else a - b if op == \"-\" else a * b)\n\n    attend_un_nombre = True  # vrai au début, après \"(\" et après un opérateur\n    i = 0\n    while i < len(texte):\n        c = texte[i]\n        if c == \" \":\n            i += 1\n        elif \"0\" <= c <= \"9\":\n            n = 0\n            while i < len(texte) and \"0\" <= texte[i] <= \"9\":\n                n = n * 10 + int(texte[i])\n                i += 1\n            nombres.append(n)\n            attend_un_nombre = False\n        elif c == \"(\":\n            operateurs.append(c)\n            attend_un_nombre = True\n            i += 1\n        elif c == \")\":\n            while operateurs[-1] != \"(\":\n                appliquer()\n            operateurs.pop()\n            attend_un_nombre = False\n            i += 1\n        elif c == \"-\" and attend_un_nombre:\n            operateurs.append(\"~\")\n            i += 1\n        else:\n            while operateurs and operateurs[-1] != \"(\" and priorite[operateurs[-1]] >= priorite[c]:\n                appliquer()\n            operateurs.append(c)\n            attend_un_nombre = True\n            i += 1\n    while operateurs:\n        appliquer()\n    return nombres[0]\n"
+      },
+      "tests": [
+        {
+          "args": [
+            "2 + 3 * 4"
+          ],
+          "expected": 14
+        },
+        {
+          "args": [
+            "(2 + 3) * 4"
+          ],
+          "expected": 20
+        },
+        {
+          "args": [
+            "-(4 - 6) * 3"
+          ],
+          "expected": 6
+        },
+        {
+          "args": [
+            "2 * -3"
+          ],
+          "expected": -6
+        },
+        {
+          "args": [
+            "10 - 2 - 3"
+          ],
+          "expected": 5
+        },
+        {
+          "args": [
+            "42"
+          ],
+          "expected": 42,
+          "hidden": true
+        },
+        {
+          "args": [
+            "  7  "
+          ],
+          "expected": 7,
+          "hidden": true
+        },
+        {
+          "args": [
+            "--5"
+          ],
+          "expected": 5,
+          "hidden": true
+        },
+        {
+          "args": [
+            "2*(3+(4-1))*2"
+          ],
+          "expected": 24,
+          "hidden": true
+        },
+        {
+          "args": [
+            "-3 - -3"
+          ],
+          "expected": 0,
+          "hidden": true
+        },
+        {
+          "args": [
+            "100 - 5 * (2 + 3) * 2"
+          ],
+          "expected": 50,
+          "hidden": true
+        },
+        {
+          "args": [
+            "((((1))))"
+          ],
+          "expected": 1,
+          "hidden": true
+        },
+        {
+          "args": [
+            "3 - (2 - (1 - (4 - 6)))"
+          ],
+          "expected": 4,
+          "hidden": true
+        },
+        {
+          "args": [
+            "7*((0 + 9))"
+          ],
+          "expected": 63,
+          "hidden": true
+        },
+        {
+          "args": [
+            "12 + -(3)-5-6 * 7*2--9+7 - 2+-(4)"
+          ],
+          "expected": -70,
+          "hidden": true
+        },
+        {
+          "args": [
+            "8 - -(6-10)*(2 * 5) - 0+0+7"
+          ],
+          "expected": -25,
+          "hidden": true
+        },
+        {
+          "args": [
+            "(-(10 * 2) - 1 - -(4))"
+          ],
+          "expected": -17,
+          "hidden": true
+        },
+        {
+          "args": [
+            "8"
+          ],
+          "expected": 8,
+          "hidden": true
+        },
+        {
+          "args": [
+            "-7 * 9 + 7 * 3 - 12"
+          ],
+          "expected": -54,
+          "hidden": true
+        }
+      ],
+      "hint": "Garde deux piles : une pour les nombres, une pour les opérateurs en attente. Quand un nouvel opérateur arrive, demande-toi lesquels, parmi ceux qui attendent, doivent être calculés avant lui. Le signe moins est un opérateur comme les autres, mais il ne prend qu'un seul nombre : il te faut un moyen de le distinguer de la soustraction."
+    }
+  ]
+}

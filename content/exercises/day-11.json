@@ -1,0 +1,492 @@
+{
+  "day": 11,
+  "concept": "Récursion",
+  "exercises": [
+    {
+      "id": "d11-debutant",
+      "day": 11,
+      "level": "debutant",
+      "title": "Combien de coffres ?",
+      "concept": "Une fonction qui s'appelle elle-même",
+      "statement": "Un coffre est représenté par une liste. Il est soit **vide** (`[]`), soit il contient **exactement un** autre coffre (`[[]]`, `[[[]]]`, etc.).\n\nÉcris une fonction `{fn}` qui renvoie le **nombre total de coffres**, en comptant le plus grand :\n\n- `[]` → `1` (un seul coffre, vide) ;\n- `[[]]` → `2` ;\n- `[[[]]]` → `3`.\n\nL'idée du jour : un coffre non vide, c'est « 1 coffre, plus tous ceux qu'il y a dedans ». Et pour compter ceux qu'il y a dedans… tu as déjà une fonction qui sait le faire.",
+      "fn": {"javascript":"compterCoffres","python":"compter_coffres"},
+      "starter": {
+        "javascript": "function compterCoffres(coffre) {\n  // Renvoie le nombre de coffres emboîtés\n}\n",
+        "python": "def compter_coffres(coffre):\n    # Renvoie le nombre de coffres emboîtés\n    pass\n"
+      },
+      "solution": {
+        "javascript": "function compterCoffres(coffre) {\n  if (coffre.length === 0) {\n    return 1;\n  }\n  return 1 + compterCoffres(coffre[0]);\n}\n",
+        "python": "def compter_coffres(coffre):\n    if len(coffre) == 0:\n        return 1\n    return 1 + compter_coffres(coffre[0])\n"
+      },
+      "tests": [
+        { "args": [[]], "expected": 1 },
+        { "args": [[[]]], "expected": 2 },
+        { "args": [[[[]]]], "expected": 3 },
+        { "args": [[[[[[[]]]]]]], "expected": 6, "hidden": true },
+        { "args": [[[[[]]]]], "expected": 4, "hidden": true }
+      ],
+      "hint": "Commence par le cas le plus simple : que répondre pour un coffre vide ? Pour les autres, le coffre intérieur est le premier (et seul) élément de la liste : appelle ta propre fonction dessus et ajoute 1."
+    },
+    {
+      "id": "d11-intermediaire",
+      "day": 11,
+      "level": "intermediaire",
+      "title": "L'inventaire des coffres",
+      "concept": "Parcourir une structure imbriquée",
+      "statement": "Cette fois, un coffre (une liste) peut contenir **plusieurs choses**, dans n'importe quel ordre : des **cadeaux** (des textes) et d'autres **coffres** (des listes), eux-mêmes remplis de la même façon.\n\nÉcris une fonction `{fn}` qui renvoie la liste de tous les cadeaux, **dans l'ordre de lecture** (de gauche à droite), chacun accompagné de sa **profondeur** sous la forme `[cadeau, profondeur]`.\n\n- Un cadeau posé directement dans le grand coffre est à la profondeur `1`.\n- Chaque coffre traversé ajoute `1`.\n- Un coffre vide ne produit rien. S'il n'y a aucun cadeau, renvoie une liste vide.\n\nExemple : `[\"toupie\", [\"ours\", [\"bille\"]], \"livre\"]` donne `[[\"toupie\", 1], [\"ours\", 2], [\"bille\", 3], [\"livre\", 1]]`.\n\nLa fonction testée ne reçoit qu'un seul argument, le coffre. Libre à toi d'écrire une seconde fonction, ou d'ajouter un paramètre avec une valeur par défaut.",
+      "fn": {"javascript":"inventaire","python":"inventaire"},
+      "starter": {
+        "javascript": "function inventaire(coffre) {\n  // Renvoie la liste des paires [cadeau, profondeur]\n}\n",
+        "python": "def inventaire(coffre):\n    # Renvoie la liste des paires [cadeau, profondeur]\n    pass\n"
+      },
+      "solution": {
+        "javascript": "function inventaire(coffre, profondeur = 1) {\n  const resultat = [];\n  for (const element of coffre) {\n    if (Array.isArray(element)) {\n      const dedans = inventaire(element, profondeur + 1);\n      for (const paire of dedans) {\n        resultat.push(paire);\n      }\n    } else {\n      resultat.push([element, profondeur]);\n    }\n  }\n  return resultat;\n}\n",
+        "python": "def inventaire(coffre, profondeur=1):\n    resultat = []\n    for element in coffre:\n        if isinstance(element, list):\n            dedans = inventaire(element, profondeur + 1)\n            for paire in dedans:\n                resultat.append(paire)\n        else:\n            resultat.append([element, profondeur])\n    return resultat\n"
+      },
+      "tests": [
+        { "args": [["toupie",["ours",["bille"]],"livre"]], "expected": [["toupie",1],["ours",2],["bille",3],["livre",1]] },
+        { "args": [["train","robot"]], "expected": [["train",1],["robot",1]] },
+        { "args": [[]], "expected": [] },
+        { "args": [[[],[[]],[[["flocon"]]]]], "expected": [["flocon",4]] },
+        { "args": [[["a",["b"]],["c"],"d",[[["e","f"]],"g"]]], "expected": [["a",2],["b",3],["c",2],["d",1],["e",4],["f",4],["g",2]], "hidden": true },
+        { "args": [[[[[]]]]], "expected": [], "hidden": true }
+      ],
+      "hint": "Pour chaque élément du coffre, deux cas : c'est un cadeau (tu connais sa profondeur) ou c'est un coffre (tu relances la même fonction dessus, un cran plus profond, et tu récupères ce qu'elle a trouvé). Il faut donc que la profondeur courante voyage d'appel en appel."
+    },
+    {
+      "id": "d11-confirme",
+      "day": 11,
+      "level": "confirme",
+      "title": "Les coffres verrouillés",
+      "concept": "Récursion : parcours d'arbre avec clés à trouver",
+      "statement": "Givrebug a posé des **serrures** sur les coffres : certains ne s'ouvrent qu'avec une clé, et cette clé est cachée... dans un autre coffre, parfois plus loin dans la pièce, parfois dans un coffre lui-même verrouillé. Le Registre doit trouver tous les cadeaux qu'on peut finir par récupérer.\n\nÉcris une fonction `{fn}(elements)` qui reçoit le contenu de la pièce (une liste) et renvoie la liste des **cadeaux récupérables**, dans l'ordre de lecture.\n\nUne liste contient des éléments de trois sortes :\n\n- un **cadeau** : un texte ;\n- une **clé** : un objet `{\"cle\": nom}` ;\n- un **coffre** : un objet `{\"serrure\": s, \"contenu\": [...]}`, où `contenu` est une liste du même genre (les coffres s'imbriquent sans limite) et `s` est soit `null` (coffre ouvert, en Python `None`), soit le **nom de la clé** qui ouvre ce coffre.\n\nRègles :\n\n- Le contenu de la pièce est lui-même accessible d'office.\n- Un coffre ouvert, ou dont tu possèdes la clé, peut être fouillé : tu y récupères cadeaux et clés, et tu peux ouvrir les coffres qu'il contient.\n- Une clé ramassée sert **autant de fois que nécessaire** et ouvre **tous** les coffres qui portent son nom, **où qu'ils soient**, même plus tôt dans la pièce que l'endroit où tu l'as trouvée.\n- Une clé enfermée dans un coffre que tu ne peux pas ouvrir n'est pas à toi. Si la seule clé d'un coffre est dans ce coffre lui-même, il reste fermé.\n- Le résultat liste les cadeaux des coffres ouverts **dans l'ordre du texte**, en parcourant la pièce de gauche à droite et en descendant dans chaque coffre ouvert à l'endroit où il se trouve (pas dans l'ordre où tu les as découverts). Un même nom de cadeau peut apparaître plusieurs fois : tous sont gardés.\n- S'il n'y a aucun cadeau récupérable, renvoie une liste vide.\n\nExemple : `[{\"serrure\": \"rouge\", \"contenu\": [\"bille\"]}, {\"cle\": \"rouge\"}, \"toupie\"]` donne `[\"bille\", \"toupie\"]`.",
+      "fn": {
+        "javascript": "ouvrirCoffres",
+        "python": "ouvrir_coffres"
+      },
+      "starter": {
+        "javascript": "function ouvrirCoffres(elements) {\n  // Renvoie la liste des cadeaux récupérables, dans l'ordre de lecture\n}\n",
+        "python": "def ouvrir_coffres(elements):\n    # Renvoie la liste des cadeaux récupérables, dans l'ordre de lecture\n    pass\n"
+      },
+      "solution": {
+        "javascript": "function parcourir(elements, cles, cadeaux) {\n  for (const element of elements) {\n    if (typeof element === \"string\") {\n      if (cadeaux !== null) {\n        cadeaux.push(element);\n      }\n    } else if (\"cle\" in element) {\n      cles.add(element.cle);\n    } else if (element.serrure === null || cles.has(element.serrure)) {\n      parcourir(element.contenu, cles, cadeaux);\n    }\n  }\n}\n\nfunction ouvrirCoffres(elements) {\n  const cles = new Set();\n  let change = true;\n  while (change) {\n    const avant = cles.size;\n    parcourir(elements, cles, null);\n    change = cles.size > avant;\n  }\n  const cadeaux = [];\n  parcourir(elements, cles, cadeaux);\n  return cadeaux;\n}\n",
+        "python": "def parcourir(elements, cles, cadeaux):\n    for element in elements:\n        if isinstance(element, str):\n            if cadeaux is not None:\n                cadeaux.append(element)\n        elif \"cle\" in element:\n            cles.add(element[\"cle\"])\n        elif element[\"serrure\"] is None or element[\"serrure\"] in cles:\n            parcourir(element[\"contenu\"], cles, cadeaux)\n\n\ndef ouvrir_coffres(elements):\n    cles = set()\n    change = True\n    while change:\n        avant = len(cles)\n        parcourir(elements, cles, None)\n        change = len(cles) > avant\n    cadeaux = []\n    parcourir(elements, cles, cadeaux)\n    return cadeaux\n"
+      },
+      "tests": [
+        {
+          "args": [
+            [
+              "train",
+              {
+                "serrure": null,
+                "contenu": [
+                  "ours"
+                ]
+              },
+              "livre"
+            ]
+          ],
+          "expected": [
+            "train",
+            "ours",
+            "livre"
+          ]
+        },
+        {
+          "args": [
+            [
+              {
+                "serrure": "rouge",
+                "contenu": [
+                  "bille"
+                ]
+              },
+              {
+                "cle": "rouge"
+              },
+              "toupie"
+            ]
+          ],
+          "expected": [
+            "bille",
+            "toupie"
+          ]
+        },
+        {
+          "args": [
+            [
+              {
+                "serrure": "or",
+                "contenu": [
+                  {
+                    "cle": "or"
+                  },
+                  "pièce"
+                ]
+              },
+              "cube"
+            ]
+          ],
+          "expected": [
+            "cube"
+          ]
+        },
+        {
+          "args": [
+            [
+              {
+                "serrure": "b",
+                "contenu": [
+                  "x"
+                ]
+              },
+              {
+                "serrure": "a",
+                "contenu": [
+                  {
+                    "cle": "b"
+                  },
+                  "y"
+                ]
+              },
+              {
+                "serrure": null,
+                "contenu": [
+                  {
+                    "cle": "a"
+                  }
+                ]
+              }
+            ]
+          ],
+          "expected": [
+            "x",
+            "y"
+          ]
+        },
+        {
+          "args": [
+            []
+          ],
+          "expected": []
+        },
+        {
+          "args": [
+            [
+              {
+                "serrure": "k",
+                "contenu": [
+                  "a"
+                ]
+              },
+              {
+                "serrure": "k",
+                "contenu": [
+                  "b"
+                ]
+              },
+              {
+                "cle": "k"
+              }
+            ]
+          ],
+          "expected": [
+            "a",
+            "b"
+          ],
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              {
+                "serrure": "p",
+                "contenu": [
+                  {
+                    "serrure": "q",
+                    "contenu": [
+                      "g"
+                    ]
+                  },
+                  "h"
+                ]
+              },
+              {
+                "cle": "q"
+              },
+              {
+                "cle": "p"
+              }
+            ]
+          ],
+          "expected": [
+            "g",
+            "h"
+          ],
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              {
+                "serrure": "z",
+                "contenu": [
+                  {
+                    "cle": "q"
+                  }
+                ]
+              },
+              {
+                "serrure": "q",
+                "contenu": [
+                  "g"
+                ]
+              }
+            ]
+          ],
+          "expected": [],
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              {
+                "serrure": null,
+                "contenu": [
+                  {
+                    "serrure": "m",
+                    "contenu": [
+                      {
+                        "serrure": null,
+                        "contenu": [
+                          "cœur",
+                          {
+                            "cle": "m"
+                          },
+                          "dé"
+                        ]
+                      }
+                    ]
+                  },
+                  "ours"
+                ]
+              },
+              {
+                "serrure": "m",
+                "contenu": [
+                  "luge"
+                ]
+              }
+            ]
+          ],
+          "expected": [
+            "ours"
+          ],
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              {
+                "serrure": "a",
+                "contenu": [
+                  {
+                    "cle": "a"
+                  },
+                  "x"
+                ]
+              },
+              {
+                "cle": "a"
+              },
+              {
+                "serrure": "a",
+                "contenu": [
+                  "y"
+                ]
+              }
+            ]
+          ],
+          "expected": [
+            "x",
+            "y"
+          ],
+          "hidden": true
+        },
+        { "args": [["a","a",{"serrure":null,"contenu":["a"]}]], "expected": ["a","a","a"], "hidden": true }
+      ],
+      "hint": "Écris d'abord une fonction récursive qui parcourt une liste et descend dans les coffres que tu peux ouvrir avec les clés connues. Une seule lecture ne suffit pas : une clé trouvée tard peut débloquer un coffre déjà croisé. Recommence tant que l'ensemble de clés grandit, et seulement ensuite relis tout pour collecter les cadeaux dans l'ordre."
+    },
+    {
+      "id": "d11-expert",
+      "day": 11,
+      "level": "expert",
+      "title": "La poupée sans fond",
+      "concept": "Récursion : trouver sans construire",
+      "statement": "Le dernier coffre contient une minuscule étiquette écrite en **code replié** : `3[ab]` veut dire « `ab`, trois fois de suite », donc `ababab`. Et comme les coffres, les replis s'emboîtent : `2[a3[b]]` se déplie en `abbbabbb`. Le cadeau se cache derrière **une seule lettre** du texte déplié. Seulement voilà : déplié, le texte peut compter des millions de milliards de lettres. Il ne tiendrait dans aucune mémoire.\n\nÉcris une fonction `{fn}(code, k)` qui renvoie le **caractère de position `k`** du texte déplié (les positions commencent à `0`). Si le texte déplié est trop court, renvoie le texte vide `\"\"`.\n\nLe code suit ces règles :\n- une lettre minuscule se déplie en elle-même ;\n- un nombre entier suivi de crochets, comme `12[...]`, répète ce nombre de fois le dépliage de ce qui est entre les crochets ;\n- tout cela se met bout à bout, et l'intérieur des crochets suit les mêmes règles (il peut aussi être vide).\n\nPrécisions : le code est toujours bien formé. Les nombres sont des entiers `>= 1`, parfois à plusieurs chiffres. `k` est un entier `>= 0`. La longueur du texte déplié ne dépasse jamais `9 000 000 000 000 000`.\n\nExemple : `2[ab]c` se déplie en `ababc`. La position `3` contient `b`, la position `4` contient `c`, et la position `5` n'existe pas : `\"\"`. Pour `3[a2[bc]]` (soit `abcbcabcbcabcbc`), la position `7` contient `c`.\n",
+      "fn": {
+        "javascript": "caractereNumero",
+        "python": "caractere_numero"
+      },
+      "starter": {
+        "javascript": "function caractereNumero(code, k) {\n  // Renvoie le caractère de position k du texte déplié, ou \"\"\n}\n",
+        "python": "def caractere_numero(code, k):\n    # Renvoie le caractère de position k du texte déplié, ou \"\"\n    pass\n"
+      },
+      "solution": {
+        "javascript": "function caractereNumero(code, k) {\n  let i = 0;\n  // Lit une suite de morceaux jusqu'au crochet fermant (ou la fin) : renvoie [morceaux, longueur dépliée].\n  function lire() {\n    const morceaux = [];\n    let total = 0;\n    while (i < code.length && code[i] !== \"]\") {\n      if (code[i] >= \"0\" && code[i] <= \"9\") {\n        let fois = 0;\n        while (code[i] !== \"[\") {\n          fois = fois * 10 + Number(code[i]);\n          i++;\n        }\n        i++; // le crochet ouvrant\n        const [interieur, longueur] = lire();\n        i++; // le crochet fermant\n        morceaux.push({ fois, interieur, longueur });\n        total += fois * longueur;\n      } else {\n        morceaux.push({ lettre: code[i] });\n        total += 1;\n        i++;\n      }\n    }\n    return [morceaux, total];\n  }\n  function chercher(morceaux, position) {\n    for (const m of morceaux) {\n      if (m.lettre !== undefined) {\n        if (position === 0) return m.lettre;\n        position -= 1;\n      } else {\n        const taille = m.fois * m.longueur;\n        // Toutes les copies sont identiques : seule compte la position dans une copie.\n        if (position < taille) return chercher(m.interieur, position % m.longueur);\n        position -= taille;\n      }\n    }\n    return \"\";\n  }\n  const [racine, total] = lire();\n  return k < total ? chercher(racine, k) : \"\";\n}\n",
+        "python": "def caractere_numero(code, k):\n    i = 0\n\n    # Lit une suite de morceaux jusqu'au crochet fermant (ou la fin) : renvoie (morceaux, longueur dépliée).\n    def lire():\n        nonlocal i\n        morceaux = []\n        total = 0\n        while i < len(code) and code[i] != \"]\":\n            if code[i].isdigit():\n                fois = 0\n                while code[i] != \"[\":\n                    fois = fois * 10 + int(code[i])\n                    i += 1\n                i += 1  # le crochet ouvrant\n                interieur, longueur = lire()\n                i += 1  # le crochet fermant\n                morceaux.append((fois, interieur, longueur))\n                total += fois * longueur\n            else:\n                morceaux.append(code[i])\n                total += 1\n                i += 1\n        return morceaux, total\n\n    def chercher(morceaux, position):\n        for m in morceaux:\n            if isinstance(m, str):\n                if position == 0:\n                    return m\n                position -= 1\n            else:\n                fois, interieur, longueur = m\n                taille = fois * longueur\n                # Toutes les copies sont identiques : seule compte la position dans une copie.\n                if position < taille:\n                    return chercher(interieur, position % longueur)\n                position -= taille\n        return \"\"\n\n    racine, total = lire()\n    return chercher(racine, k) if k < total else \"\"\n"
+      },
+      "tests": [
+        {
+          "args": [
+            "2[ab]c",
+            3
+          ],
+          "expected": "b"
+        },
+        {
+          "args": [
+            "2[ab]c",
+            4
+          ],
+          "expected": "c"
+        },
+        {
+          "args": [
+            "2[ab]c",
+            5
+          ],
+          "expected": ""
+        },
+        {
+          "args": [
+            "3[a2[bc]]",
+            7
+          ],
+          "expected": "c"
+        },
+        {
+          "args": [
+            "",
+            0
+          ],
+          "expected": "",
+          "hidden": true
+        },
+        {
+          "args": [
+            "noel",
+            3
+          ],
+          "expected": "l",
+          "hidden": true
+        },
+        {
+          "args": [
+            "10[a]b",
+            10
+          ],
+          "expected": "b",
+          "hidden": true
+        },
+        {
+          "args": [
+            "2[3[x]y]z",
+            7
+          ],
+          "expected": "y",
+          "hidden": true
+        },
+        {
+          "args": [
+            "2[3[x]y]z",
+            8
+          ],
+          "expected": "z",
+          "hidden": true
+        },
+        {
+          "args": [
+            "a2[b3[cd2[e]]f]g",
+            17
+          ],
+          "expected": "d",
+          "hidden": true
+        },
+        {
+          "args": [
+            "3[]a",
+            0
+          ],
+          "expected": "a",
+          "hidden": true
+        },
+        {
+          "args": [
+            "12[ab]",
+            23
+          ],
+          "expected": "b",
+          "hidden": true
+        },
+        {
+          "args": [
+            "12[ab]",
+            24
+          ],
+          "expected": "",
+          "hidden": true
+        },
+        {
+          "args": [
+            "4[a3[b2[c1[d]]]]",
+            30
+          ],
+          "expected": "c",
+          "hidden": true
+        },
+        {
+          "args": [
+            "1000000[ab2[c]]",
+            3999998
+          ],
+          "expected": "c",
+          "hidden": true
+        },
+        {
+          "args": [
+            "1000000[ab2[c]]",
+            4000000
+          ],
+          "expected": "",
+          "hidden": true
+        },
+        {
+          "args": [
+            "999999[9999[xy]z]9[w]",
+            19998980005
+          ],
+          "expected": "w",
+          "hidden": true
+        },
+        {
+          "args": [
+            "30[30[30[30[30[30[30[30[ab]]]]]]]]c",
+            1312200000000
+          ],
+          "expected": "c",
+          "hidden": true
+        },
+        {
+          "args": [
+            "30[30[30[30[30[30[30[30[ab]]]]]]]]c",
+            777777777777
+          ],
+          "expected": "b",
+          "hidden": true
+        }
+      ],
+      "hint": "Tu n'as pas besoin du texte déplié, seulement de sa **longueur**, morceau par morceau. Lis d'abord le code comme un emboîtement de coffres, en notant la longueur de chacun. Ensuite, pour atteindre la position `k`, saute les morceaux entiers qui sont trop courts. Et dans un morceau répété, toutes les copies sont identiques : inutile de savoir dans laquelle tu tombes."
+    }
+  ]
+}

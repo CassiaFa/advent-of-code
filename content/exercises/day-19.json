@@ -1,0 +1,1954 @@
+{
+  "day": 19,
+  "concept": "Graphes",
+  "exercises": [
+    {
+      "id": "d19-debutant",
+      "day": 19,
+      "level": "debutant",
+      "title": "Le carrefour",
+      "concept": "Lire un graphe : degré d'un sommet",
+      "statement": "Mère Noëlle trace la carte des routes. Elle est donnée sous forme de dictionnaire : à chaque village, la liste des villages auxquels il est relié directement, par exemple `{\"lac\": [\"pinede\"], \"pinede\": [\"lac\"]}`. Les routes sont à **double sens** : si `a` liste `b`, alors `b` liste `a`.\n\nÉcris une fonction `{fn}(carte)` qui renvoie le nom du **village le plus relié**, c'est-à-dire celui qui a le plus de routes.\n\nSi plusieurs villages sont à égalité, renvoie celui dont le nom vient **en premier dans l'ordre alphabétique** (tous les noms sont en minuscules sans accent). Si la carte est vide, renvoie `null` (`None` en Python). Un village sans route a `0` route.",
+      "fn": {
+        "javascript": "villagePlusRelie",
+        "python": "village_plus_relie"
+      },
+      "starter": {
+        "javascript": "function villagePlusRelie(carte) {\n  // Renvoie le nom du village avec le plus de routes, ou null\n}\n",
+        "python": "def village_plus_relie(carte):\n    # Renvoie le nom du village avec le plus de routes, ou None\n    pass\n"
+      },
+      "solution": {
+        "javascript": "function villagePlusRelie(carte) {\n  let meilleur = null;\n  for (const village of Object.keys(carte).sort()) {\n    if (meilleur === null || carte[village].length > carte[meilleur].length) {\n      meilleur = village;\n    }\n  }\n  return meilleur;\n}\n",
+        "python": "def village_plus_relie(carte):\n    meilleur = None\n    for village in sorted(carte):\n        if meilleur is None or len(carte[village]) > len(carte[meilleur]):\n            meilleur = village\n    return meilleur\n"
+      },
+      "tests": [
+        {
+          "args": [
+            {
+              "givreville": [
+                "pinede",
+                "lac",
+                "col"
+              ],
+              "pinede": [
+                "givreville",
+                "lac"
+              ],
+              "lac": [
+                "givreville",
+                "pinede"
+              ],
+              "col": [
+                "givreville"
+              ]
+            }
+          ],
+          "expected": "givreville"
+        },
+        {
+          "args": [
+            {
+              "a": [
+                "b"
+              ],
+              "b": [
+                "a",
+                "c"
+              ],
+              "c": [
+                "b",
+                "d"
+              ],
+              "d": [
+                "c"
+              ]
+            }
+          ],
+          "expected": "b"
+        },
+        {
+          "args": [
+            {
+              "z": [
+                "y"
+              ],
+              "y": [
+                "z"
+              ]
+            }
+          ],
+          "expected": "y"
+        },
+        {
+          "args": [
+            {}
+          ],
+          "expected": null
+        },
+        {
+          "args": [
+            {
+              "solo": []
+            }
+          ],
+          "expected": "solo",
+          "hidden": true
+        },
+        {
+          "args": [
+            {
+              "nord": [
+                "est",
+                "sud",
+                "ouest"
+              ],
+              "est": [
+                "nord",
+                "sud"
+              ],
+              "sud": [
+                "nord",
+                "est"
+              ],
+              "ouest": [
+                "nord"
+              ],
+              "ile": []
+            }
+          ],
+          "expected": "nord",
+          "hidden": true
+        },
+        { "args": [{"m":["n","o"],"n":["m","o"],"o":["m","n"],"p":[]}], "expected": "m", "hidden": true }
+      ],
+      "hint": "Le nombre de routes d'un village, c'est la longueur de sa liste de voisins. Pour les égalités, parcours les villages dans l'ordre alphabétique et ne remplace le meilleur que si tu trouves **strictement** plus."
+    },
+    {
+      "id": "d19-intermediaire",
+      "day": 19,
+      "level": "intermediaire",
+      "title": "Le plus court chemin",
+      "concept": "Parcours en largeur",
+      "statement": "Le traîneau doit rejoindre un village en empruntant le moins de routes possible. La carte est un dictionnaire : à chaque village, la liste des villages reliés directement. Les routes sont à **double sens** et la carte est cohérente (si `a` liste `b`, `b` liste `a`). Tous les villages cités comme voisins figurent aussi parmi les clés de la carte. Il y a des boucles : attention à ne pas tourner en rond.\n\nÉcris une fonction `{fn}(carte, depart, arrivee)` qui renvoie le **nombre minimal de routes** à emprunter pour aller de `depart` à `arrivee`.\n\n- si `depart` et `arrivee` sont le même village (présent sur la carte), la réponse est `0` ;\n- si `arrivee` est inatteignable depuis `depart`, renvoie `-1` ;\n- si `depart` **ou** `arrivee` ne figure pas sur la carte, renvoie `-1`, même s'ils sont identiques.",
+      "fn": {
+        "javascript": "nombreDeRoutes",
+        "python": "nombre_de_routes"
+      },
+      "starter": {
+        "javascript": "function nombreDeRoutes(carte, depart, arrivee) {\n  // Renvoie le nombre minimal de routes, ou -1\n}\n",
+        "python": "def nombre_de_routes(carte, depart, arrivee):\n    # Renvoie le nombre minimal de routes, ou -1\n    pass\n"
+      },
+      "solution": {
+        "javascript": "function nombreDeRoutes(carte, depart, arrivee) {\n  if (carte[depart] === undefined || carte[arrivee] === undefined) {\n    return -1;\n  }\n  const distance = {};\n  distance[depart] = 0;\n  const file = [depart];\n  for (let i = 0; i < file.length; i++) {\n    const village = file[i];\n    if (village === arrivee) {\n      return distance[village];\n    }\n    for (const voisin of carte[village]) {\n      if (distance[voisin] === undefined) {\n        distance[voisin] = distance[village] + 1;\n        file.push(voisin);\n      }\n    }\n  }\n  return -1;\n}\n",
+        "python": "def nombre_de_routes(carte, depart, arrivee):\n    if depart not in carte or arrivee not in carte:\n        return -1\n    distance = {depart: 0}\n    file = [depart]\n    for village in file:\n        if village == arrivee:\n            return distance[village]\n        for voisin in carte[village]:\n            if voisin not in distance:\n                distance[voisin] = distance[village] + 1\n                file.append(voisin)\n    return -1\n"
+      },
+      "tests": [
+        {
+          "args": [
+            {
+              "mairie": [
+                "pont",
+                "forge"
+              ],
+              "pont": [
+                "mairie",
+                "lac"
+              ],
+              "forge": [
+                "mairie",
+                "lac",
+                "gare"
+              ],
+              "lac": [
+                "pont",
+                "forge",
+                "gare"
+              ],
+              "gare": [
+                "forge",
+                "lac",
+                "quai"
+              ],
+              "quai": [
+                "gare"
+              ],
+              "ile": []
+            },
+            "mairie",
+            "quai"
+          ],
+          "expected": 3
+        },
+        {
+          "args": [
+            {
+              "mairie": [
+                "pont",
+                "forge"
+              ],
+              "pont": [
+                "mairie",
+                "lac"
+              ],
+              "forge": [
+                "mairie",
+                "lac",
+                "gare"
+              ],
+              "lac": [
+                "pont",
+                "forge",
+                "gare"
+              ],
+              "gare": [
+                "forge",
+                "lac",
+                "quai"
+              ],
+              "quai": [
+                "gare"
+              ],
+              "ile": []
+            },
+            "mairie",
+            "lac"
+          ],
+          "expected": 2
+        },
+        {
+          "args": [
+            {
+              "mairie": [
+                "pont",
+                "forge"
+              ],
+              "pont": [
+                "mairie",
+                "lac"
+              ],
+              "forge": [
+                "mairie",
+                "lac",
+                "gare"
+              ],
+              "lac": [
+                "pont",
+                "forge",
+                "gare"
+              ],
+              "gare": [
+                "forge",
+                "lac",
+                "quai"
+              ],
+              "quai": [
+                "gare"
+              ],
+              "ile": []
+            },
+            "mairie",
+            "mairie"
+          ],
+          "expected": 0
+        },
+        {
+          "args": [
+            {
+              "mairie": [
+                "pont",
+                "forge"
+              ],
+              "pont": [
+                "mairie",
+                "lac"
+              ],
+              "forge": [
+                "mairie",
+                "lac",
+                "gare"
+              ],
+              "lac": [
+                "pont",
+                "forge",
+                "gare"
+              ],
+              "gare": [
+                "forge",
+                "lac",
+                "quai"
+              ],
+              "quai": [
+                "gare"
+              ],
+              "ile": []
+            },
+            "mairie",
+            "ile"
+          ],
+          "expected": -1
+        },
+        {
+          "args": [
+            {
+              "mairie": [
+                "pont",
+                "forge"
+              ],
+              "pont": [
+                "mairie",
+                "lac"
+              ],
+              "forge": [
+                "mairie",
+                "lac",
+                "gare"
+              ],
+              "lac": [
+                "pont",
+                "forge",
+                "gare"
+              ],
+              "gare": [
+                "forge",
+                "lac",
+                "quai"
+              ],
+              "quai": [
+                "gare"
+              ],
+              "ile": []
+            },
+            "inconnu",
+            "inconnu"
+          ],
+          "expected": -1
+        },
+        {
+          "args": [
+            {
+              "mairie": [
+                "pont",
+                "forge"
+              ],
+              "pont": [
+                "mairie",
+                "lac"
+              ],
+              "forge": [
+                "mairie",
+                "lac",
+                "gare"
+              ],
+              "lac": [
+                "pont",
+                "forge",
+                "gare"
+              ],
+              "gare": [
+                "forge",
+                "lac",
+                "quai"
+              ],
+              "quai": [
+                "gare"
+              ],
+              "ile": []
+            },
+            "quai",
+            "pont"
+          ],
+          "expected": 3,
+          "hidden": true
+        },
+        {
+          "args": [
+            {
+              "v00": [
+                "v11",
+                "v01"
+              ],
+              "v01": [
+                "v00",
+                "v02"
+              ],
+              "v02": [
+                "v01",
+                "v03"
+              ],
+              "v03": [
+                "v02",
+                "v04"
+              ],
+              "v04": [
+                "v03",
+                "v05"
+              ],
+              "v05": [
+                "v04",
+                "v06"
+              ],
+              "v06": [
+                "v05",
+                "v07"
+              ],
+              "v07": [
+                "v06",
+                "v08"
+              ],
+              "v08": [
+                "v07",
+                "v09"
+              ],
+              "v09": [
+                "v08",
+                "v10"
+              ],
+              "v10": [
+                "v09",
+                "v11"
+              ],
+              "v11": [
+                "v10",
+                "v00"
+              ]
+            },
+            "v00",
+            "v06"
+          ],
+          "expected": 6,
+          "hidden": true
+        },
+        {
+          "args": [
+            {
+              "v00": [
+                "v11",
+                "v01"
+              ],
+              "v01": [
+                "v00",
+                "v02"
+              ],
+              "v02": [
+                "v01",
+                "v03"
+              ],
+              "v03": [
+                "v02",
+                "v04"
+              ],
+              "v04": [
+                "v03",
+                "v05"
+              ],
+              "v05": [
+                "v04",
+                "v06"
+              ],
+              "v06": [
+                "v05",
+                "v07"
+              ],
+              "v07": [
+                "v06",
+                "v08"
+              ],
+              "v08": [
+                "v07",
+                "v09"
+              ],
+              "v09": [
+                "v08",
+                "v10"
+              ],
+              "v10": [
+                "v09",
+                "v11"
+              ],
+              "v11": [
+                "v10",
+                "v00"
+              ]
+            },
+            "v00",
+            "v11"
+          ],
+          "expected": 1,
+          "hidden": true
+        },
+        {
+          "args": [
+            {
+              "a": []
+            },
+            "a",
+            "a"
+          ],
+          "expected": 0,
+          "hidden": true
+        }
+      ],
+      "hint": "Explore la carte par cercles : d'abord les villages à 1 route, puis ceux à 2 routes, etc. Une file d'attente et un dictionnaire des distances déjà trouvées font l'affaire. Un village déjà vu n'est jamais remis dans la file."
+    },
+    {
+      "id": "d19-confirme",
+      "day": 19,
+      "level": "confirme",
+      "title": "La route la plus rapide",
+      "concept": "Plus court chemin pondéré (Dijkstra) et départage",
+      "statement": "Toutes les routes ne se valent pas : certaines sont des sentiers enneigés. La carte associe à chaque village un dictionnaire `{voisin: duree}`, la durée (entier **strictement positif**, en minutes) de la route. Les routes sont à **double sens** et la durée est la même dans les deux sens, par exemple `{\"a\": {\"b\": 4}, \"b\": {\"a\": 4}}`. Tous les villages cités comme voisins figurent aussi parmi les clés de la carte.\n\nÉcris une fonction `{fn}(carte, depart, arrivee)` qui renvoie le trajet **le plus rapide** sous la forme d'un dictionnaire `{\"duree\": total, \"chemin\": [villages...]}`, où `chemin` liste les villages traversés, `depart` et `arrivee` inclus. Le nombre de routes importe peu : seule la durée totale compte.\n\n**Égalités.** Si plusieurs chemins ont la même durée minimale, choisis celui dont la liste de noms est la **première dans l'ordre alphabétique**, en comparant les noms un par un depuis le début (tous les noms sont en minuscules sans accent ; c'est une comparaison de texte classique, donc `\"v10\"` vient avant `\"v9\"`). Exemple : `[\"s\", \"a\", \"y\", \"t\"]` passe avant `[\"s\", \"b\", \"t\"]`.\n\nCas limites :\n\n- si `depart` et `arrivee` sont le même village (présent sur la carte), la réponse est `{\"duree\": 0, \"chemin\": [depart]}` ;\n- si `arrivee` est inatteignable, ou si `depart` ou `arrivee` ne figure pas sur la carte, renvoie `null` (`None` en Python).",
+      "fn": {
+        "javascript": "trajetRapide",
+        "python": "trajet_rapide"
+      },
+      "starter": {
+        "javascript": "function trajetRapide(carte, depart, arrivee) {\n  // Renvoie { duree, chemin } ou null\n}\n",
+        "python": "def trajet_rapide(carte, depart, arrivee):\n    # Renvoie {\"duree\": ..., \"chemin\": [...]} ou None\n    pass\n"
+      },
+      "solution": {
+        "javascript": "function trajetRapide(carte, depart, arrivee) {\n  if (carte[depart] === undefined || carte[arrivee] === undefined) {\n    return null;\n  }\n  // Durée minimale de chaque village jusqu'à l'arrivée (Dijkstra)\n  const dist = {};\n  dist[arrivee] = 0;\n  const termines = new Set();\n  while (true) {\n    let u = null;\n    for (const v of Object.keys(dist)) {\n      if (termines.has(v)) continue;\n      if (u === null || dist[v] < dist[u] || (dist[v] === dist[u] && v < u)) {\n        u = v;\n      }\n    }\n    if (u === null) break;\n    termines.add(u);\n    for (const v of Object.keys(carte[u])) {\n      const d = dist[u] + carte[u][v];\n      if (dist[v] === undefined || d < dist[v]) {\n        dist[v] = d;\n      }\n    }\n  }\n  if (dist[depart] === undefined) {\n    return null;\n  }\n  // On descend vers l'arrivée en prenant le plus petit nom à chaque pas\n  const chemin = [depart];\n  let courant = depart;\n  while (courant !== arrivee) {\n    let choix = null;\n    for (const v of Object.keys(carte[courant]).sort()) {\n      if (dist[v] !== undefined && carte[courant][v] + dist[v] === dist[courant]) {\n        choix = v;\n        break;\n      }\n    }\n    chemin.push(choix);\n    courant = choix;\n  }\n  return { duree: dist[depart], chemin: chemin };\n}\n",
+        "python": "def trajet_rapide(carte, depart, arrivee):\n    if depart not in carte or arrivee not in carte:\n        return None\n    # Durée minimale de chaque village jusqu'à l'arrivée (Dijkstra)\n    dist = {arrivee: 0}\n    termines = set()\n    while True:\n        u = None\n        for v in dist:\n            if v in termines:\n                continue\n            if u is None or (dist[v], v) < (dist[u], u):\n                u = v\n        if u is None:\n            break\n        termines.add(u)\n        for v in carte[u]:\n            d = dist[u] + carte[u][v]\n            if v not in dist or d < dist[v]:\n                dist[v] = d\n    if depart not in dist:\n        return None\n    # On descend vers l'arrivée en prenant le plus petit nom à chaque pas\n    chemin = [depart]\n    courant = depart\n    while courant != arrivee:\n        choix = None\n        for v in sorted(carte[courant]):\n            if v in dist and carte[courant][v] + dist[v] == dist[courant]:\n                choix = v\n                break\n        chemin.append(choix)\n        courant = choix\n    return {\"duree\": dist[depart], \"chemin\": chemin}\n"
+      },
+      "tests": [
+        {
+          "args": [
+            {
+              "s": {
+                "a": 1,
+                "b": 2
+              },
+              "a": {
+                "s": 1,
+                "x": 1,
+                "y": 1
+              },
+              "b": {
+                "s": 2,
+                "t": 2
+              },
+              "x": {
+                "a": 1,
+                "t": 2
+              },
+              "y": {
+                "a": 1,
+                "t": 2
+              },
+              "t": {
+                "b": 2,
+                "x": 2,
+                "y": 2
+              },
+              "z": {}
+            },
+            "s",
+            "t"
+          ],
+          "expected": {
+            "duree": 4,
+            "chemin": [
+              "s",
+              "a",
+              "x",
+              "t"
+            ]
+          }
+        },
+        {
+          "args": [
+            {
+              "a": {
+                "d": 10,
+                "c": 1
+              },
+              "c": {
+                "a": 1,
+                "e": 1
+              },
+              "e": {
+                "c": 1,
+                "d": 1
+              },
+              "d": {
+                "a": 10,
+                "e": 1
+              }
+            },
+            "a",
+            "d"
+          ],
+          "expected": {
+            "duree": 3,
+            "chemin": [
+              "a",
+              "c",
+              "e",
+              "d"
+            ]
+          }
+        },
+        {
+          "args": [
+            {
+              "s": {
+                "a": 1,
+                "b": 2
+              },
+              "a": {
+                "s": 1,
+                "x": 1,
+                "y": 1
+              },
+              "b": {
+                "s": 2,
+                "t": 2
+              },
+              "x": {
+                "a": 1,
+                "t": 2
+              },
+              "y": {
+                "a": 1,
+                "t": 2
+              },
+              "t": {
+                "b": 2,
+                "x": 2,
+                "y": 2
+              },
+              "z": {}
+            },
+            "s",
+            "z"
+          ],
+          "expected": null
+        },
+        {
+          "args": [
+            {
+              "s": {
+                "a": 1,
+                "b": 2
+              },
+              "a": {
+                "s": 1,
+                "x": 1,
+                "y": 1
+              },
+              "b": {
+                "s": 2,
+                "t": 2
+              },
+              "x": {
+                "a": 1,
+                "t": 2
+              },
+              "y": {
+                "a": 1,
+                "t": 2
+              },
+              "t": {
+                "b": 2,
+                "x": 2,
+                "y": 2
+              },
+              "z": {}
+            },
+            "s",
+            "s"
+          ],
+          "expected": {
+            "duree": 0,
+            "chemin": [
+              "s"
+            ]
+          }
+        },
+        {
+          "args": [
+            {
+              "s": {
+                "a": 1,
+                "b": 2
+              },
+              "a": {
+                "s": 1,
+                "x": 1,
+                "y": 1
+              },
+              "b": {
+                "s": 2,
+                "t": 2
+              },
+              "x": {
+                "a": 1,
+                "t": 2
+              },
+              "y": {
+                "a": 1,
+                "t": 2
+              },
+              "t": {
+                "b": 2,
+                "x": 2,
+                "y": 2
+              },
+              "z": {}
+            },
+            "s",
+            "inconnu"
+          ],
+          "expected": null
+        },
+        {
+          "args": [
+            {
+              "s": {
+                "a": 1,
+                "b": 2
+              },
+              "a": {
+                "s": 1,
+                "x": 1,
+                "y": 1
+              },
+              "b": {
+                "s": 2,
+                "t": 2
+              },
+              "x": {
+                "a": 1,
+                "t": 2
+              },
+              "y": {
+                "a": 1,
+                "t": 2
+              },
+              "t": {
+                "b": 2,
+                "x": 2,
+                "y": 2
+              },
+              "z": {}
+            },
+            "t",
+            "s"
+          ],
+          "expected": {
+            "duree": 4,
+            "chemin": [
+              "t",
+              "b",
+              "s"
+            ]
+          },
+          "hidden": true
+        },
+        {
+          "args": [
+            {
+              "depot": {
+                "gare": 4,
+                "pont": 4
+              },
+              "gare": {
+                "depot": 4,
+                "tour": 3
+              },
+              "pont": {
+                "depot": 4,
+                "tour": 3,
+                "lac": 9
+              },
+              "tour": {
+                "gare": 3,
+                "pont": 3
+              },
+              "lac": {
+                "pont": 9
+              }
+            },
+            "depot",
+            "tour"
+          ],
+          "expected": {
+            "duree": 7,
+            "chemin": [
+              "depot",
+              "gare",
+              "tour"
+            ]
+          },
+          "hidden": true
+        },
+        {
+          "args": [
+            {
+              "depot": {
+                "gare": 4,
+                "pont": 4
+              },
+              "gare": {
+                "depot": 4,
+                "tour": 3
+              },
+              "pont": {
+                "depot": 4,
+                "tour": 3,
+                "lac": 9
+              },
+              "tour": {
+                "gare": 3,
+                "pont": 3
+              },
+              "lac": {
+                "pont": 9
+              }
+            },
+            "lac",
+            "gare"
+          ],
+          "expected": {
+            "duree": 15,
+            "chemin": [
+              "lac",
+              "pont",
+              "tour",
+              "gare"
+            ]
+          },
+          "hidden": true
+        },
+        {
+          "args": [
+            {
+              "solo": {}
+            },
+            "solo",
+            "solo"
+          ],
+          "expected": {
+            "duree": 0,
+            "chemin": [
+              "solo"
+            ]
+          },
+          "hidden": true
+        },
+        {
+          "args": [
+            {
+              "s": {
+                "a": 1,
+                "b": 2
+              },
+              "a": {
+                "s": 1,
+                "x": 1,
+                "y": 1
+              },
+              "b": {
+                "s": 2,
+                "t": 2
+              },
+              "x": {
+                "a": 1,
+                "t": 2
+              },
+              "y": {
+                "a": 1,
+                "t": 2
+              },
+              "t": {
+                "b": 2,
+                "x": 2,
+                "y": 2
+              },
+              "z": {}
+            },
+            "inconnu",
+            "inconnu"
+          ],
+          "expected": null,
+          "hidden": true
+        },
+        { "args": [{"d":{"b":1,"a":2},"b":{"d":1,"c":2,"a":1},"c":{"b":2,"a":1},"a":{"d":2,"b":1,"c":1}},"d","c"], "expected": {"duree":3,"chemin":["d","a","c"]}, "hidden": true }
+      ],
+      "hint": "Les durées interdisent le parcours en largeur simple : il faut un algorithme de type Dijkstra. Pour l'égalité, calcule d'abord la durée minimale de **chaque** village jusqu'à l'arrivée ; ensuite, depuis le départ, avance en choisissant à chaque pas le plus petit nom parmi les voisins qui restent sur un trajet optimal."
+    },
+    {
+      "id": "d19-expert",
+      "day": 19,
+      "level": "expert",
+      "title": "Les routes à déneiger d'abord",
+      "concept": "Graphes : trouver les ponts",
+      "statement": "La tempête approche et il n'y a qu'un seul chasse-neige. Mère Noëlle veut savoir quelles routes dégager en priorité : celles dont la fermeture **couperait le village en deux**.\n\n`routes` est une liste de paires `[village1, village2]` : chaque route relie deux villages différents et se parcourt dans les deux sens. Une route est **critique** si, en la fermant, il existe deux villages qui pouvaient se rejoindre avant et qui ne le peuvent plus.\n\nÉcris une fonction `{fn}(routes)` qui renvoie la liste des routes critiques. Chaque route est écrite `[x, y]` avec `x` avant `y` dans l'ordre alphabétique, et la liste est triée par `x`, puis par `y`.\n\nPrécisions :\n- Les noms des villages sont en minuscules, sans accent.\n- La carte peut être en plusieurs morceaux dès le départ : cela ne change rien à la définition.\n- Si **deux routes** relient les deux mêmes villages, aucune des deux n'est critique : l'autre prend le relais.\n- Sans aucune route, renvoie la liste vide.\n- Il peut y avoir des milliers de routes : fermer chaque route une par une pour voir ce qui se passe serait trop lent. Il existe une méthode qui trouve tout en **un seul parcours** de la carte.\n\nExemple : avec `[[\"a\", \"b\"], [\"b\", \"c\"], [\"c\", \"a\"], [\"c\", \"d\"]]`, les villages `a`, `b` et `c` forment une boucle, où l'on peut toujours faire le tour par l'autre côté. Seule la route vers `d` est critique : `[[\"c\", \"d\"]]`.\n",
+      "fn": {
+        "javascript": "routesCritiques",
+        "python": "routes_critiques"
+      },
+      "starter": {
+        "javascript": "function routesCritiques(routes) {\n  // Renvoie la liste triée des routes critiques [x, y]\n}\n",
+        "python": "def routes_critiques(routes):\n    # Renvoie la liste triée des routes critiques [x, y]\n    pass\n"
+      },
+      "solution": {
+        "javascript": "function routesCritiques(routes) {\n  // voisins : village -> liste de [autre village, numéro de la route]\n  const voisins = new Map();\n  routes.forEach(([a, b], numero) => {\n    if (!voisins.has(a)) voisins.set(a, []);\n    if (!voisins.has(b)) voisins.set(b, []);\n    voisins.get(a).push([b, numero]);\n    voisins.get(b).push([a, numero]);\n  });\n  const ordre = new Map(); // ordre de découverte de chaque village\n  const critiques = [];\n  let compteur = 0;\n\n  // Renvoie le plus petit ordre de découverte atteignable depuis `village` et ce qu'il y a derrière.\n  function explorer(village, routeArrivee) {\n    ordre.set(village, compteur);\n    let plusHaut = compteur;\n    compteur++;\n    for (const [autre, numero] of voisins.get(village)) {\n      if (numero === routeArrivee) continue; // on ne rebrousse pas chemin par la même route\n      if (ordre.has(autre)) {\n        plusHaut = Math.min(plusHaut, ordre.get(autre));\n      } else {\n        const remonte = explorer(autre, numero);\n        plusHaut = Math.min(plusHaut, remonte);\n        // Derrière cette route, personne ne remonte jusqu'ici : c'est le seul passage.\n        if (remonte > ordre.get(village)) critiques.push(village < autre ? [village, autre] : [autre, village]);\n      }\n    }\n    return plusHaut;\n  }\n\n  for (const village of voisins.keys()) {\n    if (!ordre.has(village)) explorer(village, -1);\n  }\n  return critiques.sort((p, q) => (p[0] < q[0] ? -1 : p[0] > q[0] ? 1 : p[1] < q[1] ? -1 : p[1] > q[1] ? 1 : 0));\n}\n",
+        "python": "def routes_critiques(routes):\n    # voisins : village -> liste de (autre village, numéro de la route)\n    voisins = {}\n    for numero, (a, b) in enumerate(routes):\n        voisins.setdefault(a, []).append((b, numero))\n        voisins.setdefault(b, []).append((a, numero))\n    ordre = {}  # ordre de découverte de chaque village\n    critiques = []\n\n    # Renvoie le plus petit ordre de découverte atteignable depuis `village` et ce qu'il y a derrière.\n    def explorer(village, route_arrivee):\n        ordre[village] = len(ordre)\n        plus_haut = ordre[village]\n        for autre, numero in voisins[village]:\n            if numero == route_arrivee:\n                continue  # on ne rebrousse pas chemin par la même route\n            if autre in ordre:\n                plus_haut = min(plus_haut, ordre[autre])\n            else:\n                remonte = explorer(autre, numero)\n                plus_haut = min(plus_haut, remonte)\n                # Derrière cette route, personne ne remonte jusqu'ici : c'est le seul passage.\n                if remonte > ordre[village]:\n                    critiques.append(sorted([village, autre]))\n        return plus_haut\n\n    for village in voisins:\n        if village not in ordre:\n            explorer(village, -1)\n    return sorted(critiques)\n"
+      },
+      "tests": [
+        {
+          "args": [
+            [
+              [
+                "a",
+                "b"
+              ],
+              [
+                "b",
+                "c"
+              ],
+              [
+                "c",
+                "a"
+              ],
+              [
+                "c",
+                "d"
+              ]
+            ]
+          ],
+          "expected": [
+            [
+              "c",
+              "d"
+            ]
+          ]
+        },
+        {
+          "args": [
+            [
+              [
+                "a",
+                "b"
+              ],
+              [
+                "b",
+                "c"
+              ]
+            ]
+          ],
+          "expected": [
+            [
+              "a",
+              "b"
+            ],
+            [
+              "b",
+              "c"
+            ]
+          ]
+        },
+        {
+          "args": [
+            [
+              [
+                "a",
+                "b"
+              ],
+              [
+                "a",
+                "b"
+              ]
+            ]
+          ],
+          "expected": []
+        },
+        {
+          "args": [
+            [
+              [
+                "lac",
+                "gare"
+              ],
+              [
+                "gare",
+                "moulin"
+              ],
+              [
+                "moulin",
+                "lac"
+              ],
+              [
+                "moulin",
+                "pont"
+              ],
+              [
+                "pont",
+                "mairie"
+              ],
+              [
+                "mairie",
+                "ecole"
+              ],
+              [
+                "ecole",
+                "pont"
+              ],
+              [
+                "ecole",
+                "ferme"
+              ]
+            ]
+          ],
+          "expected": [
+            [
+              "ecole",
+              "ferme"
+            ],
+            [
+              "moulin",
+              "pont"
+            ]
+          ]
+        },
+        {
+          "args": [
+            []
+          ],
+          "expected": [],
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              [
+                "b",
+                "a"
+              ]
+            ]
+          ],
+          "expected": [
+            [
+              "a",
+              "b"
+            ]
+          ],
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              [
+                "a",
+                "b"
+              ],
+              [
+                "c",
+                "d"
+              ],
+              [
+                "d",
+                "e"
+              ],
+              [
+                "e",
+                "c"
+              ]
+            ]
+          ],
+          "expected": [
+            [
+              "a",
+              "b"
+            ]
+          ],
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              [
+                "a",
+                "b"
+              ],
+              [
+                "b",
+                "a"
+              ],
+              [
+                "b",
+                "c"
+              ]
+            ]
+          ],
+          "expected": [
+            [
+              "b",
+              "c"
+            ]
+          ],
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              [
+                "v00",
+                "v06"
+              ],
+              [
+                "v01",
+                "v04"
+              ],
+              [
+                "v03",
+                "v07"
+              ],
+              [
+                "v05",
+                "v04"
+              ],
+              [
+                "v04",
+                "v07"
+              ],
+              [
+                "v02",
+                "v04"
+              ],
+              [
+                "v04",
+                "v00"
+              ],
+              [
+                "v04",
+                "v03"
+              ],
+              [
+                "v05",
+                "v02"
+              ]
+            ]
+          ],
+          "expected": [
+            [
+              "v00",
+              "v04"
+            ],
+            [
+              "v00",
+              "v06"
+            ],
+            [
+              "v01",
+              "v04"
+            ]
+          ],
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              [
+                "v01",
+                "v05"
+              ],
+              [
+                "v04",
+                "v00"
+              ],
+              [
+                "v09",
+                "v11"
+              ],
+              [
+                "v03",
+                "v01"
+              ],
+              [
+                "v03",
+                "v01"
+              ],
+              [
+                "v08",
+                "v07"
+              ],
+              [
+                "v06",
+                "v01"
+              ],
+              [
+                "v01",
+                "v06"
+              ],
+              [
+                "v00",
+                "v01"
+              ],
+              [
+                "v09",
+                "v06"
+              ],
+              [
+                "v06",
+                "v07"
+              ],
+              [
+                "v10",
+                "v04"
+              ],
+              [
+                "v09",
+                "v08"
+              ],
+              [
+                "v02",
+                "v10"
+              ]
+            ]
+          ],
+          "expected": [
+            [
+              "v00",
+              "v01"
+            ],
+            [
+              "v00",
+              "v04"
+            ],
+            [
+              "v01",
+              "v05"
+            ],
+            [
+              "v02",
+              "v10"
+            ],
+            [
+              "v04",
+              "v10"
+            ],
+            [
+              "v09",
+              "v11"
+            ]
+          ],
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              [
+                "v06",
+                "v03"
+              ],
+              [
+                "v12",
+                "v08"
+              ],
+              [
+                "v09",
+                "v11"
+              ],
+              [
+                "v01",
+                "v12"
+              ],
+              [
+                "v03",
+                "v06"
+              ],
+              [
+                "v03",
+                "v02"
+              ],
+              [
+                "v02",
+                "v10"
+              ],
+              [
+                "v07",
+                "v01"
+              ],
+              [
+                "v08",
+                "v11"
+              ],
+              [
+                "v07",
+                "v00"
+              ],
+              [
+                "v07",
+                "v14"
+              ],
+              [
+                "v09",
+                "v01"
+              ],
+              [
+                "v08",
+                "v07"
+              ],
+              [
+                "v13",
+                "v08"
+              ],
+              [
+                "v07",
+                "v05"
+              ],
+              [
+                "v06",
+                "v08"
+              ]
+            ]
+          ],
+          "expected": [
+            [
+              "v00",
+              "v07"
+            ],
+            [
+              "v02",
+              "v03"
+            ],
+            [
+              "v02",
+              "v10"
+            ],
+            [
+              "v05",
+              "v07"
+            ],
+            [
+              "v06",
+              "v08"
+            ],
+            [
+              "v07",
+              "v14"
+            ],
+            [
+              "v08",
+              "v13"
+            ]
+          ],
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              [
+                "v05",
+                "v00"
+              ],
+              [
+                "v07",
+                "v02"
+              ],
+              [
+                "v00",
+                "v14"
+              ],
+              [
+                "v12",
+                "v14"
+              ],
+              [
+                "v03",
+                "v08"
+              ],
+              [
+                "v04",
+                "v15"
+              ],
+              [
+                "v09",
+                "v14"
+              ],
+              [
+                "v12",
+                "v09"
+              ],
+              [
+                "v05",
+                "v14"
+              ],
+              [
+                "v14",
+                "v09"
+              ],
+              [
+                "v09",
+                "v01"
+              ],
+              [
+                "v02",
+                "v06"
+              ],
+              [
+                "v09",
+                "v13"
+              ],
+              [
+                "v03",
+                "v14"
+              ],
+              [
+                "v02",
+                "v14"
+              ],
+              [
+                "v16",
+                "v14"
+              ],
+              [
+                "v00",
+                "v05"
+              ],
+              [
+                "v13",
+                "v08"
+              ],
+              [
+                "v02",
+                "v19"
+              ],
+              [
+                "v04",
+                "v05"
+              ],
+              [
+                "v13",
+                "v09"
+              ],
+              [
+                "v14",
+                "v03"
+              ],
+              [
+                "v06",
+                "v15"
+              ],
+              [
+                "v02",
+                "v13"
+              ]
+            ]
+          ],
+          "expected": [
+            [
+              "v01",
+              "v09"
+            ],
+            [
+              "v02",
+              "v07"
+            ],
+            [
+              "v02",
+              "v19"
+            ],
+            [
+              "v14",
+              "v16"
+            ]
+          ],
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              [
+                "v20",
+                "v04"
+              ],
+              [
+                "v00",
+                "v12"
+              ],
+              [
+                "v19",
+                "v20"
+              ],
+              [
+                "v09",
+                "v20"
+              ],
+              [
+                "v01",
+                "v18"
+              ],
+              [
+                "v17",
+                "v18"
+              ],
+              [
+                "v11",
+                "v08"
+              ],
+              [
+                "v06",
+                "v08"
+              ],
+              [
+                "v16",
+                "v10"
+              ],
+              [
+                "v01",
+                "v00"
+              ],
+              [
+                "v24",
+                "v08"
+              ],
+              [
+                "v20",
+                "v06"
+              ],
+              [
+                "v02",
+                "v06"
+              ],
+              [
+                "v09",
+                "v16"
+              ],
+              [
+                "v14",
+                "v24"
+              ],
+              [
+                "v16",
+                "v04"
+              ],
+              [
+                "v10",
+                "v16"
+              ],
+              [
+                "v08",
+                "v17"
+              ],
+              [
+                "v22",
+                "v23"
+              ],
+              [
+                "v23",
+                "v09"
+              ],
+              [
+                "v20",
+                "v23"
+              ],
+              [
+                "v21",
+                "v16"
+              ],
+              [
+                "v09",
+                "v20"
+              ],
+              [
+                "v16",
+                "v18"
+              ],
+              [
+                "v13",
+                "v15"
+              ],
+              [
+                "v01",
+                "v07"
+              ]
+            ]
+          ],
+          "expected": [
+            [
+              "v00",
+              "v01"
+            ],
+            [
+              "v00",
+              "v12"
+            ],
+            [
+              "v01",
+              "v07"
+            ],
+            [
+              "v01",
+              "v18"
+            ],
+            [
+              "v02",
+              "v06"
+            ],
+            [
+              "v08",
+              "v11"
+            ],
+            [
+              "v08",
+              "v24"
+            ],
+            [
+              "v13",
+              "v15"
+            ],
+            [
+              "v14",
+              "v24"
+            ],
+            [
+              "v16",
+              "v21"
+            ],
+            [
+              "v19",
+              "v20"
+            ],
+            [
+              "v22",
+              "v23"
+            ]
+          ],
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              [
+                "n00",
+                "n01"
+              ],
+              [
+                "n01",
+                "n02"
+              ],
+              [
+                "n02",
+                "n03"
+              ],
+              [
+                "n03",
+                "n04"
+              ],
+              [
+                "n04",
+                "n05"
+              ],
+              [
+                "n05",
+                "n06"
+              ],
+              [
+                "n06",
+                "n07"
+              ],
+              [
+                "n07",
+                "n08"
+              ],
+              [
+                "n08",
+                "n09"
+              ],
+              [
+                "n09",
+                "n10"
+              ],
+              [
+                "n10",
+                "n11"
+              ],
+              [
+                "n11",
+                "n12"
+              ],
+              [
+                "n12",
+                "n13"
+              ],
+              [
+                "n13",
+                "n14"
+              ],
+              [
+                "n14",
+                "n15"
+              ],
+              [
+                "n15",
+                "n16"
+              ],
+              [
+                "n16",
+                "n17"
+              ],
+              [
+                "n17",
+                "n18"
+              ],
+              [
+                "n18",
+                "n19"
+              ],
+              [
+                "n19",
+                "n20"
+              ],
+              [
+                "n20",
+                "n21"
+              ],
+              [
+                "n21",
+                "n22"
+              ],
+              [
+                "n22",
+                "n23"
+              ],
+              [
+                "n23",
+                "n24"
+              ],
+              [
+                "n24",
+                "n25"
+              ],
+              [
+                "n25",
+                "n26"
+              ],
+              [
+                "n26",
+                "n27"
+              ],
+              [
+                "n27",
+                "n28"
+              ],
+              [
+                "n28",
+                "n29"
+              ],
+              [
+                "n29",
+                "n30"
+              ],
+              [
+                "n30",
+                "n31"
+              ],
+              [
+                "n31",
+                "n32"
+              ],
+              [
+                "n32",
+                "n33"
+              ],
+              [
+                "n33",
+                "n34"
+              ],
+              [
+                "n34",
+                "n35"
+              ],
+              [
+                "n35",
+                "n36"
+              ],
+              [
+                "n36",
+                "n37"
+              ],
+              [
+                "n37",
+                "n38"
+              ],
+              [
+                "n38",
+                "n39"
+              ],
+              [
+                "n39",
+                "n40"
+              ]
+            ]
+          ],
+          "expected": [
+            [
+              "n00",
+              "n01"
+            ],
+            [
+              "n01",
+              "n02"
+            ],
+            [
+              "n02",
+              "n03"
+            ],
+            [
+              "n03",
+              "n04"
+            ],
+            [
+              "n04",
+              "n05"
+            ],
+            [
+              "n05",
+              "n06"
+            ],
+            [
+              "n06",
+              "n07"
+            ],
+            [
+              "n07",
+              "n08"
+            ],
+            [
+              "n08",
+              "n09"
+            ],
+            [
+              "n09",
+              "n10"
+            ],
+            [
+              "n10",
+              "n11"
+            ],
+            [
+              "n11",
+              "n12"
+            ],
+            [
+              "n12",
+              "n13"
+            ],
+            [
+              "n13",
+              "n14"
+            ],
+            [
+              "n14",
+              "n15"
+            ],
+            [
+              "n15",
+              "n16"
+            ],
+            [
+              "n16",
+              "n17"
+            ],
+            [
+              "n17",
+              "n18"
+            ],
+            [
+              "n18",
+              "n19"
+            ],
+            [
+              "n19",
+              "n20"
+            ],
+            [
+              "n20",
+              "n21"
+            ],
+            [
+              "n21",
+              "n22"
+            ],
+            [
+              "n22",
+              "n23"
+            ],
+            [
+              "n23",
+              "n24"
+            ],
+            [
+              "n24",
+              "n25"
+            ],
+            [
+              "n25",
+              "n26"
+            ],
+            [
+              "n26",
+              "n27"
+            ],
+            [
+              "n27",
+              "n28"
+            ],
+            [
+              "n28",
+              "n29"
+            ],
+            [
+              "n29",
+              "n30"
+            ],
+            [
+              "n30",
+              "n31"
+            ],
+            [
+              "n31",
+              "n32"
+            ],
+            [
+              "n32",
+              "n33"
+            ],
+            [
+              "n33",
+              "n34"
+            ],
+            [
+              "n34",
+              "n35"
+            ],
+            [
+              "n35",
+              "n36"
+            ],
+            [
+              "n36",
+              "n37"
+            ],
+            [
+              "n37",
+              "n38"
+            ],
+            [
+              "n38",
+              "n39"
+            ],
+            [
+              "n39",
+              "n40"
+            ]
+          ],
+          "hidden": true
+        }
+      ],
+      "hint": "Explore la carte en profondeur en numérotant les villages dans l'ordre où tu les découvres. Pour chaque village, retiens le plus petit numéro qu'on peut atteindre depuis lui ou depuis ce qu'il y a derrière lui, sans repasser par la route d'arrivée. Si, derrière une route, personne ne sait remonter plus haut que le village d'arrivée, il n'y a pas d'autre chemin."
+    }
+  ]
+}

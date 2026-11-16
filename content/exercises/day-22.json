@@ -1,0 +1,1157 @@
+{
+  "day": 22,
+  "concept": "Programmation dynamique",
+  "exercises": [
+    {
+      "id": "d22-debutant",
+      "level": "debutant",
+      "title": "Charger dans l'ordre",
+      "concept": "Approche gloutonne",
+      "statement": "Le traîneau ne peut pas tout porter : il supporte un poids maximal de `capacite`. Les cadeaux arrivent un par un, dans un ordre fixé, et tu les charges **dans cet ordre** :\n\n1. si le cadeau tient (le poids total chargé, avec lui, ne dépasse pas `capacite`), tu le charges ;\n2. s'il est trop lourd pour la place qu'il reste, tu **le sautes** et tu passes au suivant : un cadeau plus léger peut encore tenir derrière.\n\nÉcris une fonction `{fn}(poids, capacite)` qui reçoit la liste des poids des cadeaux (des entiers strictement positifs, dans l'ordre d'arrivée) et renvoie le **poids total chargé** dans le traîneau.\n\nUn poids total égal à `capacite` est autorisé. Sans cadeau, ou avec une capacité de `0`, le traîneau part à vide : `0`.\n\nExemple : avec les poids `[4, 8, 1, 4, 2, 1]` et une capacité de `10`, on charge 4, on saute 8 (4 + 8 = 12 dépasse), on charge 1 (total 5), 4 (total 9), on saute 2 (11 dépasse) et on charge 1 (total 10). Réponse : `10`.\n\nC'est ce qu'on appelle une approche **gloutonne** : on décide sur place, sans jamais revenir en arrière.\n",
+      "fn": {
+        "javascript": "chargerTraineau",
+        "python": "charger_traineau"
+      },
+      "starter": {
+        "javascript": "function chargerTraineau(poids, capacite) {\n  // Renvoie le poids total chargé\n}\n",
+        "python": "def charger_traineau(poids, capacite):\n    # Renvoie le poids total chargé\n    pass\n"
+      },
+      "solution": {
+        "javascript": "function chargerTraineau(poids, capacite) {\n  let total = 0;\n  for (const p of poids) {\n    if (total + p <= capacite) {\n      total += p;\n    }\n  }\n  return total;\n}\n",
+        "python": "def charger_traineau(poids, capacite):\n    total = 0\n    for p in poids:\n        if total + p <= capacite:\n            total += p\n    return total\n"
+      },
+      "hint": "Garde un compteur du poids déjà chargé. Pour chaque cadeau, une seule question : « avec lui, est-ce que je dépasse la capacité ? ». Si oui, tu ne fais rien et tu continues la boucle (n'arrête pas tout).",
+      "tests": [
+        {
+          "args": [
+            [
+              4,
+              8,
+              1,
+              4,
+              2,
+              1
+            ],
+            10
+          ],
+          "expected": 10
+        },
+        {
+          "args": [
+            [
+              5,
+              5,
+              5
+            ],
+            10
+          ],
+          "expected": 10
+        },
+        {
+          "args": [
+            [
+              6,
+              3,
+              9
+            ],
+            5
+          ],
+          "expected": 3
+        },
+        {
+          "args": [
+            [],
+            10
+          ],
+          "expected": 0
+        },
+        {
+          "args": [
+            [
+              4,
+              8,
+              1
+            ],
+            10
+          ],
+          "expected": 5,
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              3,
+              3,
+              3
+            ],
+            0
+          ],
+          "expected": 0,
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              12
+            ],
+            12
+          ],
+          "expected": 12,
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              7,
+              2,
+              2,
+              2,
+              1
+            ],
+            6
+          ],
+          "expected": 6,
+          "hidden": true
+        }
+      ],
+      "day": 22
+    },
+    {
+      "id": "d22-intermediaire",
+      "level": "intermediaire",
+      "title": "Le sac à dos de Mère Noëlle",
+      "concept": "Sac à dos 0/1",
+      "statement": "Mère Noëlle a un doute : charger les cadeaux dans l'ordre, ce n'est peut-être pas la meilleure idée. Chaque cadeau a un **poids** et une **joie** (des entiers), et le traîneau supporte un poids total d'au plus `capacite`.\n\nÉcris une fonction `{fn}(cadeaux, capacite)` où `cadeaux` est une liste de paires `[poids, joie]`. Elle renvoie la **joie totale maximale** que l'on peut emporter, sachant que chaque cadeau est chargé **une fois au plus** (ou pas du tout).\n\n- Les poids sont des entiers `>= 1`, les joies des entiers `>= 0`, la capacité un entier `>= 0`.\n- Un poids total égal à `capacite` est autorisé.\n- Un cadeau plus lourd que la capacité ne peut jamais être chargé. Sans cadeau, la réponse est `0`.\n\nExemple : avec `[[10, 60], [20, 100], [30, 120]]` et une capacité de `50`, la meilleure joie est `220` (les deux derniers cadeaux). Prendre d'abord le cadeau le plus « rentable » au kilo ne donnerait que `160`.\n\nPas de raccourci glouton ici : il faut comparer les possibilités sans toutes les essayer.\n",
+      "fn": {
+        "javascript": "joieMaximale",
+        "python": "joie_maximale"
+      },
+      "starter": {
+        "javascript": "function joieMaximale(cadeaux, capacite) {\n  // Renvoie la joie totale maximale\n}\n",
+        "python": "def joie_maximale(cadeaux, capacite):\n    # Renvoie la joie totale maximale\n    pass\n"
+      },
+      "solution": {
+        "javascript": "function joieMaximale(cadeaux, capacite) {\n  // sac[c] : meilleure joie possible avec une capacité de c\n  const sac = new Array(capacite + 1).fill(0);\n  for (const [poids, joie] of cadeaux) {\n    for (let c = capacite; c >= poids; c--) {\n      sac[c] = Math.max(sac[c], sac[c - poids] + joie);\n    }\n  }\n  return sac[capacite];\n}\n",
+        "python": "def joie_maximale(cadeaux, capacite):\n    # sac[c] : meilleure joie possible avec une capacité de c\n    sac = [0] * (capacite + 1)\n    for poids, joie in cadeaux:\n        for c in range(capacite, poids - 1, -1):\n            sac[c] = max(sac[c], sac[c - poids] + joie)\n    return sac[capacite]\n"
+      },
+      "hint": "Pour chaque cadeau et chaque capacité c, deux choix : ne pas le prendre (la meilleure joie reste celle d'avant) ou le prendre (sa joie, plus la meilleure joie pour la capacité c moins son poids). Garde une ligne de résultats par capacité, et parcours les capacités à l'envers pour ne pas utiliser un même cadeau deux fois.",
+      "tests": [
+        {
+          "args": [
+            [
+              [
+                10,
+                60
+              ],
+              [
+                20,
+                100
+              ],
+              [
+                30,
+                120
+              ]
+            ],
+            50
+          ],
+          "expected": 220
+        },
+        {
+          "args": [
+            [
+              [
+                3,
+                4
+              ],
+              [
+                4,
+                5
+              ],
+              [
+                5,
+                6
+              ]
+            ],
+            7
+          ],
+          "expected": 9
+        },
+        {
+          "args": [
+            [],
+            10
+          ],
+          "expected": 0
+        },
+        {
+          "args": [
+            [
+              [
+                4,
+                7
+              ]
+            ],
+            3
+          ],
+          "expected": 0
+        },
+        {
+          "args": [
+            [
+              [
+                6,
+                10
+              ],
+              [
+                5,
+                6
+              ],
+              [
+                5,
+                6
+              ]
+            ],
+            10
+          ],
+          "expected": 12,
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              [
+                2,
+                3
+              ],
+              [
+                3,
+                4
+              ],
+              [
+                4,
+                5
+              ],
+              [
+                5,
+                6
+              ]
+            ],
+            5
+          ],
+          "expected": 7,
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              [
+                1,
+                5
+              ],
+              [
+                1,
+                5
+              ]
+            ],
+            1
+          ],
+          "expected": 5,
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              [
+                5,
+                9
+              ]
+            ],
+            5
+          ],
+          "expected": 9,
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              [
+                1,
+                1
+              ]
+            ],
+            0
+          ],
+          "expected": 0,
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              [
+                12,
+                4
+              ],
+              [
+                2,
+                2
+              ],
+              [
+                1,
+                1
+              ],
+              [
+                1,
+                2
+              ],
+              [
+                4,
+                10
+              ]
+            ],
+            15
+          ],
+          "expected": 15,
+          "hidden": true
+        },
+        { "args": [[[4,4],[5,9],[8,3],[7,2],[9,9],[5,5],[4,9],[7,9],[6,4],[4,4],[9,8],[8,2],[8,3],[4,2],[5,2],[9,6],[6,8],[8,8],[6,9],[4,7],[3,2],[4,9],[4,6],[8,8],[9,6],[6,8],[7,7],[7,8],[7,5],[5,2],[9,6],[7,4],[8,7],[7,3],[8,5],[8,6]],80], "expected": 109, "hidden": true }
+      ],
+      "day": 22
+    },
+    {
+      "id": "d22-confirme",
+      "level": "confirme",
+      "title": "Quels cadeaux charger ?",
+      "concept": "Sac à dos 0/1 avec reconstruction",
+      "statement": "Cette fois, Mère Noëlle ne veut pas seulement la joie maximale : elle veut **la liste des cadeaux à charger**. Chaque cadeau est une paire `[poids, joie]` (des entiers), la liste `cadeaux` est numérotée à partir de `0`, et le traîneau supporte un poids total d'au plus `capacite`. Chaque cadeau est chargé une fois au plus.\n\nÉcris une fonction `{fn}(cadeaux, capacite)` qui renvoie la liste des **numéros** des cadeaux chargés, **triés par ordre croissant**.\n\nPlusieurs choix peuvent donner la même joie maximale : pour que la réponse soit unique, applique ces deux règles, dans cet ordre :\n\n1. parmi les choix de joie maximale, prends celui de **poids total le plus faible** ;\n2. s'il en reste plusieurs, prends celui dont la liste de numéros est la plus petite **dans l'ordre du dictionnaire** (on compare les numéros un par un, de gauche à droite : `[0, 4]` passe avant `[1, 2]`, et `[0, 2]` passe avant `[1]` : on s'arrête dès qu'un numéro diffère).\n\nPrécisions :\n- Les poids sont des entiers `>= 1`, les joies des entiers `>= 0`, la capacité un entier `>= 0`. Un poids total égal à `capacite` est autorisé.\n- Un cadeau qui n'apporte aucune joie n'est jamais chargé (la règle 1 s'en charge).\n- Si rien ne peut ou ne doit être chargé, renvoie la liste vide.\n\nExemple : `[[10, 60], [20, 100], [30, 120]]` avec une capacité de `50` donne `[1, 2]`. Avec `[[2, 3], [2, 3], [3, 6]]` et une capacité de `4`, charger les cadeaux 0 et 1 comme le cadeau 2 seul donne une joie de `6`, mais le cadeau 2 seul est plus léger : `[2]`.\n",
+      "fn": {
+        "javascript": "choisirCadeaux",
+        "python": "choisir_cadeaux"
+      },
+      "starter": {
+        "javascript": "function choisirCadeaux(cadeaux, capacite) {\n  // Renvoie les numéros des cadeaux chargés, triés\n}\n",
+        "python": "def choisir_cadeaux(cadeaux, capacite):\n    # Renvoie les numéros des cadeaux chargés, triés\n    pass\n"
+      },
+      "solution": {
+        "javascript": "function choisirCadeaux(cadeaux, capacite) {\n  const n = cadeaux.length;\n  // joie[i][c], poids[i][c] : meilleur résultat (joie max, puis poids min) avec les cadeaux i.. et une capacité c\n  const joie = [];\n  const poids = [];\n  for (let i = 0; i <= n; i++) {\n    joie.push(new Array(capacite + 1).fill(0));\n    poids.push(new Array(capacite + 1).fill(0));\n  }\n  for (let i = n - 1; i >= 0; i--) {\n    const [p, j] = cadeaux[i];\n    for (let c = 0; c <= capacite; c++) {\n      joie[i][c] = joie[i + 1][c];\n      poids[i][c] = poids[i + 1][c];\n      if (p <= c) {\n        const v = j + joie[i + 1][c - p];\n        const w = p + poids[i + 1][c - p];\n        if (v > joie[i][c] || (v === joie[i][c] && w < poids[i][c])) {\n          joie[i][c] = v;\n          poids[i][c] = w;\n        }\n      }\n    }\n  }\n  const choix = [];\n  let reste = capacite;\n  for (let i = 0; i < n; i++) {\n    const [p, j] = cadeaux[i];\n    if (p <= reste && j + joie[i + 1][reste - p] === joie[i][reste] && p + poids[i + 1][reste - p] === poids[i][reste]) {\n      choix.push(i);\n      reste -= p;\n    }\n  }\n  return choix;\n}\n",
+        "python": "def choisir_cadeaux(cadeaux, capacite):\n    n = len(cadeaux)\n    # joie[i][c], poids[i][c] : meilleur résultat (joie max, puis poids min) avec les cadeaux i.. et une capacité c\n    joie = [[0] * (capacite + 1) for _ in range(n + 1)]\n    poids = [[0] * (capacite + 1) for _ in range(n + 1)]\n    for i in range(n - 1, -1, -1):\n        p, j = cadeaux[i]\n        for c in range(capacite + 1):\n            joie[i][c] = joie[i + 1][c]\n            poids[i][c] = poids[i + 1][c]\n            if p <= c:\n                v = j + joie[i + 1][c - p]\n                w = p + poids[i + 1][c - p]\n                if v > joie[i][c] or (v == joie[i][c] and w < poids[i][c]):\n                    joie[i][c] = v\n                    poids[i][c] = w\n    choix = []\n    reste = capacite\n    for i in range(n):\n        p, j = cadeaux[i]\n        if p <= reste and j + joie[i + 1][reste - p] == joie[i][reste] and p + poids[i + 1][reste - p] == poids[i][reste]:\n            choix.append(i)\n            reste -= p\n    return choix\n"
+      },
+      "hint": "Calcule d'abord, pour chaque tranche de cadeaux et chaque capacité, le meilleur résultat sous forme de couple (joie, poids). Pour la règle du dictionnaire, construis ce tableau en partant de la fin de la liste : en reparcourant ensuite les cadeaux du premier au dernier, tu peux prendre le cadeau courant chaque fois que cela garde le résultat optimal.",
+      "tests": [
+        {
+          "args": [
+            [
+              [
+                10,
+                60
+              ],
+              [
+                20,
+                100
+              ],
+              [
+                30,
+                120
+              ]
+            ],
+            50
+          ],
+          "expected": [
+            1,
+            2
+          ]
+        },
+        {
+          "args": [
+            [
+              [
+                2,
+                3
+              ],
+              [
+                2,
+                3
+              ],
+              [
+                3,
+                6
+              ]
+            ],
+            4
+          ],
+          "expected": [
+            2
+          ]
+        },
+        {
+          "args": [
+            [
+              [
+                1,
+                5
+              ],
+              [
+                1,
+                5
+              ]
+            ],
+            1
+          ],
+          "expected": [
+            0
+          ]
+        },
+        {
+          "args": [
+            [
+              [
+                5,
+                9
+              ]
+            ],
+            3
+          ],
+          "expected": []
+        },
+        {
+          "args": [
+            [],
+            10
+          ],
+          "expected": [],
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              [
+                3,
+                6
+              ],
+              [
+                2,
+                4
+              ],
+              [
+                1,
+                2
+              ]
+            ],
+            3
+          ],
+          "expected": [
+            0
+          ],
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              [
+                1,
+                0
+              ],
+              [
+                2,
+                5
+              ]
+            ],
+            3
+          ],
+          "expected": [
+            1
+          ],
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              [
+                4,
+                10
+              ],
+              [
+                3,
+                7
+              ],
+              [
+                2,
+                5
+              ],
+              [
+                1,
+                1
+              ]
+            ],
+            5
+          ],
+          "expected": [
+            1,
+            2
+          ],
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              [
+                1,
+                2
+              ],
+              [
+                2,
+                3
+              ],
+              [
+                3,
+                4
+              ],
+              [
+                2,
+                3
+              ],
+              [
+                1,
+                2
+              ],
+              [
+                4,
+                6
+              ]
+            ],
+            6
+          ],
+          "expected": [
+            0,
+            1,
+            3,
+            4
+          ],
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              [
+                2,
+                4
+              ],
+              [
+                3,
+                4
+              ],
+              [
+                3,
+                4
+              ],
+              [
+                1,
+                1
+              ]
+            ],
+            0
+          ],
+          "expected": [],
+          "hidden": true
+        },
+        { "args": [[[2,3],[3,3]],3], "expected": [0], "hidden": true },
+        { "args": [[[1,1],[2,2],[1,1]],2], "expected": [0,2], "hidden": true },
+        { "args": [[[4,4],[5,9],[8,3],[7,2],[9,9],[5,5],[4,9],[7,9],[6,4],[4,4],[9,8],[8,2],[8,3],[4,2],[5,2],[9,6],[6,8],[8,8],[6,9],[4,7],[3,2],[4,9],[4,6],[8,8],[9,6],[6,8],[7,7],[7,8],[7,5],[5,2],[9,6],[7,4],[8,7],[7,3],[8,5],[8,6]],80], "expected": [0,1,6,7,16,17,18,19,21,22,23,25,26,27], "hidden": true }
+      ],
+      "day": 22
+    },
+    {
+      "id": "d22-expert",
+      "day": 22,
+      "level": "expert",
+      "title": "Un seul cadeau par famille",
+      "concept": "Sac à dos à deux contraintes, avec des groupes",
+      "statement": "Le traîneau a deux limites, et Mère Noëlle vient d'en ajouter une troisième. Il ne doit dépasser ni un **poids** total de `poidsMax`, ni un **volume** total de `volumeMax`. Et pour que tout le village soit servi, on charge **au plus un cadeau par famille**.\n\nChaque cadeau est une liste `[famille, poids, volume, joie]` : le nom de la famille à qui il est destiné, son poids et son volume (des entiers `>= 1`) et la joie qu'il apporte (un entier `>= 0`). Une même famille peut avoir plusieurs cadeaux en attente : il faudra en choisir un seul, ou aucun.\n\nÉcris une fonction `{fn}(cadeaux, poidsMax, volumeMax)` qui renvoie la **plus grande joie totale** qu'on peut charger en respectant les trois règles.\n\nPrécisions :\n- `poidsMax` et `volumeMax` sont des entiers `>= 0`. Un total exactement égal à une limite est autorisé.\n- Si on ne peut rien charger, la réponse est `0`.\n- Il peut y avoir des dizaines de familles : essayer toutes les combinaisons est impossible. Les limites, elles, restent petites (quelques dizaines).\n\nExemple : avec `[[\"peluche\", 2, 2, 5], [\"peluche\", 3, 1, 8], [\"train\", 2, 2, 6], [\"livre\", 1, 1, 3]]`, `poidsMax = 4` et `volumeMax = 4`, on peut charger la peluche à `8` et le livre (poids `4`, volume `2`) pour une joie de `11`. Les deux peluches ensemble feraient mieux, mais elles vont à la même famille.\n",
+      "fn": {
+        "javascript": "joieDuTraineau",
+        "python": "joie_du_traineau"
+      },
+      "starter": {
+        "javascript": "function joieDuTraineau(cadeaux, poidsMax, volumeMax) {\n  // Renvoie la joie totale maximale\n}\n",
+        "python": "def joie_du_traineau(cadeaux, poids_max, volume_max):\n    # Renvoie la joie totale maximale\n    pass\n"
+      },
+      "solution": {
+        "javascript": "function joieDuTraineau(cadeaux, poidsMax, volumeMax) {\n  // Regrouper les cadeaux par famille.\n  const familles = new Map();\n  for (const [famille, poids, volume, joie] of cadeaux) {\n    if (!familles.has(famille)) familles.set(famille, []);\n    familles.get(famille).push([poids, volume, joie]);\n  }\n  // meilleur[p][v] : joie maximale avec un poids <= p et un volume <= v, pour les familles déjà vues.\n  let meilleur = Array.from({ length: poidsMax + 1 }, () => new Array(volumeMax + 1).fill(0));\n  for (const groupe of familles.values()) {\n    // On part d'une copie : chaque cadeau s'ajoute à un chargement SANS cette famille.\n    const suivant = meilleur.map((ligne) => ligne.slice());\n    for (const [poids, volume, joie] of groupe) {\n      for (let p = poids; p <= poidsMax; p++) {\n        for (let v = volume; v <= volumeMax; v++) {\n          const total = meilleur[p - poids][v - volume] + joie;\n          if (total > suivant[p][v]) suivant[p][v] = total;\n        }\n      }\n    }\n    meilleur = suivant;\n  }\n  return meilleur[poidsMax][volumeMax];\n}\n",
+        "python": "def joie_du_traineau(cadeaux, poids_max, volume_max):\n    # Regrouper les cadeaux par famille.\n    familles = {}\n    for famille, poids, volume, joie in cadeaux:\n        familles.setdefault(famille, []).append((poids, volume, joie))\n    # meilleur[p][v] : joie maximale avec un poids <= p et un volume <= v, pour les familles déjà vues.\n    meilleur = [[0] * (volume_max + 1) for _ in range(poids_max + 1)]\n    for groupe in familles.values():\n        # On part d'une copie : chaque cadeau s'ajoute à un chargement SANS cette famille.\n        suivant = [ligne[:] for ligne in meilleur]\n        for poids, volume, joie in groupe:\n            for p in range(poids, poids_max + 1):\n                for v in range(volume, volume_max + 1):\n                    total = meilleur[p - poids][v - volume] + joie\n                    if total > suivant[p][v]:\n                        suivant[p][v] = total\n        meilleur = suivant\n    return meilleur[poids_max][volume_max]\n"
+      },
+      "tests": [
+        {
+          "args": [
+            [
+              [
+                "peluche",
+                2,
+                2,
+                5
+              ],
+              [
+                "peluche",
+                3,
+                1,
+                8
+              ],
+              [
+                "train",
+                2,
+                2,
+                6
+              ],
+              [
+                "livre",
+                1,
+                1,
+                3
+              ]
+            ],
+            4,
+            4
+          ],
+          "expected": 11
+        },
+        {
+          "args": [
+            [
+              [
+                "luge",
+                5,
+                1,
+                9
+              ],
+              [
+                "luge",
+                1,
+                5,
+                9
+              ]
+            ],
+            4,
+            4
+          ],
+          "expected": 0
+        },
+        {
+          "args": [
+            [
+              [
+                "a",
+                1,
+                1,
+                4
+              ],
+              [
+                "b",
+                1,
+                1,
+                4
+              ],
+              [
+                "c",
+                1,
+                1,
+                4
+              ]
+            ],
+            2,
+            3
+          ],
+          "expected": 8
+        },
+        {
+          "args": [
+            [
+              [
+                "a",
+                3,
+                3,
+                10
+              ],
+              [
+                "a",
+                3,
+                3,
+                12
+              ],
+              [
+                "a",
+                3,
+                3,
+                11
+              ]
+            ],
+            9,
+            9
+          ],
+          "expected": 12
+        },
+        {
+          "args": [
+            [],
+            5,
+            5
+          ],
+          "expected": 0,
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              [
+                "a",
+                1,
+                1,
+                7
+              ]
+            ],
+            0,
+            9
+          ],
+          "expected": 0,
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              [
+                "a",
+                2,
+                9,
+                5
+              ],
+              [
+                "b",
+                9,
+                2,
+                5
+              ],
+              [
+                "c",
+                5,
+                5,
+                6
+              ]
+            ],
+            10,
+            10
+          ],
+          "expected": 6,
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              [
+                "a",
+                4,
+                1,
+                19
+              ],
+              [
+                "b",
+                3,
+                2,
+                20
+              ],
+              [
+                "b",
+                2,
+                4,
+                8
+              ],
+              [
+                "a",
+                6,
+                3,
+                17
+              ],
+              [
+                "c",
+                7,
+                1,
+                18
+              ],
+              [
+                "a",
+                5,
+                5,
+                13
+              ],
+              [
+                "a",
+                3,
+                2,
+                18
+              ],
+              [
+                "c",
+                1,
+                6,
+                19
+              ]
+            ],
+            10,
+            10
+          ],
+          "expected": 58,
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              [
+                "c",
+                5,
+                3,
+                12
+              ],
+              [
+                "c",
+                3,
+                5,
+                8
+              ],
+              [
+                "b",
+                7,
+                1,
+                10
+              ],
+              [
+                "a",
+                7,
+                5,
+                16
+              ],
+              [
+                "c",
+                7,
+                7,
+                5
+              ],
+              [
+                "c",
+                6,
+                7,
+                18
+              ],
+              [
+                "a",
+                5,
+                7,
+                16
+              ],
+              [
+                "d",
+                2,
+                2,
+                14
+              ],
+              [
+                "c",
+                2,
+                7,
+                12
+              ],
+              [
+                "a",
+                4,
+                4,
+                12
+              ]
+            ],
+            12,
+            9
+          ],
+          "expected": 38,
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              [
+                "a",
+                2,
+                8,
+                6
+              ],
+              [
+                "b",
+                1,
+                7,
+                11
+              ],
+              [
+                "b",
+                6,
+                6,
+                20
+              ],
+              [
+                "b",
+                8,
+                1,
+                2
+              ],
+              [
+                "e",
+                3,
+                4,
+                20
+              ],
+              [
+                "a",
+                1,
+                4,
+                13
+              ],
+              [
+                "a",
+                3,
+                8,
+                1
+              ],
+              [
+                "a",
+                8,
+                3,
+                18
+              ],
+              [
+                "c",
+                8,
+                8,
+                2
+              ],
+              [
+                "c",
+                2,
+                5,
+                3
+              ],
+              [
+                "a",
+                3,
+                6,
+                20
+              ],
+              [
+                "a",
+                6,
+                2,
+                5
+              ]
+            ],
+            15,
+            15
+          ],
+          "expected": 53,
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              [
+                "u",
+                7,
+                5,
+                5
+              ],
+              [
+                "p",
+                2,
+                4,
+                11
+              ],
+              [
+                "u",
+                2,
+                4,
+                17
+              ],
+              [
+                "r",
+                8,
+                2,
+                5
+              ],
+              [
+                "p",
+                5,
+                2,
+                18
+              ],
+              [
+                "s",
+                4,
+                7,
+                11
+              ],
+              [
+                "p",
+                3,
+                1,
+                7
+              ],
+              [
+                "s",
+                1,
+                4,
+                6
+              ],
+              [
+                "s",
+                7,
+                1,
+                13
+              ],
+              [
+                "s",
+                5,
+                4,
+                7
+              ],
+              [
+                "p",
+                5,
+                2,
+                18
+              ],
+              [
+                "q",
+                3,
+                6,
+                1
+              ],
+              [
+                "p",
+                8,
+                3,
+                19
+              ],
+              [
+                "r",
+                1,
+                8,
+                0
+              ]
+            ],
+            20,
+            14
+          ],
+          "expected": 50,
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              [
+                "c",
+                1,
+                4,
+                20
+              ],
+              [
+                "g",
+                8,
+                4,
+                14
+              ],
+              [
+                "e",
+                7,
+                3,
+                11
+              ],
+              [
+                "c",
+                5,
+                1,
+                12
+              ],
+              [
+                "e",
+                2,
+                3,
+                19
+              ],
+              [
+                "e",
+                6,
+                5,
+                16
+              ],
+              [
+                "c",
+                4,
+                5,
+                8
+              ],
+              [
+                "e",
+                3,
+                6,
+                16
+              ],
+              [
+                "d",
+                8,
+                3,
+                17
+              ],
+              [
+                "b",
+                8,
+                7,
+                10
+              ],
+              [
+                "g",
+                2,
+                7,
+                20
+              ],
+              [
+                "e",
+                4,
+                3,
+                2
+              ],
+              [
+                "a",
+                7,
+                6,
+                7
+              ],
+              [
+                "a",
+                3,
+                4,
+                17
+              ],
+              [
+                "c",
+                1,
+                6,
+                0
+              ],
+              [
+                "a",
+                1,
+                2,
+                3
+              ]
+            ],
+            25,
+            25
+          ],
+          "expected": 93,
+          "hidden": true
+        }
+      ],
+      "hint": "Garde un tableau à deux entrées : pour chaque poids et chaque volume disponibles, la meilleure joie obtenue avec les familles déjà traitées. Traite ensuite les familles une par une. Le point délicat : quand tu essaies les cadeaux d'une famille, chacun doit s'ajouter à un chargement qui ne contient **encore aucun** cadeau de cette famille."
+    }
+  ]
+}

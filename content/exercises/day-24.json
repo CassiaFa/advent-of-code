@@ -1,0 +1,1805 @@
+{
+  "day": 24,
+  "concept": "Finale : tout ce que tu as vu",
+  "exercises": [
+    {
+      "id": "d24-debutant",
+      "level": "debutant",
+      "title": "Le premier arrêt",
+      "concept": "Simulation pas à pas",
+      "statement": "C'est la dernière porte du calendrier ! Il y a cent ans, la tournée s'est arrêtée net. Ce soir, tu la relances. Commence par la version la plus simple : le traîneau décolle avec `capacite` cadeaux, et visite les maisons **dans l'ordre**. Chaque maison demande un certain nombre de cadeaux.\n\nÉcris une fonction `{fn}(capacite, demandes)` qui prend la capacité du traîneau et la liste des demandes (une par maison, des entiers `>= 0`), et renvoie un bilan sous la forme d'un dictionnaire avec trois clés : `\"livrees\"`, `\"oubliees\"` et `\"restants\"`.\n\nProcède étape par étape :\n\n1. Au départ, le traîneau contient `capacite` cadeaux. Prépare un compteur de maisons livrées et une liste de maisons oubliées.\n2. Pour chaque maison, dans l'ordre (la première porte le numéro `1`) :\n   - si elle demande `0` cadeau, elle est **ignorée** : ni livrée, ni oubliée ;\n   - si le traîneau contient **au moins** autant de cadeaux que demandé, tu livres : ajoute 1 aux maisons livrées et retire les cadeaux du traîneau ;\n   - sinon, la maison est **oubliée** : ajoute son numéro à la liste, et le traîneau continue sa route (une maison suivante, plus modeste, peut encore être servie).\n3. À la fin, `\"livrees\"` est le nombre de maisons livrées, `\"oubliees\"` la liste des numéros des maisons oubliées (dans l'ordre), et `\"restants\"` le nombre de cadeaux qui restent dans le traîneau.\n\nExemple : avec une capacité de `10` et les demandes `[4, 0, 5, 3, 1]`, la maison 1 est livrée (6 restants), la 2 ignorée, la 3 livrée (1 restant), la 4 oubliée, la 5 livrée (0 restant). Bilan : `{\"livrees\": 3, \"oubliees\": [4], \"restants\": 0}`.\n",
+      "fn": {
+        "javascript": "relancerTournee",
+        "python": "relancer_tournee"
+      },
+      "starter": {
+        "javascript": "function relancerTournee(capacite, demandes) {\n  // Renvoie { livrees, oubliees, restants }\n}\n",
+        "python": "def relancer_tournee(capacite, demandes):\n    # Renvoie { \"livrees\": ..., \"oubliees\": ..., \"restants\": ... }\n    pass\n"
+      },
+      "solution": {
+        "javascript": "function relancerTournee(capacite, demandes) {\n  let stock = capacite;\n  let livrees = 0;\n  const oubliees = [];\n  for (let i = 0; i < demandes.length; i++) {\n    const demande = demandes[i];\n    if (demande === 0) {\n      continue;\n    }\n    if (stock >= demande) {\n      stock -= demande;\n      livrees += 1;\n    } else {\n      oubliees.push(i + 1);\n    }\n  }\n  return { livrees: livrees, oubliees: oubliees, restants: stock };\n}\n",
+        "python": "def relancer_tournee(capacite, demandes):\n    stock = capacite\n    livrees = 0\n    oubliees = []\n    for i in range(len(demandes)):\n        demande = demandes[i]\n        if demande == 0:\n            continue\n        if stock >= demande:\n            stock -= demande\n            livrees += 1\n        else:\n            oubliees.append(i + 1)\n    return {\"livrees\": livrees, \"oubliees\": oubliees, \"restants\": stock}\n"
+      },
+      "hint": "Une boucle sur les maisons suffit, avec trois variables : le stock du traîneau, le nombre de livraisons et la liste des oubliées. Dans la boucle, traite d'abord le cas « demande nulle », puis « le stock suffit », sinon « oubliée ». Le numéro d'une maison, c'est sa position + 1.",
+      "tests": [
+        {
+          "args": [
+            10,
+            [
+              4,
+              0,
+              5,
+              3,
+              1
+            ]
+          ],
+          "expected": {
+            "livrees": 3,
+            "oubliees": [
+              4
+            ],
+            "restants": 0
+          }
+        },
+        {
+          "args": [
+            5,
+            [
+              2,
+              2,
+              2
+            ]
+          ],
+          "expected": {
+            "livrees": 2,
+            "oubliees": [
+              3
+            ],
+            "restants": 1
+          }
+        },
+        {
+          "args": [
+            100,
+            []
+          ],
+          "expected": {
+            "livrees": 0,
+            "oubliees": [],
+            "restants": 100
+          }
+        },
+        {
+          "args": [
+            3,
+            [
+              4,
+              5
+            ]
+          ],
+          "expected": {
+            "livrees": 0,
+            "oubliees": [
+              1,
+              2
+            ],
+            "restants": 3
+          }
+        },
+        {
+          "args": [
+            6,
+            [
+              7,
+              2,
+              9,
+              4
+            ]
+          ],
+          "expected": {
+            "livrees": 2,
+            "oubliees": [
+              1,
+              3
+            ],
+            "restants": 0
+          },
+          "hidden": true
+        },
+        {
+          "args": [
+            0,
+            [
+              0,
+              0
+            ]
+          ],
+          "expected": {
+            "livrees": 0,
+            "oubliees": [],
+            "restants": 0
+          },
+          "hidden": true
+        },
+        {
+          "args": [
+            4,
+            [
+              4
+            ]
+          ],
+          "expected": {
+            "livrees": 1,
+            "oubliees": [],
+            "restants": 0
+          },
+          "hidden": true
+        }
+      ],
+      "day": 24
+    },
+    {
+      "id": "d24-intermediaire",
+      "level": "intermediaire",
+      "title": "La tournée avec retours à l'atelier",
+      "concept": "Simulation avec plusieurs règles",
+      "statement": "Dernière porte, version sérieuse. Le traîneau peut maintenant **repasser par l'atelier** pour se recharger, et Mère Noëlle a glissé dans la liste des maisons quelques doublons : une même maison est parfois inscrite deux fois.\n\nÉcris une fonction `{fn}(capacite, arrets)` où `arrets` est une liste de paires `[nom, demande]` (nom en minuscules, demande entière `>= 1`), à visiter **dans l'ordre**. Le traîneau part de l'atelier avec `capacite` cadeaux. Pour chaque arrêt, applique ces règles **dans cet ordre** :\n\n1. Si la maison a **déjà été livrée** plus tôt, l'arrêt est ignoré (rien n'est compté).\n2. Sinon, si la demande est **supérieure à `capacite`**, elle ne pourra jamais être satisfaite : la maison est **oubliée** (son nom est ajouté à la liste des oubliées, une fois par arrêt concerné) et le traîneau ne bouge pas.\n3. Sinon, si le stock actuel du traîneau est **insuffisant**, le traîneau retourne à l'atelier (un **retour** de plus) et repart **plein** (`capacite` cadeaux) : les cadeaux qui restaient sont laissés à l'atelier. Puis il livre.\n4. Sinon, il livre directement.\n\nLivrer, c'est retirer `demande` cadeaux du stock et ajouter le nom de la maison à la liste des livrées. Le stock peut tomber à `0` sans retour tant qu'on n'a pas besoin de plus.\n\nLa fonction renvoie un dictionnaire `{\"livrees\": [...], \"oubliees\": [...], \"retours\": n, \"restants\": n}` : les noms dans l'ordre de l'arrêt, le nombre de retours à l'atelier, et le stock final du traîneau.\n\nExemple : avec une capacité de `10` et `[[\"a\", 4], [\"b\", 5], [\"c\", 3]]`, `a` et `b` sont livrées (stock 1), `c` demande 3 : retour à l'atelier, stock plein (10), livraison, il reste 7. Bilan : `{\"livrees\": [\"a\", \"b\", \"c\"], \"oubliees\": [], \"retours\": 1, \"restants\": 7}`.\n",
+      "fn": {
+        "javascript": "tourneeAvecRetours",
+        "python": "tournee_avec_retours"
+      },
+      "starter": {
+        "javascript": "function tourneeAvecRetours(capacite, arrets) {\n  // Renvoie { livrees, oubliees, retours, restants }\n}\n",
+        "python": "def tournee_avec_retours(capacite, arrets):\n    # Renvoie { \"livrees\": ..., \"oubliees\": ..., \"retours\": ..., \"restants\": ... }\n    pass\n"
+      },
+      "solution": {
+        "javascript": "function tourneeAvecRetours(capacite, arrets) {\n  let stock = capacite;\n  let retours = 0;\n  const livrees = [];\n  const oubliees = [];\n  for (const [nom, demande] of arrets) {\n    if (livrees.includes(nom)) {\n      continue;\n    }\n    if (demande > capacite) {\n      oubliees.push(nom);\n      continue;\n    }\n    if (demande > stock) {\n      retours += 1;\n      stock = capacite;\n    }\n    stock -= demande;\n    livrees.push(nom);\n  }\n  return { livrees: livrees, oubliees: oubliees, retours: retours, restants: stock };\n}\n",
+        "python": "def tournee_avec_retours(capacite, arrets):\n    stock = capacite\n    retours = 0\n    livrees = []\n    oubliees = []\n    for nom, demande in arrets:\n        if nom in livrees:\n            continue\n        if demande > capacite:\n            oubliees.append(nom)\n            continue\n        if demande > stock:\n            retours += 1\n            stock = capacite\n        stock -= demande\n        livrees.append(nom)\n    return {\"livrees\": livrees, \"oubliees\": oubliees, \"retours\": retours, \"restants\": stock}\n"
+      },
+      "hint": "Garde l'état du traîneau dans quelques variables (stock, retours, listes). Pour chaque arrêt, enchaîne les tests dans l'ordre exact de l'énoncé, et sors de l'itération (`continue`) dès qu'un cas est réglé. Le retour à l'atelier ne se déclenche qu'après avoir écarté « déjà livrée » et « trop gros pour toujours ».",
+      "tests": [
+        {
+          "args": [
+            10,
+            [
+              [
+                "a",
+                4
+              ],
+              [
+                "b",
+                5
+              ],
+              [
+                "c",
+                3
+              ]
+            ]
+          ],
+          "expected": {
+            "livrees": [
+              "a",
+              "b",
+              "c"
+            ],
+            "oubliees": [],
+            "retours": 1,
+            "restants": 7
+          }
+        },
+        {
+          "args": [
+            10,
+            [
+              [
+                "a",
+                4
+              ],
+              [
+                "b",
+                5
+              ],
+              [
+                "c",
+                3
+              ],
+              [
+                "a",
+                2
+              ],
+              [
+                "d",
+                12
+              ],
+              [
+                "e",
+                10
+              ],
+              [
+                "f",
+                1
+              ]
+            ]
+          ],
+          "expected": {
+            "livrees": [
+              "a",
+              "b",
+              "c",
+              "e",
+              "f"
+            ],
+            "oubliees": [
+              "d"
+            ],
+            "retours": 3,
+            "restants": 9
+          }
+        },
+        {
+          "args": [
+            5,
+            []
+          ],
+          "expected": {
+            "livrees": [],
+            "oubliees": [],
+            "retours": 0,
+            "restants": 5
+          }
+        },
+        {
+          "args": [
+            4,
+            [
+              [
+                "x",
+                5
+              ],
+              [
+                "x",
+                6
+              ]
+            ]
+          ],
+          "expected": {
+            "livrees": [],
+            "oubliees": [
+              "x",
+              "x"
+            ],
+            "retours": 0,
+            "restants": 4
+          }
+        },
+        {
+          "args": [
+            6,
+            [
+              [
+                "a",
+                6
+              ],
+              [
+                "b",
+                1
+              ]
+            ]
+          ],
+          "expected": {
+            "livrees": [
+              "a",
+              "b"
+            ],
+            "oubliees": [],
+            "retours": 1,
+            "restants": 5
+          },
+          "hidden": true
+        },
+        {
+          "args": [
+            3,
+            [
+              [
+                "a",
+                3
+              ],
+              [
+                "a",
+                3
+              ],
+              [
+                "a",
+                3
+              ]
+            ]
+          ],
+          "expected": {
+            "livrees": [
+              "a"
+            ],
+            "oubliees": [],
+            "retours": 0,
+            "restants": 0
+          },
+          "hidden": true
+        },
+        {
+          "args": [
+            8,
+            [
+              [
+                "m",
+                9
+              ],
+              [
+                "n",
+                8
+              ],
+              [
+                "m",
+                2
+              ],
+              [
+                "o",
+                1
+              ]
+            ]
+          ],
+          "expected": {
+            "livrees": [
+              "n",
+              "m",
+              "o"
+            ],
+            "oubliees": [
+              "m"
+            ],
+            "retours": 1,
+            "restants": 5
+          },
+          "hidden": true
+        },
+        { "args": [5,[["a",3],["a",9]]], "expected": {"livrees":["a"],"oubliees":[],"retours":0,"restants":2}, "hidden": true }
+      ],
+      "day": 24
+    },
+    {
+      "id": "d24-confirme",
+      "level": "confirme",
+      "title": "La tournée des villages",
+      "concept": "Plus court chemin et contraintes d'ordre",
+      "statement": "Dernière porte, dernier défi. Le traîneau quitte l'`\"atelier\"`, doit livrer plusieurs villages de Givreville, puis rentrer à l'atelier. Les villages sont reliés par des routes à double sens, chacune avec une distance.\n\nÉcris une fonction `{fn}(routes, aLivrer, ordre)` qui renvoie la **distance totale minimale** de la tournée.\n\n- `routes` est une liste de `[village1, village2, distance]` (distances entières `>= 1`, noms en minuscules). Chaque route se parcourt dans les deux sens. Plusieurs routes peuvent relier les mêmes villages : on prend alors la plus courte.\n- `aLivrer` est la liste des villages à livrer (sans doublon, sans l'atelier). On peut les livrer dans l'ordre qu'on veut, **sauf** contraintes de `ordre`.\n- `ordre` est une liste de paires `[avant, apres]` : le village `avant` doit être livré **avant** le village `apres`. Les deux sont dans `aLivrer`.\n- Le traîneau peut traverser un village sans le livrer, et repasser plusieurs fois au même endroit. La livraison est instantanée : seule la distance parcourue compte.\n- Si `aLivrer` est vide, la réponse est `0` (le traîneau ne bouge pas).\n- Si la tournée est impossible (un village à livrer est inaccessible depuis l'atelier, ou les contraintes d'ordre se contredisent), renvoie `-1`.\n\nIl y a au plus 7 villages à livrer. C'est la dernière porte : tout ce que tu as vu, graphes, tris, dictionnaires, simulation, peut servir. Découpe en problèmes plus petits, et fais confiance à la méthode.\n",
+      "fn": {
+        "javascript": "tourneeMinimale",
+        "python": "tournee_minimale"
+      },
+      "starter": {
+        "javascript": "function tourneeMinimale(routes, aLivrer, ordre) {\n  // Renvoie la distance minimale de la tournée, ou -1 si elle est impossible\n}\n",
+        "python": "def tournee_minimale(routes, aLivrer, ordre):\n    # Renvoie la distance minimale de la tournée, ou -1 si elle est impossible\n    pass\n"
+      },
+      "solution": {
+        "javascript": "function tourneeMinimale(routes, aLivrer, ordre) {\n  const voisins = {};\n  for (const [a, b, d] of routes) {\n    (voisins[a] = voisins[a] || []).push([b, d]);\n    (voisins[b] = voisins[b] || []).push([a, d]);\n  }\n  // Plus courts chemins depuis un village (on prend à chaque fois le plus proche non traité)\n  function distancesDepuis(depart) {\n    const dist = { [depart]: 0 };\n    const traites = new Set();\n    while (true) {\n      let courant = null;\n      for (const v of Object.keys(dist)) {\n        if (!traites.has(v) && (courant === null || dist[v] < dist[courant])) {\n          courant = v;\n        }\n      }\n      if (courant === null) {\n        return dist;\n      }\n      traites.add(courant);\n      for (const [w, d] of voisins[courant] || []) {\n        if (!(w in dist) || dist[courant] + d < dist[w]) {\n          dist[w] = dist[courant] + d;\n        }\n      }\n    }\n  }\n  const dist = {};\n  for (const lieu of [\"atelier\", ...aLivrer]) {\n    dist[lieu] = distancesDepuis(lieu);\n  }\n  const loin = (de, vers) => (vers in dist[de] ? dist[de][vers] : Infinity);\n  let meilleur = Infinity;\n  function explorer(position, restants, total) {\n    if (restants.length === 0) {\n      meilleur = Math.min(meilleur, total + loin(position, \"atelier\"));\n      return;\n    }\n    for (const v of restants) {\n      if (ordre.some(([avant, apres]) => apres === v && restants.includes(avant))) {\n        continue;\n      }\n      explorer(v, restants.filter((r) => r !== v), total + loin(position, v));\n    }\n  }\n  explorer(\"atelier\", aLivrer, 0);\n  return meilleur === Infinity ? -1 : meilleur;\n}\n",
+        "python": "def tournee_minimale(routes, aLivrer, ordre):\n    voisins = {}\n    for a, b, d in routes:\n        voisins.setdefault(a, []).append((b, d))\n        voisins.setdefault(b, []).append((a, d))\n\n    # Plus courts chemins depuis un village (on prend à chaque fois le plus proche non traité)\n    def distances_depuis(depart):\n        dist = {depart: 0}\n        traites = set()\n        while True:\n            courant = None\n            for v in dist:\n                if v not in traites and (courant is None or dist[v] < dist[courant]):\n                    courant = v\n            if courant is None:\n                return dist\n            traites.add(courant)\n            for w, d in voisins.get(courant, []):\n                if w not in dist or dist[courant] + d < dist[w]:\n                    dist[w] = dist[courant] + d\n\n    dist = {}\n    for lieu in [\"atelier\"] + aLivrer:\n        dist[lieu] = distances_depuis(lieu)\n    infini = float(\"inf\")\n\n    def loin(de, vers):\n        return dist[de].get(vers, infini)\n\n    meilleur = [infini]\n\n    def explorer(position, restants, total):\n        if not restants:\n            meilleur[0] = min(meilleur[0], total + loin(position, \"atelier\"))\n            return\n        for v in restants:\n            if any(apres == v and avant in restants for avant, apres in ordre):\n                continue\n            explorer(v, [r for r in restants if r != v], total + loin(position, v))\n\n    explorer(\"atelier\", aLivrer, 0)\n    return -1 if meilleur[0] == infini else meilleur[0]\n"
+      },
+      "hint": "Deux étages. D'abord, calcule la distance la plus courte entre chaque couple de lieux utiles (l'atelier et les villages à livrer) : les routes directes ne suffisent pas. Ensuite, souviens-toi qu'il y a au plus 7 villages à livrer.",
+      "tests": [
+        {
+          "args": [
+            [
+              [
+                "atelier",
+                "mairie",
+                3
+              ],
+              [
+                "atelier",
+                "moulin",
+                5
+              ],
+              [
+                "mairie",
+                "moulin",
+                1
+              ],
+              [
+                "mairie",
+                "gare",
+                4
+              ],
+              [
+                "moulin",
+                "gare",
+                6
+              ],
+              [
+                "gare",
+                "lac",
+                2
+              ],
+              [
+                "lac",
+                "atelier",
+                9
+              ]
+            ],
+            [
+              "gare"
+            ],
+            []
+          ],
+          "expected": 14
+        },
+        {
+          "args": [
+            [
+              [
+                "atelier",
+                "mairie",
+                3
+              ],
+              [
+                "atelier",
+                "moulin",
+                5
+              ],
+              [
+                "mairie",
+                "moulin",
+                1
+              ],
+              [
+                "mairie",
+                "gare",
+                4
+              ],
+              [
+                "moulin",
+                "gare",
+                6
+              ],
+              [
+                "gare",
+                "lac",
+                2
+              ],
+              [
+                "lac",
+                "atelier",
+                9
+              ]
+            ],
+            [
+              "moulin",
+              "lac"
+            ],
+            []
+          ],
+          "expected": 20
+        },
+        {
+          "args": [
+            [
+              [
+                "atelier",
+                "mairie",
+                3
+              ],
+              [
+                "atelier",
+                "moulin",
+                5
+              ],
+              [
+                "mairie",
+                "moulin",
+                1
+              ],
+              [
+                "mairie",
+                "gare",
+                4
+              ],
+              [
+                "moulin",
+                "gare",
+                6
+              ],
+              [
+                "gare",
+                "lac",
+                2
+              ],
+              [
+                "lac",
+                "atelier",
+                9
+              ]
+            ],
+            [
+              "mairie",
+              "gare",
+              "lac"
+            ],
+            [
+              [
+                "lac",
+                "mairie"
+              ]
+            ]
+          ],
+          "expected": 18
+        },
+        {
+          "args": [
+            [
+              [
+                "atelier",
+                "mairie",
+                3
+              ],
+              [
+                "atelier",
+                "moulin",
+                5
+              ],
+              [
+                "mairie",
+                "moulin",
+                1
+              ],
+              [
+                "mairie",
+                "gare",
+                4
+              ],
+              [
+                "moulin",
+                "gare",
+                6
+              ],
+              [
+                "gare",
+                "lac",
+                2
+              ],
+              [
+                "lac",
+                "atelier",
+                9
+              ]
+            ],
+            [
+              "ile"
+            ],
+            []
+          ],
+          "expected": -1
+        },
+        {
+          "args": [
+            [
+              [
+                "atelier",
+                "mairie",
+                3
+              ],
+              [
+                "atelier",
+                "moulin",
+                5
+              ],
+              [
+                "mairie",
+                "moulin",
+                1
+              ],
+              [
+                "mairie",
+                "gare",
+                4
+              ],
+              [
+                "moulin",
+                "gare",
+                6
+              ],
+              [
+                "gare",
+                "lac",
+                2
+              ],
+              [
+                "lac",
+                "atelier",
+                9
+              ]
+            ],
+            [],
+            []
+          ],
+          "expected": 0
+        },
+        {
+          "args": [
+            [
+              [
+                "atelier",
+                "mairie",
+                3
+              ],
+              [
+                "atelier",
+                "moulin",
+                5
+              ],
+              [
+                "mairie",
+                "moulin",
+                1
+              ],
+              [
+                "mairie",
+                "gare",
+                4
+              ],
+              [
+                "moulin",
+                "gare",
+                6
+              ],
+              [
+                "gare",
+                "lac",
+                2
+              ],
+              [
+                "lac",
+                "atelier",
+                9
+              ]
+            ],
+            [
+              "gare",
+              "lac"
+            ],
+            [
+              [
+                "gare",
+                "lac"
+              ],
+              [
+                "lac",
+                "gare"
+              ]
+            ]
+          ],
+          "expected": -1,
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              [
+                "atelier",
+                "a",
+                10
+              ],
+              [
+                "atelier",
+                "a",
+                2
+              ]
+            ],
+            [
+              "a"
+            ],
+            []
+          ],
+          "expected": 4,
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              [
+                "atelier",
+                "a",
+                1
+              ],
+              [
+                "a",
+                "b",
+                1
+              ],
+              [
+                "b",
+                "c",
+                1
+              ]
+            ],
+            [
+              "c",
+              "a"
+            ],
+            []
+          ],
+          "expected": 6,
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              [
+                "atelier",
+                "a",
+                1
+              ],
+              [
+                "atelier",
+                "b",
+                2
+              ],
+              [
+                "a",
+                "c",
+                10
+              ],
+              [
+                "b",
+                "c",
+                3
+              ],
+              [
+                "b",
+                "d",
+                1
+              ],
+              [
+                "c",
+                "e",
+                1
+              ],
+              [
+                "d",
+                "e",
+                9
+              ]
+            ],
+            [
+              "a",
+              "b",
+              "c",
+              "d",
+              "e"
+            ],
+            []
+          ],
+          "expected": 16,
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              [
+                "atelier",
+                "a",
+                4
+              ],
+              [
+                "atelier",
+                "b",
+                1
+              ],
+              [
+                "a",
+                "b",
+                1
+              ],
+              [
+                "b",
+                "c",
+                2
+              ],
+              [
+                "a",
+                "c",
+                1
+              ],
+              [
+                "c",
+                "d",
+                5
+              ],
+              [
+                "atelier",
+                "d",
+                20
+              ],
+              [
+                "d",
+                "e",
+                1
+              ],
+              [
+                "e",
+                "f",
+                3
+              ],
+              [
+                "f",
+                "atelier",
+                2
+              ]
+            ],
+            [
+              "a",
+              "d",
+              "f",
+              "c"
+            ],
+            [
+              [
+                "d",
+                "a"
+              ],
+              [
+                "f",
+                "c"
+              ]
+            ]
+          ],
+          "expected": 14,
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              [
+                "atelier",
+                "a",
+                2
+              ],
+              [
+                "b",
+                "c",
+                1
+              ]
+            ],
+            [
+              "a",
+              "b"
+            ],
+            []
+          ],
+          "expected": -1,
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              [
+                "atelier",
+                "b",
+                2
+              ],
+              [
+                "atelier",
+                "c",
+                8
+              ],
+              [
+                "atelier",
+                "d",
+                2
+              ],
+              [
+                "a",
+                "b",
+                3
+              ],
+              [
+                "a",
+                "c",
+                7
+              ],
+              [
+                "b",
+                "d",
+                1
+              ],
+              [
+                "c",
+                "d",
+                6
+              ]
+            ],
+            [
+              "a",
+              "b",
+              "c",
+              "d"
+            ],
+            []
+          ],
+          "expected": 20,
+          "hidden": true
+        },
+        { "args": [[["atelier","a",4],["atelier","b",4],["b","c",1]],["c","a","b"],[["a","b"],["c","a"]]], "expected": 26, "hidden": true },
+        { "args": [[["atelier","a",4],["atelier","b",1],["a","c",6]],["c","b","a"],[["a","b"]]], "expected": 22, "hidden": true },
+        { "args": [[["atelier","a",1],["a","b",4],["atelier","c",2]],["a","c","b"],[]], "expected": 14, "hidden": true },
+        { "args": [[["atelier","pont",3],["pont","moulin",4],["moulin","lac",2],["lac","phare",6],["phare","foret",3],["foret","atelier",7],["pont","marche",5],["marche","ecole",2],["ecole","lac",4],["atelier","gare",9],["gare","phare",2],["moulin","verger",3],["verger","ecole",1],["foret","mine",4],["mine","gare",5],["marche","verger",6],["pont","lac",8]],["phare","ecole","mine","verger","moulin","gare","marche"],[["ecole","moulin"],["gare","marche"],["mine","phare"]]], "expected": 43, "hidden": true }
+      ],
+      "day": 24
+    },
+    {
+      "id": "d24-expert",
+      "day": 24,
+      "level": "expert",
+      "title": "La tournée en plusieurs voyages",
+      "concept": "Plus courts chemins et sous-ensembles",
+      "statement": "Dernière porte, dernier défi, et le traîneau d'il y a cent ans a un défaut : sa hotte est minuscule. Il ne peut emporter que `places` cadeaux à la fois, et chaque village à livrer en attend **un**. Il faudra donc faire **plusieurs voyages** : partir de l'`\"atelier\"`, livrer quelques villages, revenir recharger à l'atelier, repartir... jusqu'à ce que tout le monde soit servi.\n\nÉcris une fonction `{fn}(routes, aLivrer, places)` qui renvoie la **distance totale minimale** parcourue, tous voyages confondus, retour final à l'atelier compris.\n\n- `routes` est une liste de `[village1, village2, distance]` (distances entières `>= 1`, noms en minuscules). Chaque route se parcourt dans les deux sens. Si plusieurs routes relient les deux mêmes villages, on prend la plus courte.\n- `aLivrer` est la liste des villages à livrer (sans doublon, sans l'atelier).\n- `places` est un entier `>= 1` : le nombre maximal de villages livrés pendant un même voyage.\n- Chaque voyage commence et finit à l'atelier. Le traîneau peut traverser un village sans le livrer, repasser plusieurs fois au même endroit, et même repasser par l'atelier sans recharger.\n- C'est à toi de choisir comment répartir les villages entre les voyages, et dans quel ordre les livrer.\n- Si `aLivrer` est vide, la réponse est `0`. Si un village à livrer est inaccessible depuis l'atelier, renvoie `-1`.\n\nIl y a au plus `10` villages à livrer. C'est la dernière porte : graphes, sous-ensembles, mémoïsation, tout ce que tu as appris peut servir. Découpe le problème en étages, et fais confiance à la méthode.\n\nExemple : avec les routes `[[\"atelier\", \"a\", 2], [\"atelier\", \"b\", 3], [\"a\", \"b\", 1]]` et les villages `a` et `b` à livrer, une hotte de `2` places permet un seul voyage, atelier, `a`, `b`, atelier : `2 + 1 + 3 = 6`. Avec une seule place, il faut deux allers-retours : `4 + 6 = 10`.\n",
+      "fn": {
+        "javascript": "tourneeParVoyages",
+        "python": "tournee_par_voyages"
+      },
+      "starter": {
+        "javascript": "function tourneeParVoyages(routes, aLivrer, places) {\n  // Renvoie la distance totale minimale, ou -1\n}\n",
+        "python": "def tournee_par_voyages(routes, a_livrer, places):\n    # Renvoie la distance totale minimale, ou -1\n    pass\n"
+      },
+      "solution": {
+        "javascript": "function tourneeParVoyages(routes, aLivrer, places) {\n  const n = aLivrer.length;\n  if (n === 0) return 0;\n\n  // 1. Plus courtes distances entre tous les lieux (Floyd-Warshall).\n  const numero = new Map();\n  const noter = (nom) => {\n    if (!numero.has(nom)) numero.set(nom, numero.size);\n    return numero.get(nom);\n  };\n  noter(\"atelier\");\n  aLivrer.forEach(noter);\n  routes.forEach(([a, b]) => {\n    noter(a);\n    noter(b);\n  });\n  const taille = numero.size;\n  const d = Array.from({ length: taille }, (_, i) => Array.from({ length: taille }, (_, j) => (i === j ? 0 : Infinity)));\n  for (const [a, b, distance] of routes) {\n    const i = numero.get(a);\n    const j = numero.get(b);\n    if (distance < d[i][j]) {\n      d[i][j] = distance;\n      d[j][i] = distance;\n    }\n  }\n  for (let k = 0; k < taille; k++) {\n    for (let i = 0; i < taille; i++) {\n      for (let j = 0; j < taille; j++) {\n        if (d[i][k] + d[k][j] < d[i][j]) d[i][j] = d[i][k] + d[k][j];\n      }\n    }\n  }\n  // Les villages à livrer portent les numéros 1 à n, l'atelier le numéro 0.\n  for (let v = 1; v <= n; v++) if (d[0][v] === Infinity) return -1;\n\n  // 2. voyage[groupe] : coût du meilleur voyage qui livre exactement ce groupe (un bit par village).\n  const total = 1 << n;\n  const combien = (groupe) => {\n    let bits = 0;\n    for (let g = groupe; g > 0; g >>= 1) bits += g & 1;\n    return bits;\n  };\n  // chemin[groupe][dernier] : plus courte route atelier -> villages du groupe, en finissant par `dernier`.\n  const chemin = Array.from({ length: total }, () => new Array(n).fill(Infinity));\n  const voyage = new Array(total).fill(Infinity);\n  for (let v = 0; v < n; v++) chemin[1 << v][v] = d[0][v + 1];\n  for (let groupe = 1; groupe < total; groupe++) {\n    if (combien(groupe) > places) continue;\n    for (let dernier = 0; dernier < n; dernier++) {\n      const ici = chemin[groupe][dernier];\n      if (ici === Infinity) continue;\n      voyage[groupe] = Math.min(voyage[groupe], ici + d[dernier + 1][0]);\n      for (let suivant = 0; suivant < n; suivant++) {\n        if (groupe & (1 << suivant)) continue;\n        const plusGrand = groupe | (1 << suivant);\n        const cout = ici + d[dernier + 1][suivant + 1];\n        if (cout < chemin[plusGrand][suivant]) chemin[plusGrand][suivant] = cout;\n      }\n    }\n  }\n\n  // 3. meilleur[groupe] : coût minimal pour livrer tout le groupe, en un ou plusieurs voyages.\n  const meilleur = new Array(total).fill(Infinity);\n  meilleur[0] = 0;\n  for (let groupe = 1; groupe < total; groupe++) {\n    // Le premier voyage contient le village de plus petit numéro : on évite de compter deux fois le même découpage.\n    const premier = groupe & -groupe;\n    for (let part = groupe; part > 0; part = (part - 1) & groupe) {\n      if (!(part & premier) || voyage[part] === Infinity) continue;\n      const cout = voyage[part] + meilleur[groupe ^ part];\n      if (cout < meilleur[groupe]) meilleur[groupe] = cout;\n    }\n  }\n  return meilleur[total - 1];\n}\n",
+        "python": "def tournee_par_voyages(routes, a_livrer, places):\n    n = len(a_livrer)\n    if n == 0:\n        return 0\n    infini = float(\"inf\")\n\n    # 1. Plus courtes distances entre tous les lieux (Floyd-Warshall).\n    numero = {}\n\n    def noter(nom):\n        if nom not in numero:\n            numero[nom] = len(numero)\n        return numero[nom]\n\n    noter(\"atelier\")\n    for village in a_livrer:\n        noter(village)\n    for a, b, _ in routes:\n        noter(a)\n        noter(b)\n    taille = len(numero)\n    d = [[0 if i == j else infini for j in range(taille)] for i in range(taille)]\n    for a, b, distance in routes:\n        i, j = numero[a], numero[b]\n        if distance < d[i][j]:\n            d[i][j] = distance\n            d[j][i] = distance\n    for k in range(taille):\n        for i in range(taille):\n            for j in range(taille):\n                if d[i][k] + d[k][j] < d[i][j]:\n                    d[i][j] = d[i][k] + d[k][j]\n    # Les villages à livrer portent les numéros 1 à n, l'atelier le numéro 0.\n    if any(d[0][v] == infini for v in range(1, n + 1)):\n        return -1\n\n    # 2. voyage[groupe] : coût du meilleur voyage qui livre exactement ce groupe (un bit par village).\n    total = 1 << n\n    # chemin[groupe][dernier] : plus courte route atelier -> villages du groupe, en finissant par `dernier`.\n    chemin = [[infini] * n for _ in range(total)]\n    voyage = [infini] * total\n    for v in range(n):\n        chemin[1 << v][v] = d[0][v + 1]\n    for groupe in range(1, total):\n        if bin(groupe).count(\"1\") > places:\n            continue\n        for dernier in range(n):\n            ici = chemin[groupe][dernier]\n            if ici == infini:\n                continue\n            voyage[groupe] = min(voyage[groupe], ici + d[dernier + 1][0])\n            for suivant in range(n):\n                if groupe & (1 << suivant):\n                    continue\n                plus_grand = groupe | (1 << suivant)\n                cout = ici + d[dernier + 1][suivant + 1]\n                if cout < chemin[plus_grand][suivant]:\n                    chemin[plus_grand][suivant] = cout\n\n    # 3. meilleur[groupe] : coût minimal pour livrer tout le groupe, en un ou plusieurs voyages.\n    meilleur = [infini] * total\n    meilleur[0] = 0\n    for groupe in range(1, total):\n        # Le premier voyage contient le village de plus petit numéro : on évite de compter deux fois le même découpage.\n        premier = groupe & -groupe\n        part = groupe\n        while part > 0:\n            if part & premier and voyage[part] != infini:\n                cout = voyage[part] + meilleur[groupe ^ part]\n                if cout < meilleur[groupe]:\n                    meilleur[groupe] = cout\n            part = (part - 1) & groupe\n    return meilleur[total - 1]\n"
+      },
+      "tests": [
+        {
+          "args": [
+            [
+              [
+                "atelier",
+                "a",
+                2
+              ],
+              [
+                "atelier",
+                "b",
+                3
+              ],
+              [
+                "a",
+                "b",
+                1
+              ]
+            ],
+            [
+              "a",
+              "b"
+            ],
+            2
+          ],
+          "expected": 6
+        },
+        {
+          "args": [
+            [
+              [
+                "atelier",
+                "a",
+                2
+              ],
+              [
+                "atelier",
+                "b",
+                3
+              ],
+              [
+                "a",
+                "b",
+                1
+              ]
+            ],
+            [
+              "a",
+              "b"
+            ],
+            1
+          ],
+          "expected": 10
+        },
+        {
+          "args": [
+            [
+              [
+                "atelier",
+                "mairie",
+                3
+              ],
+              [
+                "atelier",
+                "moulin",
+                5
+              ],
+              [
+                "mairie",
+                "moulin",
+                1
+              ],
+              [
+                "mairie",
+                "gare",
+                4
+              ],
+              [
+                "moulin",
+                "gare",
+                6
+              ],
+              [
+                "gare",
+                "lac",
+                2
+              ],
+              [
+                "lac",
+                "atelier",
+                9
+              ]
+            ],
+            [
+              "gare",
+              "lac",
+              "moulin"
+            ],
+            2
+          ],
+          "expected": 26
+        },
+        {
+          "args": [
+            [
+              [
+                "atelier",
+                "mairie",
+                3
+              ],
+              [
+                "atelier",
+                "moulin",
+                5
+              ],
+              [
+                "mairie",
+                "moulin",
+                1
+              ],
+              [
+                "mairie",
+                "gare",
+                4
+              ],
+              [
+                "moulin",
+                "gare",
+                6
+              ],
+              [
+                "gare",
+                "lac",
+                2
+              ],
+              [
+                "lac",
+                "atelier",
+                9
+              ]
+            ],
+            [
+              "gare",
+              "lac",
+              "moulin"
+            ],
+            3
+          ],
+          "expected": 20
+        },
+        {
+          "args": [
+            [
+              [
+                "atelier",
+                "mairie",
+                3
+              ],
+              [
+                "atelier",
+                "moulin",
+                5
+              ],
+              [
+                "mairie",
+                "moulin",
+                1
+              ],
+              [
+                "mairie",
+                "gare",
+                4
+              ],
+              [
+                "moulin",
+                "gare",
+                6
+              ],
+              [
+                "gare",
+                "lac",
+                2
+              ],
+              [
+                "lac",
+                "atelier",
+                9
+              ]
+            ],
+            [],
+            2
+          ],
+          "expected": 0,
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              [
+                "atelier",
+                "a",
+                4
+              ]
+            ],
+            [
+              "a",
+              "ile"
+            ],
+            3
+          ],
+          "expected": -1,
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              [
+                "atelier",
+                "a",
+                4
+              ],
+              [
+                "ile",
+                "phare",
+                1
+              ]
+            ],
+            [
+              "phare"
+            ],
+            1
+          ],
+          "expected": -1,
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              [
+                "atelier",
+                "a",
+                7
+              ],
+              [
+                "atelier",
+                "a",
+                2
+              ],
+              [
+                "a",
+                "atelier",
+                5
+              ]
+            ],
+            [
+              "a"
+            ],
+            4
+          ],
+          "expected": 4,
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              [
+                "atelier",
+                "mairie",
+                3
+              ],
+              [
+                "atelier",
+                "moulin",
+                5
+              ],
+              [
+                "mairie",
+                "moulin",
+                1
+              ],
+              [
+                "mairie",
+                "gare",
+                4
+              ],
+              [
+                "moulin",
+                "gare",
+                6
+              ],
+              [
+                "gare",
+                "lac",
+                2
+              ],
+              [
+                "lac",
+                "atelier",
+                9
+              ]
+            ],
+            [
+              "mairie",
+              "moulin",
+              "gare",
+              "lac"
+            ],
+            1
+          ],
+          "expected": 46,
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              [
+                "v4",
+                "atelier",
+                12
+              ],
+              [
+                "v1",
+                "atelier",
+                4
+              ],
+              [
+                "v0",
+                "atelier",
+                14
+              ],
+              [
+                "v2",
+                "v4",
+                4
+              ],
+              [
+                "v2",
+                "atelier",
+                4
+              ],
+              [
+                "v3",
+                "v0",
+                11
+              ],
+              [
+                "v0",
+                "v1",
+                1
+              ],
+              [
+                "atelier",
+                "v3",
+                6
+              ]
+            ],
+            [
+              "v4",
+              "v1",
+              "v2",
+              "v3"
+            ],
+            2
+          ],
+          "expected": 36,
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              [
+                "v0",
+                "atelier",
+                2
+              ],
+              [
+                "v6",
+                "v1",
+                2
+              ],
+              [
+                "v6",
+                "v5",
+                5
+              ],
+              [
+                "v1",
+                "v5",
+                16
+              ],
+              [
+                "v1",
+                "v0",
+                11
+              ],
+              [
+                "v4",
+                "v1",
+                15
+              ],
+              [
+                "v3",
+                "v1",
+                18
+              ],
+              [
+                "v3",
+                "v0",
+                6
+              ],
+              [
+                "v2",
+                "v4",
+                20
+              ],
+              [
+                "v5",
+                "v4",
+                2
+              ],
+              [
+                "v2",
+                "atelier",
+                15
+              ],
+              [
+                "v3",
+                "v0",
+                3
+              ]
+            ],
+            [
+              "v4",
+              "v1",
+              "v6",
+              "v5",
+              "v0",
+              "v2"
+            ],
+            3
+          ],
+          "expected": 87,
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              [
+                "v7",
+                "v1",
+                12
+              ],
+              [
+                "v6",
+                "v4",
+                15
+              ],
+              [
+                "v5",
+                "v6",
+                19
+              ],
+              [
+                "v0",
+                "atelier",
+                6
+              ],
+              [
+                "v6",
+                "v0",
+                2
+              ],
+              [
+                "v1",
+                "atelier",
+                7
+              ],
+              [
+                "v2",
+                "atelier",
+                13
+              ],
+              [
+                "v5",
+                "v1",
+                14
+              ],
+              [
+                "v4",
+                "atelier",
+                2
+              ],
+              [
+                "v4",
+                "atelier",
+                8
+              ],
+              [
+                "v3",
+                "v1",
+                7
+              ],
+              [
+                "v0",
+                "v4",
+                14
+              ],
+              [
+                "v6",
+                "v1",
+                5
+              ],
+              [
+                "v5",
+                "v4",
+                8
+              ]
+            ],
+            [
+              "v4",
+              "v7",
+              "v0",
+              "v3",
+              "v6",
+              "v2",
+              "v1"
+            ],
+            2
+          ],
+          "expected": 112,
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              [
+                "atelier",
+                "v7",
+                16
+              ],
+              [
+                "atelier",
+                "v1",
+                11
+              ],
+              [
+                "v0",
+                "atelier",
+                5
+              ],
+              [
+                "v0",
+                "v1",
+                17
+              ],
+              [
+                "v1",
+                "v0",
+                7
+              ],
+              [
+                "v5",
+                "atelier",
+                8
+              ],
+              [
+                "v3",
+                "v1",
+                6
+              ],
+              [
+                "v6",
+                "v2",
+                13
+              ],
+              [
+                "v1",
+                "v7",
+                19
+              ],
+              [
+                "v7",
+                "v0",
+                3
+              ],
+              [
+                "v2",
+                "v6",
+                5
+              ],
+              [
+                "v0",
+                "atelier",
+                8
+              ],
+              [
+                "v4",
+                "atelier",
+                7
+              ],
+              [
+                "v1",
+                "atelier",
+                4
+              ],
+              [
+                "v8",
+                "v2",
+                14
+              ],
+              [
+                "v3",
+                "v0",
+                6
+              ],
+              [
+                "v2",
+                "v1",
+                13
+              ]
+            ],
+            [
+              "v8",
+              "v2",
+              "v1",
+              "v6",
+              "v3",
+              "v7",
+              "v5"
+            ],
+            4
+          ],
+          "expected": 115,
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              [
+                "v0",
+                "atelier",
+                11
+              ],
+              [
+                "v2",
+                "v3",
+                10
+              ],
+              [
+                "v4",
+                "v1",
+                8
+              ],
+              [
+                "v4",
+                "v6",
+                5
+              ],
+              [
+                "v6",
+                "v0",
+                7
+              ],
+              [
+                "v1",
+                "atelier",
+                4
+              ],
+              [
+                "v2",
+                "atelier",
+                5
+              ],
+              [
+                "v5",
+                "atelier",
+                4
+              ],
+              [
+                "v3",
+                "v0",
+                15
+              ],
+              [
+                "atelier",
+                "v1",
+                6
+              ],
+              [
+                "v2",
+                "v7",
+                1
+              ],
+              [
+                "v7",
+                "v6",
+                10
+              ]
+            ],
+            [
+              "v0",
+              "v1",
+              "v2",
+              "v4",
+              "v5",
+              "v7",
+              "v6",
+              "v3"
+            ],
+            3
+          ],
+          "expected": 83,
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              [
+                "v10",
+                "v9",
+                20
+              ],
+              [
+                "v6",
+                "v0",
+                1
+              ],
+              [
+                "v10",
+                "v7",
+                14
+              ],
+              [
+                "v2",
+                "v4",
+                5
+              ],
+              [
+                "v1",
+                "v3",
+                17
+              ],
+              [
+                "v11",
+                "v0",
+                10
+              ],
+              [
+                "v4",
+                "v2",
+                8
+              ],
+              [
+                "v1",
+                "atelier",
+                2
+              ],
+              [
+                "v5",
+                "v3",
+                7
+              ],
+              [
+                "v9",
+                "v3",
+                11
+              ],
+              [
+                "v3",
+                "v2",
+                6
+              ],
+              [
+                "v8",
+                "v7",
+                1
+              ],
+              [
+                "v5",
+                "v8",
+                1
+              ],
+              [
+                "v8",
+                "v9",
+                12
+              ],
+              [
+                "v9",
+                "v4",
+                7
+              ],
+              [
+                "v6",
+                "v3",
+                6
+              ],
+              [
+                "v2",
+                "v7",
+                9
+              ],
+              [
+                "v3",
+                "v8",
+                5
+              ],
+              [
+                "v0",
+                "atelier",
+                6
+              ],
+              [
+                "v0",
+                "v9",
+                17
+              ],
+              [
+                "v7",
+                "v0",
+                3
+              ],
+              [
+                "v2",
+                "v0",
+                8
+              ]
+            ],
+            [
+              "v10",
+              "v9",
+              "v3",
+              "v11",
+              "v5",
+              "v1",
+              "v4",
+              "v8",
+              "v6",
+              "v7"
+            ],
+            3
+          ],
+          "expected": 141,
+          "hidden": true
+        }
+      ],
+      "hint": "Trois étages. D'abord, la plus courte distance entre toutes les paires de lieux qui comptent. Ensuite, pour chaque **groupe** de villages assez petit pour tenir dans la hotte, le coût du meilleur voyage qui les livre tous. Enfin, la meilleure façon de découper l'ensemble des villages en groupes. Un groupe de villages se note très bien avec un seul entier, un bit par village."
+    }
+  ]
+}

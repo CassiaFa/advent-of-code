@@ -1,0 +1,469 @@
+{
+  "day": 9,
+  "concept": "Découper du texte",
+  "exercises": [
+    {
+      "id": "d09-debutant",
+      "day": 9,
+      "level": "debutant",
+      "title": "Combien de mots ?",
+      "concept": "Découper une phrase",
+      "statement": "Avant de lire les lettres des enfants, le Registre veut savoir combien de **mots** chacune contient.\n\nÉcris une fonction `{fn}` qui reçoit une phrase et renvoie son nombre de mots. Un mot est une suite de caractères sans espace : `\"Noël !\"` contient donc 2 mots.\n\n- Les mots peuvent être séparés par **plusieurs espaces** d'affilée.\n- La phrase peut commencer ou finir par des espaces : ils ne comptent pas.\n- Une phrase vide, ou faite uniquement d'espaces, contient `0` mot.\n\nLe seul séparateur est l'espace simple (pas de tabulation ni de retour à la ligne).",
+      "fn": {"javascript":"compterMots","python":"compter_mots"},
+      "starter": {
+        "javascript": "function compterMots(phrase) {\n  // Renvoie le nombre de mots de la phrase\n}\n",
+        "python": "def compter_mots(phrase):\n    # Renvoie le nombre de mots de la phrase\n    pass\n"
+      },
+      "solution": {
+        "javascript": "function compterMots(phrase) {\n  const morceaux = phrase.split(\" \");\n  let total = 0;\n  for (const morceau of morceaux) {\n    if (morceau !== \"\") {\n      total = total + 1;\n    }\n  }\n  return total;\n}\n",
+        "python": "def compter_mots(phrase):\n    morceaux = phrase.split(\" \")\n    total = 0\n    for morceau in morceaux:\n        if morceau != \"\":\n            total = total + 1\n    return total\n"
+      },
+      "tests": [
+        { "args": ["Cher Pôle Nord"], "expected": 3 },
+        { "args": ["je  voudrais   un train"], "expected": 4 },
+        { "args": [""], "expected": 0 },
+        { "args": ["  merci beaucoup  "], "expected": 2 },
+        { "args": ["   "], "expected": 0, "hidden": true },
+        { "args": ["Noël !"], "expected": 2, "hidden": true },
+        { "args": ["lutin"], "expected": 1, "hidden": true }
+      ],
+      "hint": "Découpe la phrase à chaque espace, puis regarde ce que tu obtiens quand deux espaces se suivent : certains morceaux sont vides, et ceux-là ne sont pas des mots."
+    },
+    {
+      "id": "d09-intermediaire",
+      "day": 9,
+      "level": "intermediaire",
+      "title": "Les vœux entre crochets",
+      "concept": "Extraire des morceaux d'un texte",
+      "statement": "Pour aider le Registre, les enfants ont mis leurs vœux **entre crochets** au milieu de leurs phrases : `\"Bonjour ! Je voudrais [un train] et [Une Luge ].\"`\n\nÉcris une fonction `{fn}` qui reçoit le texte d'une lettre et renvoie la **liste des vœux**, dans l'ordre où ils apparaissent. Chaque vœu est nettoyé :\n\n- on retire les espaces au début et à la fin ;\n- on le met en **minuscules** ;\n- un vœu vide après nettoyage (`[]` ou `[  ]`) est ignoré ;\n- un vœu déjà présent dans la liste n'est pas ajouté une seconde fois.\n\nPour l'exemple, le résultat est `[\"un train\", \"une luge\"]`.\n\nIl n'y a jamais de crochets imbriqués. En revanche, la lettre peut se terminer par un crochet ouvert jamais refermé (`\"et aussi [un vél\"`) : ce morceau est ignoré. Un `]` sans `[` avant lui est ignoré aussi. Une lettre sans vœu donne une liste vide.\n\nLes expressions régulières arrivent dans quelques jours : aujourd'hui, essaie sans.",
+      "fn": {"javascript":"extraireVoeux","python":"extraire_voeux"},
+      "starter": {
+        "javascript": "function extraireVoeux(lettre) {\n  // Renvoie la liste des vœux trouvés entre crochets\n}\n",
+        "python": "def extraire_voeux(lettre):\n    # Renvoie la liste des vœux trouvés entre crochets\n    pass\n"
+      },
+      "solution": {
+        "javascript": "function extraireVoeux(lettre) {\n  const voeux = [];\n  let debut = -1;\n  for (let i = 0; i < lettre.length; i++) {\n    if (lettre[i] === \"[\") {\n      debut = i;\n    } else if (lettre[i] === \"]\" && debut !== -1) {\n      const voeu = lettre.slice(debut + 1, i).trim().toLowerCase();\n      if (voeu !== \"\" && !voeux.includes(voeu)) {\n        voeux.push(voeu);\n      }\n      debut = -1;\n    }\n  }\n  return voeux;\n}\n",
+        "python": "def extraire_voeux(lettre):\n    voeux = []\n    debut = -1\n    for i in range(len(lettre)):\n        if lettre[i] == \"[\":\n            debut = i\n        elif lettre[i] == \"]\" and debut != -1:\n            voeu = lettre[debut + 1:i].strip().lower()\n            if voeu != \"\" and voeu not in voeux:\n                voeux.append(voeu)\n            debut = -1\n    return voeux\n"
+      },
+      "tests": [
+        { "args": ["Bonjour ! Je voudrais [un train] et [Une Luge ]."], "expected": ["un train","une luge"] },
+        { "args": ["Cher Pôle, [un robot], [UN ROBOT] et encore [un robot] !"], "expected": ["un robot"] },
+        { "args": ["Rien cette année, merci."], "expected": [] },
+        { "args": ["[des skis] et aussi [un vél"], "expected": ["des skis"] },
+        { "args": ["[] puis [   ] puis [une étoile]"], "expected": ["une étoile"], "hidden": true },
+        { "args": ["un ] perdu, puis [Un Puzzle][des moufles]"], "expected": ["un puzzle","des moufles"], "hidden": true },
+        { "args": [""], "expected": [], "hidden": true }
+      ],
+      "hint": "Avance caractère par caractère en retenant la position du dernier `[` rencontré. Quand tu arrives sur un `]`, tu sais exactement quel morceau découper. N'oublie pas de « consommer » le crochet ouvrant une fois le vœu traité."
+    },
+    {
+      "id": "d09-confirme",
+      "day": 9,
+      "level": "confirme",
+      "title": "La fiche de l'enfant",
+      "concept": "Analyseur à états (guillemets, échappement, champs clé: valeur)",
+      "statement": "Givrebug a brouillé les lettres du sac postal : il reste des **fiches** d'enfants, écrites comme `nom: Léa; voeu: \"un train; une luge\"; age: 7`. Le Registre doit les lire sans se faire piéger par les `;` et les `:` cachés dans les guillemets.\n\nÉcris une fonction `{fn}(texte)` qui renvoie un objet (un dictionnaire en Python) qui associe chaque **clé** à sa **valeur**, toutes deux de type texte. Pas d'expression régulière : lis le texte caractère par caractère.\n\nRègles :\n\n- Le texte est une suite de **champs** séparés par des `;`. Un `;` situé **entre guillemets** ne sépare rien.\n- Dans un champ, la **clé** est tout ce qui précède le **premier** `:`. On retire les espaces autour de la clé et on la met en **minuscules**. Un `\"` dans une clé est un caractère comme un autre. Un champ sans `:`, ou dont la clé est vide, est **ignoré**.\n- La **valeur** est ce qui suit ce `:`. Les espaces juste après le `:` sont sautés.\n- Si le premier caractère qui n'est pas une espace est un `\"`, la valeur est **entre guillemets** : elle s'étend jusqu'au prochain `\"` **non échappé**. Elle est recopiée telle quelle, **sans retirer d'espaces ni changer la casse**, et les `:` et `;` y sont de simples caractères. Dans cette valeur, `\\\"` donne un `\"` et `\\\\` donne un `\\` ; un `\\` suivi de tout autre caractère est recopié avec ce caractère (le `\\` est conservé). Une fois le guillemet fermant lu, **tout** ce qui reste du champ jusqu'au prochain `;` est ignoré. Si le guillemet n'est **jamais refermé**, le champ (et donc tout ce qui suit dans le texte) est ignoré.\n- Sinon, la valeur est **non guillemetée** : tout jusqu'au prochain `;` (ou la fin du texte), sans les espaces de fin, **casse conservée**. Les `:` et les `\"` y sont des caractères ordinaires, et une valeur peut être vide : `b:` donne `\"b\": \"\"`.\n- Si une clé apparaît plusieurs fois, c'est la **dernière** valeur qui compte.\n- Les seules espaces à retirer sont les espaces simples `\" \"`. Un texte vide donne un objet vide.\n\nExemple : `Nom : Zoé ;  HEURE: 10:30` donne `{\"nom\": \"Zoé\", \"heure\": \"10:30\"}`.",
+      "fn": {
+        "javascript": "lireFiche",
+        "python": "lire_fiche"
+      },
+      "starter": {
+        "javascript": "function lireFiche(texte) {\n  // Renvoie un objet { clé: valeur } lu caractère par caractère\n}\n",
+        "python": "def lire_fiche(texte):\n    # Renvoie un dictionnaire { clé: valeur } lu caractère par caractère\n    pass\n"
+      },
+      "solution": {
+        "javascript": "function nettoyer(texte) {\n  let debut = 0;\n  let fin = texte.length;\n  while (debut < fin && texte[debut] === \" \") {\n    debut++;\n  }\n  while (fin > debut && texte[fin - 1] === \" \") {\n    fin--;\n  }\n  return texte.slice(debut, fin);\n}\n\nfunction enregistrer(fiche, cle, etat, valeur) {\n  const nom = nettoyer(cle).toLowerCase();\n  if (nom === \"\") {\n    return;\n  }\n  if (etat === \"debut\") {\n    fiche[nom] = \"\";\n  } else if (etat === \"libre\") {\n    fiche[nom] = nettoyer(valeur);\n  } else if (etat === \"ferme\") {\n    fiche[nom] = valeur;\n  }\n}\n\nfunction lireFiche(texte) {\n  const fiche = {};\n  let etat = \"cle\";\n  let cle = \"\";\n  let valeur = \"\";\n  let echap = false;\n  for (const c of texte) {\n    if (etat === \"guillemets\") {\n      if (echap) {\n        valeur += c === '\"' || c === \"\\\\\" ? c : \"\\\\\" + c;\n        echap = false;\n      } else if (c === \"\\\\\") {\n        echap = true;\n      } else if (c === '\"') {\n        etat = \"ferme\";\n      } else {\n        valeur += c;\n      }\n    } else if (c === \";\") {\n      enregistrer(fiche, cle, etat, valeur);\n      etat = \"cle\";\n      cle = \"\";\n      valeur = \"\";\n    } else if (etat === \"cle\") {\n      if (c === \":\") {\n        etat = \"debut\";\n      } else {\n        cle += c;\n      }\n    } else if (etat === \"debut\") {\n      if (c === '\"') {\n        etat = \"guillemets\";\n      } else if (c !== \" \") {\n        etat = \"libre\";\n        valeur = c;\n      }\n    } else if (etat === \"libre\") {\n      valeur += c;\n    }\n  }\n  enregistrer(fiche, cle, etat, valeur);\n  return fiche;\n}\n",
+        "python": "def enregistrer(fiche, cle, etat, valeur):\n    nom = cle.strip(\" \").lower()\n    if nom == \"\":\n        return\n    if etat == \"debut\":\n        fiche[nom] = \"\"\n    elif etat == \"libre\":\n        fiche[nom] = valeur.strip(\" \")\n    elif etat == \"ferme\":\n        fiche[nom] = valeur\n\n\ndef lire_fiche(texte):\n    fiche = {}\n    etat = \"cle\"\n    cle = \"\"\n    valeur = \"\"\n    echap = False\n    for c in texte:\n        if etat == \"guillemets\":\n            if echap:\n                valeur += c if c == '\"' or c == \"\\\\\" else \"\\\\\" + c\n                echap = False\n            elif c == \"\\\\\":\n                echap = True\n            elif c == '\"':\n                etat = \"ferme\"\n            else:\n                valeur += c\n        elif c == \";\":\n            enregistrer(fiche, cle, etat, valeur)\n            etat = \"cle\"\n            cle = \"\"\n            valeur = \"\"\n        elif etat == \"cle\":\n            if c == \":\":\n                etat = \"debut\"\n            else:\n                cle += c\n        elif etat == \"debut\":\n            if c == '\"':\n                etat = \"guillemets\"\n            elif c != \" \":\n                etat = \"libre\"\n                valeur = c\n        elif etat == \"libre\":\n            valeur += c\n    enregistrer(fiche, cle, etat, valeur)\n    return fiche\n"
+      },
+      "tests": [
+        {
+          "args": [
+            "nom: Léa; age: 7"
+          ],
+          "expected": {
+            "nom": "Léa",
+            "age": "7"
+          }
+        },
+        {
+          "args": [
+            "voeu: \"un train; une luge\"; ville: Givreville"
+          ],
+          "expected": {
+            "voeu": "un train; une luge",
+            "ville": "Givreville"
+          }
+        },
+        {
+          "args": [
+            "Nom : Zoé ;  HEURE: 10:30"
+          ],
+          "expected": {
+            "nom": "Zoé",
+            "heure": "10:30"
+          }
+        },
+        {
+          "args": [
+            "mot: \"il a dit \\\"salut\\\"\""
+          ],
+          "expected": {
+            "mot": "il a dit \"salut\""
+          }
+        },
+        {
+          "args": [
+            ""
+          ],
+          "expected": {}
+        },
+        {
+          "args": [
+            "a: 1; a: 2; ; sans deux points; : vide; b:"
+          ],
+          "expected": {
+            "a": "2",
+            "b": ""
+          },
+          "hidden": true
+        },
+        {
+          "args": [
+            "z: 1; x: \"ouvert; y: 2"
+          ],
+          "expected": {
+            "z": "1"
+          },
+          "hidden": true
+        },
+        {
+          "args": [
+            "c: \"a\\\\b\"; d: \"  deux  \" reste ignoré; e: \"x\\ty\"; f: 5\" ; g: ok"
+          ],
+          "expected": {
+            "c": "a\\b",
+            "d": "  deux  ",
+            "e": "x\\ty",
+            "f": "5\"",
+            "g": "ok"
+          },
+          "hidden": true
+        },
+        {
+          "args": [
+            "p: \"a:b;c\" ; q:  \"\";r: \"fin\\\\\""
+          ],
+          "expected": {
+            "p": "a:b;c",
+            "q": "",
+            "r": "fin\\"
+          },
+          "hidden": true
+        },
+        { "args": ["\tnom: \tLéa\t; b:\t"], "expected": {"\tnom":"\tLéa\t","b":"\t"}, "hidden": true },
+        { "args": ["nom: \"Léa DUPONT\"; Ville: \"Givre Ville\""], "expected": {"nom":"Léa DUPONT","ville":"Givre Ville"}, "hidden": true },
+        { "args": ["a\"b: 1; c: 2"], "expected": {"a\"b":"1","c":"2"}, "hidden": true }
+      ],
+      "hint": "Garde une variable d'état qui dit où tu en es : dans une clé, juste après le deux-points, dans une valeur libre, dans une valeur entre guillemets, après le guillemet fermant. Chaque caractère est traité selon l'état courant. Pense à enregistrer le dernier champ quand le texte se termine sans `;`, et à retenir qu'un caractère est précédé d'un antislash."
+    },
+    {
+      "id": "d09-expert",
+      "day": 9,
+      "level": "expert",
+      "title": "La lettre bien alignée",
+      "concept": "Découper et justifier un texte",
+      "statement": "Le Registre n'accepte les lettres d'enfants que si elles sont **justifiées** : toutes les lignes doivent faire exactement la même largeur, comme dans un livre. À toi de remettre en page les mots sortis du sac postal.\n\nÉcris une fonction `{fn}(mots, largeur)` qui renvoie la **liste des lignes**. Chaque ligne est un texte d'exactement `largeur` caractères.\n\nRègles :\n- Les mots restent dans l'ordre. On remplit chaque ligne avec **le plus de mots possible**, en comptant au moins une espace entre deux mots.\n- Sur une ligne de plusieurs mots (sauf la dernière), on ajoute des espaces **entre** les mots pour atteindre la largeur, réparties le plus également possible. Si elles ne se partagent pas exactement, les intervalles **de gauche** reçoivent chacun une espace de plus que ceux de droite.\n- Une ligne qui ne contient **qu'un seul mot** est calée à gauche, et complétée par des espaces à droite.\n- La **dernière ligne** est calée à gauche elle aussi : une seule espace entre les mots, puis des espaces à droite jusqu'à la largeur.\n\nPrécisions : chaque mot est un texte non vide, sans espace, d'au plus `largeur` caractères. Sans aucun mot, renvoie la liste vide.\n\nExemple : avec les mots `le`, `givre`, `dessine`, `des`, `fleurs`, `sur`, `la`, `vitre` et une largeur de `14`, on obtient quatre lignes (la dernière se termine par 9 espaces) :\n\n`le       givre`\n`dessine    des`\n`fleurs  sur la`\n`vitre         `\n",
+      "fn": {
+        "javascript": "justifier",
+        "python": "justifier"
+      },
+      "starter": {
+        "javascript": "function justifier(mots, largeur) {\n  // Renvoie la liste des lignes, chacune de `largeur` caractères\n}\n",
+        "python": "def justifier(mots, largeur):\n    # Renvoie la liste des lignes, chacune de `largeur` caractères\n    pass\n"
+      },
+      "solution": {
+        "javascript": "function justifier(mots, largeur) {\n  const lignes = [];\n  let i = 0;\n  while (i < mots.length) {\n    // Les mots i à j - 1 tiennent sur la ligne, avec une espace entre chacun.\n    let j = i;\n    let lettres = 0;\n    while (j < mots.length && lettres + mots[j].length + (j - i) <= largeur) {\n      lettres += mots[j].length;\n      j++;\n    }\n    const groupe = mots.slice(i, j);\n    const intervalles = groupe.length - 1;\n    let ligne;\n    if (j === mots.length || intervalles === 0) {\n      ligne = groupe.join(\" \").padEnd(largeur, \" \");\n    } else {\n      const espaces = largeur - lettres;\n      const base = Math.floor(espaces / intervalles);\n      const enPlus = espaces % intervalles;\n      ligne = \"\";\n      groupe.forEach((mot, k) => {\n        ligne += mot;\n        if (k < intervalles) ligne += \" \".repeat(base + (k < enPlus ? 1 : 0));\n      });\n    }\n    lignes.push(ligne);\n    i = j;\n  }\n  return lignes;\n}\n",
+        "python": "def justifier(mots, largeur):\n    lignes = []\n    i = 0\n    while i < len(mots):\n        # Les mots i à j - 1 tiennent sur la ligne, avec une espace entre chacun.\n        j = i\n        lettres = 0\n        while j < len(mots) and lettres + len(mots[j]) + (j - i) <= largeur:\n            lettres += len(mots[j])\n            j += 1\n        groupe = mots[i:j]\n        intervalles = len(groupe) - 1\n        if j == len(mots) or intervalles == 0:\n            ligne = \" \".join(groupe).ljust(largeur)\n        else:\n            base, en_plus = divmod(largeur - lettres, intervalles)\n            ligne = \"\"\n            for k, mot in enumerate(groupe):\n                ligne += mot\n                if k < intervalles:\n                    ligne += \" \" * (base + (1 if k < en_plus else 0))\n        lignes.append(ligne)\n        i = j\n    return lignes\n"
+      },
+      "tests": [
+        {
+          "args": [
+            [
+              "le",
+              "givre",
+              "dessine",
+              "des",
+              "fleurs",
+              "sur",
+              "la",
+              "vitre"
+            ],
+            14
+          ],
+          "expected": [
+            "le       givre",
+            "dessine    des",
+            "fleurs  sur la",
+            "vitre         "
+          ]
+        },
+        {
+          "args": [
+            [
+              "un",
+              "train",
+              "bleu"
+            ],
+            16
+          ],
+          "expected": [
+            "un train bleu   "
+          ]
+        },
+        {
+          "args": [
+            [
+              "luge"
+            ],
+            7
+          ],
+          "expected": [
+            "luge   "
+          ]
+        },
+        {
+          "args": [
+            [
+              "a",
+              "b",
+              "c",
+              "d",
+              "e"
+            ],
+            5
+          ],
+          "expected": [
+            "a b c",
+            "d e  "
+          ]
+        },
+        {
+          "args": [
+            [],
+            10
+          ],
+          "expected": [],
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              "noel"
+            ],
+            4
+          ],
+          "expected": [
+            "noel"
+          ],
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              "a",
+              "bb",
+              "ccc",
+              "dddd"
+            ],
+            4
+          ],
+          "expected": [
+            "a bb",
+            "ccc ",
+            "dddd"
+          ],
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              "le",
+              "givre",
+              "dessine",
+              "des",
+              "fleurs",
+              "sur",
+              "la",
+              "vitre",
+              "et",
+              "pixel",
+              "relit",
+              "chaque",
+              "lettre",
+              "du",
+              "sac",
+              "postal",
+              "avant",
+              "que",
+              "la",
+              "nuit",
+              "ne",
+              "tombe",
+              "sur",
+              "givreville"
+            ],
+            20
+          ],
+          "expected": [
+            "le givre dessine des",
+            "fleurs  sur la vitre",
+            "et    pixel    relit",
+            "chaque lettre du sac",
+            "postal  avant que la",
+            "nuit  ne  tombe  sur",
+            "givreville          "
+          ],
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              "le",
+              "givre",
+              "dessine",
+              "des",
+              "fleurs",
+              "sur",
+              "la",
+              "vitre",
+              "et",
+              "pixel",
+              "relit",
+              "chaque",
+              "lettre",
+              "du",
+              "sac",
+              "postal",
+              "avant",
+              "que",
+              "la",
+              "nuit",
+              "ne",
+              "tombe",
+              "sur",
+              "givreville"
+            ],
+            11
+          ],
+          "expected": [
+            "le    givre",
+            "dessine des",
+            "fleurs  sur",
+            "la vitre et",
+            "pixel relit",
+            "chaque     ",
+            "lettre   du",
+            "sac  postal",
+            "avant   que",
+            "la  nuit ne",
+            "tombe   sur",
+            "givreville "
+          ],
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              "le",
+              "givre",
+              "dessine",
+              "des",
+              "fleurs",
+              "sur",
+              "la",
+              "vitre",
+              "et",
+              "pixel",
+              "relit",
+              "chaque",
+              "lettre",
+              "du",
+              "sac",
+              "postal",
+              "avant",
+              "que",
+              "la",
+              "nuit",
+              "ne",
+              "tombe",
+              "sur",
+              "givreville"
+            ],
+            34
+          ],
+          "expected": [
+            "le givre dessine des fleurs sur la",
+            "vitre et pixel relit chaque lettre",
+            "du sac postal avant que la nuit ne",
+            "tombe sur givreville              "
+          ],
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              "x",
+              "x",
+              "x",
+              "x",
+              "x",
+              "x",
+              "x",
+              "x",
+              "x"
+            ],
+            4
+          ],
+          "expected": [
+            "x  x",
+            "x  x",
+            "x  x",
+            "x  x",
+            "x   "
+          ],
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              "cher",
+              "pere",
+              "noel",
+              "je",
+              "voudrais",
+              "une",
+              "luge",
+              "et",
+              "un",
+              "livre",
+              "sur",
+              "les",
+              "rennes"
+            ],
+            13
+          ],
+          "expected": [
+            "cher     pere",
+            "noel       je",
+            "voudrais  une",
+            "luge   et  un",
+            "livre sur les",
+            "rennes       "
+          ],
+          "hidden": true
+        }
+      ],
+      "hint": "Sépare le travail en deux temps : d'abord décider quels mots vont sur la ligne, ensuite fabriquer la ligne. Pour le partage des espaces, une division entière et son reste te donnent tout : combien d'espaces par intervalle, et combien d'intervalles en reçoivent une de plus."
+    }
+  ]
+}

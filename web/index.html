@@ -1,0 +1,128 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark light">
+  <meta name="theme-color" content="#070f18">
+  <title>Le Calendrier de l'Avent du Code</title>
+  <meta name="description" content="24 petits exercices de programmation, une histoire de Noël. JavaScript ou Python, trois niveaux : débutant, intermédiaire, confirmé.">
+  <script>
+    // Applique le thème enregistré avant le premier affichage, pour éviter un flash.
+    try {
+      if (JSON.parse(localStorage.getItem("advent-code-v1") || "{}").theme === "matin") document.documentElement.classList.add("t-matin");
+    } catch (e) { /* stockage indisponible : thème de nuit */ }
+  </script>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,400..700&family=Fraunces:ital,opsz,wght@0,9..144,400..700;1,9..144,400..600&family=JetBrains+Mono:wght@400;500;700&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+<div class="app" id="app">
+  <a class="skip" href="#main">Aller au contenu</a>
+
+  <header class="hdr">
+    <div class="wrap hdr__in">
+      <a class="logo" href="#/" aria-label="Avent du Code, retour au calendrier">
+        <span class="logo__mark" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="none" stroke="#3a2404" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 20V10a7 7 0 0 1 14 0v10z"/><path d="M12 4v16M5 13h14"/></svg>
+        </span>
+        Avent du Code
+      </a>
+
+      <div class="hdr__ctrls">
+        <div class="seg" role="group" aria-label="Langage" id="seg-lang"></div>
+        <div class="seg" role="group" aria-label="Niveau" id="seg-level"></div>
+      </div>
+
+      <div class="hdr__set" id="menu">
+        <button type="button" class="btn btn--secondary" id="btn-menu" aria-label="Réglages" aria-expanded="false" aria-controls="reglages">
+          <svg class="ico" viewBox="0 0 24 24" aria-hidden="true"><circle cx="12" cy="12" r="3"/><path d="M19.4 15a1.7 1.7 0 0 0 .3 1.8l.1.1a2 2 0 1 1-2.8 2.8l-.1-.1a1.7 1.7 0 0 0-1.8-.3 1.7 1.7 0 0 0-1 1.5V21a2 2 0 1 1-4 0v-.1a1.7 1.7 0 0 0-1.1-1.5 1.7 1.7 0 0 0-1.8.3l-.1.1a2 2 0 1 1-2.8-2.8l.1-.1a1.7 1.7 0 0 0 .3-1.8 1.7 1.7 0 0 0-1.5-1H3a2 2 0 1 1 0-4h.1a1.7 1.7 0 0 0 1.5-1.1 1.7 1.7 0 0 0-.3-1.8l-.1-.1a2 2 0 1 1 2.8-2.8l.1.1a1.7 1.7 0 0 0 1.8.3H9a1.7 1.7 0 0 0 1-1.5V3a2 2 0 1 1 4 0v.1a1.7 1.7 0 0 0 1 1.5 1.7 1.7 0 0 0 1.8-.3l.1-.1a2 2 0 1 1 2.8 2.8l-.1.1a1.7 1.7 0 0 0-.3 1.8V9a1.7 1.7 0 0 0 1.5 1H21a2 2 0 1 1 0 4h-.1a1.7 1.7 0 0 0-1.5 1z"/></svg>
+          <span class="hide-sm" aria-hidden="true">Réglages</span>
+        </button>
+
+        <div class="menu" id="reglages" hidden>
+          <button type="button" class="menu__item" role="switch" aria-checked="false" id="chk-dates">
+            <span class="switch" aria-hidden="true"></span>
+            <span>Une porte par jour<small>Chaque porte s'ouvre à sa date, à partir du 1er décembre.</small></span>
+          </button>
+          <button type="button" class="menu__item" role="switch" aria-checked="false" id="chk-theme">
+            <span class="switch" aria-hidden="true"></span>
+            <span>Matin de neige<small>Le thème clair, pour coder au réveil.</small></span>
+          </button>
+          <div class="menu__sep" role="separator"></div>
+          <button type="button" class="menu__item" id="btn-placement">
+            <span class="menu__ico" aria-hidden="true"><svg class="ico" viewBox="0 0 24 24"><path d="M9 11l3 3 8-8"/><path d="M20 12v6a2 2 0 0 1-2 2H6a2 2 0 0 1-2-2V6a2 2 0 0 1 2-2h9"/></svg></span>
+            <span>Test de niveau<small>Douze questions pour te proposer un niveau.</small></span>
+          </button>
+          <button type="button" class="menu__item menu__item--danger" id="btn-reset-all">
+            <span class="menu__ico" aria-hidden="true" style="color: inherit"><svg class="ico" viewBox="0 0 24 24"><path d="M4 7h16M10 11v6M14 11v6M6 7l1 12a2 2 0 0 0 2 2h6a2 2 0 0 0 2-2l1-12M9 7V4h6v3"/></svg></span>
+            <span>Tout effacer…<small>Supprime ta progression et ton code de ce navigateur. On te demandera de confirmer.</small></span>
+          </button>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main id="main" tabindex="-1">
+    <div id="view-calendar">
+      <section class="hero" aria-labelledby="cal-title">
+        <div class="snow" id="snow" aria-hidden="true"></div>
+        <div class="wrap hero__grid">
+          <div>
+            <p class="eyebrow">Givreville, quelques nuits avant Noël</p>
+            <h1 class="h1" id="cal-title">Le Calendrier de l'Avent <em>du Code</em></h1>
+            <p class="lede" id="tagline"></p>
+            <div class="hero__actions" id="resume"></div>
+          </div>
+
+          <figure class="scene">
+            <div class="village" id="village" role="img"></div>
+            <figcaption class="gauge" id="gauge" aria-live="polite"></figcaption>
+          </figure>
+        </div>
+      </section>
+
+      <section class="wrap" id="welcome" aria-labelledby="bienvenue" hidden></section>
+
+      <section class="wrap" aria-labelledby="portes">
+        <div class="sec-head">
+          <div>
+            <p class="eyebrow" style="color: var(--givre)">La façade</p>
+            <h2 class="h2" id="portes" style="margin-top: 8px">Les 24 portes</h2>
+          </div>
+          <ul class="legend" aria-label="Légende des états">
+            <li><i class="lg lg--locked"></i>Verrouillée</li>
+            <li><i class="lg lg--open"></i>Disponible</li>
+            <li><i class="lg lg--cur"></i>En cours</li>
+            <li><i class="lg lg--lit"></i>Réparée</li>
+            <li><i class="lg lg--noel"></i>Nuit de Noël</li>
+          </ul>
+        </div>
+        <div class="facade">
+          <ol class="doors" id="grid"></ol>
+        </div>
+      </section>
+    </div>
+
+    <div id="view-day" class="wrap" hidden></div>
+  </main>
+
+  <footer class="foot">
+    <div class="wrap"><div class="foot__in">
+      <span>
+        <svg class="ico ico--sm" viewBox="0 0 24 24" aria-hidden="true"><rect x="5" y="11" width="14" height="9" rx="2"/><path d="M8 11V8a4 4 0 0 1 8 0v3"/></svg>
+        Ta progression et ton code restent dans ce navigateur : rien n'est envoyé ailleurs.
+      </span>
+      <span>Givrebug n'a qu'à bien se tenir.</span>
+    </div></div>
+  </footer>
+
+  <dialog id="dlg-placement" class="modal" aria-labelledby="dlg-title"></dialog>
+</div>
+
+<noscript><p class="noscript">Cette page a besoin de JavaScript pour fonctionner.</p></noscript>
+<script type="module" src="app.js"></script>
+</body>
+</html>

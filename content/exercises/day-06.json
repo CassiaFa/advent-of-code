@@ -1,0 +1,712 @@
+{
+  "day": 6,
+  "concept": "Fonctions et bornes",
+  "exercises": [
+    {
+      "id": "d06-debutant",
+      "day": 6,
+      "level": "debutant",
+      "title": "Le capteur de Tonnerre",
+      "concept": "Conditions dans une fonction",
+      "statement": "Les capteurs des rennes affichent n'importe quoi : 4 000 km/h pour Tonnerre, -12 pour Étoile. Une vitesse de renne doit toujours rester entre un minimum et un maximum.\n\nÉcris une fonction `{fn}(vitesse, mini, maxi)` qui renvoie :\n\n- `mini` si la vitesse est **plus petite** que `mini` ;\n- `maxi` si elle est **plus grande** que `maxi` ;\n- la vitesse elle-même sinon (y compris quand elle est égale à `mini` ou à `maxi`).\n\nOn te garantit que `mini` est toujours inférieur ou égal à `maxi`.",
+      "fn": {"javascript":"borner","python":"borner"},
+      "starter": {
+        "javascript": "function borner(vitesse, mini, maxi) {\n  // Renvoie la vitesse ramenée entre mini et maxi\n}\n",
+        "python": "def borner(vitesse, mini, maxi):\n    # Renvoie la vitesse ramenée entre mini et maxi\n    pass\n"
+      },
+      "solution": {
+        "javascript": "function borner(vitesse, mini, maxi) {\n  if (vitesse < mini) {\n    return mini;\n  }\n  if (vitesse > maxi) {\n    return maxi;\n  }\n  return vitesse;\n}\n",
+        "python": "def borner(vitesse, mini, maxi):\n    if vitesse < mini:\n        return mini\n    if vitesse > maxi:\n        return maxi\n    return vitesse\n"
+      },
+      "tests": [
+        { "args": [4000,0,120], "expected": 120 },
+        { "args": [-12,0,120], "expected": 0 },
+        { "args": [80,0,120], "expected": 80 },
+        { "args": [120,0,120], "expected": 120 },
+        { "args": [0,0,120], "expected": 0, "hidden": true },
+        { "args": [-5,-10,10], "expected": -5, "hidden": true }
+      ],
+      "hint": "Trois cas, donc deux `if` suffisent : trop petit, trop grand, et sinon la vitesse est déjà bonne."
+    },
+    {
+      "id": "d06-intermediaire",
+      "day": 6,
+      "level": "intermediaire",
+      "title": "Recalibrer le tableau de bord",
+      "concept": "Mémoriser la dernière valeur valide",
+      "statement": "Le tableau de bord enregistre la vitesse d'un renne seconde après seconde, mais certaines mesures sont **aberrantes** : elles sortent de l'intervalle `[mini, maxi]` (les bornes elles-mêmes sont valides).\n\nÉcris une fonction `{fn}(vitesses, mini, maxi)` qui renvoie une **nouvelle liste** de même longueur où chaque mesure aberrante est remplacée :\n\n- par la **dernière mesure valide qui la précède** ;\n- s'il n'y en a aucune avant elle, par la **première mesure valide de la liste** ;\n- si la liste ne contient aucune mesure valide, par `mini`.\n\nLes mesures valides ne changent pas. Une liste vide donne une liste vide. On te garantit que `mini` est inférieur ou égal à `maxi`.\n\nExemple avec `mini = 0` et `maxi = 120` : `[4000, 80, -12, 90]` devient `[80, 80, 80, 90]`.",
+      "fn": {"javascript":"recalibrer","python":"recalibrer"},
+      "starter": {
+        "javascript": "function recalibrer(vitesses, mini, maxi) {\n  // Renvoie une nouvelle liste sans mesure aberrante\n}\n",
+        "python": "def recalibrer(vitesses, mini, maxi):\n    # Renvoie une nouvelle liste sans mesure aberrante\n    pass\n"
+      },
+      "solution": {
+        "javascript": "function recalibrer(vitesses, mini, maxi) {\n  const estValide = (v) => v >= mini && v <= maxi;\n  let derniere = mini;\n  for (const v of vitesses) {\n    if (estValide(v)) {\n      derniere = v;\n      break;\n    }\n  }\n  const resultat = [];\n  for (const v of vitesses) {\n    if (estValide(v)) {\n      derniere = v;\n    }\n    resultat.push(derniere);\n  }\n  return resultat;\n}\n",
+        "python": "def recalibrer(vitesses, mini, maxi):\n    def est_valide(v):\n        return mini <= v <= maxi\n\n    derniere = mini\n    for v in vitesses:\n        if est_valide(v):\n            derniere = v\n            break\n    resultat = []\n    for v in vitesses:\n        if est_valide(v):\n            derniere = v\n        resultat.append(derniere)\n    return resultat\n"
+      },
+      "tests": [
+        { "args": [[4000,80,-12,90],0,120], "expected": [80,80,80,90] },
+        { "args": [[80,4000,90,-12],0,120], "expected": [80,80,90,90] },
+        { "args": [[500,600],0,120], "expected": [0,0] },
+        { "args": [[],0,120], "expected": [] },
+        { "args": [[0,120,121,-1,60],0,120], "expected": [0,120,120,120,60], "hidden": true },
+        { "args": [[300],10,50], "expected": [10], "hidden": true },
+        { "args": [[-3,999,42,43,999,999],0,120], "expected": [42,42,42,43,43,43], "hidden": true }
+      ],
+      "hint": "Garde dans une variable la dernière mesure valide rencontrée et mets-la à jour en avançant. Reste à choisir sa valeur de départ : que doit-elle valoir avant d'avoir croisé la moindre mesure valide ?"
+    },
+    {
+      "id": "d06-confirme",
+      "day": 6,
+      "level": "confirme",
+      "title": "Les capteurs en pointillés",
+      "concept": "Interpolation entière entre mesures valides",
+      "statement": "Pour la répétition générale, Pixel veut des courbes de vitesse propres. Une mesure est **valide** si elle est comprise entre `mini` et `maxi` (bornes incluses), **aberrante** sinon.\n\nÉcris `{fn}(vitesses, mini, maxi)` qui renvoie une **nouvelle liste** de même longueur où chaque mesure aberrante est remplacée selon ces règles (les mesures valides ne changent pas) :\n\n- si elle est entourée d'une mesure valide avant et d'une mesure valide après (les plus proches de chaque côté), on **interpole linéairement** entre les deux, par pas entiers : avec `a` la valide avant, `b` la valide après, `ecart` la distance entre leurs positions et `pos` la distance entre `a` et la mesure à corriger, on avance de `|b - a| * pos` divisé par `ecart` **arrondi à l'entier inférieur**, depuis `a` en direction de `b` ;\n- s'il n'y a pas de mesure valide avant, on recopie la **première** mesure valide après ;\n- s'il n'y en a pas après, on recopie la **dernière** mesure valide avant ;\n- s'il n'existe aucune mesure valide, toutes les mesures deviennent `mini`.\n\nUne liste vide donne une liste vide.\n\nExemple (`mini = 0`, `maxi = 120`) : `[50, 999, 999, 11]` donne `[50, 37, 24, 11]`, car l'écart est de 39 sur 3 pas : on descend de 13 puis de 26.",
+      "fn": {
+        "javascript": "interpolerMesures",
+        "python": "interpoler_mesures"
+      },
+      "starter": {
+        "javascript": "function interpolerMesures(vitesses, mini, maxi) {\n  // Renvoie une nouvelle liste sans mesure aberrante\n}\n",
+        "python": "def interpoler_mesures(vitesses, mini, maxi):\n    # Renvoie une nouvelle liste sans mesure aberrante\n    pass\n"
+      },
+      "solution": {
+        "javascript": "function interpolerMesures(vitesses, mini, maxi) {\n  const valide = (v) => v >= mini && v <= maxi;\n  const n = vitesses.length;\n  const resultat = [...vitesses];\n  let avant = -1;\n  let i = 0;\n  while (i < n) {\n    if (valide(vitesses[i])) {\n      avant = i;\n      i++;\n      continue;\n    }\n    let apres = i;\n    while (apres < n && !valide(vitesses[apres])) {\n      apres++;\n    }\n    for (let p = i; p < apres; p++) {\n      if (avant === -1 && apres === n) {\n        resultat[p] = mini;\n      } else if (avant === -1) {\n        resultat[p] = vitesses[apres];\n      } else if (apres === n) {\n        resultat[p] = vitesses[avant];\n      } else {\n        const a = vitesses[avant];\n        const b = vitesses[apres];\n        const pas = Math.floor((Math.abs(b - a) * (p - avant)) / (apres - avant));\n        resultat[p] = b >= a ? a + pas : a - pas;\n      }\n    }\n    i = apres;\n  }\n  return resultat;\n}\n",
+        "python": "def interpoler_mesures(vitesses, mini, maxi):\n    def valide(v):\n        return mini <= v <= maxi\n\n    n = len(vitesses)\n    resultat = list(vitesses)\n    avant = -1\n    i = 0\n    while i < n:\n        if valide(vitesses[i]):\n            avant = i\n            i += 1\n            continue\n        apres = i\n        while apres < n and not valide(vitesses[apres]):\n            apres += 1\n        for p in range(i, apres):\n            if avant == -1 and apres == n:\n                resultat[p] = mini\n            elif avant == -1:\n                resultat[p] = vitesses[apres]\n            elif apres == n:\n                resultat[p] = vitesses[avant]\n            else:\n                a = vitesses[avant]\n                b = vitesses[apres]\n                pas = abs(b - a) * (p - avant) // (apres - avant)\n                resultat[p] = a + pas if b >= a else a - pas\n        i = apres\n    return resultat\n"
+      },
+      "tests": [
+        {
+          "args": [
+            [
+              10,
+              999,
+              999,
+              40
+            ],
+            0,
+            120
+          ],
+          "expected": [
+            10,
+            20,
+            30,
+            40
+          ]
+        },
+        {
+          "args": [
+            [
+              50,
+              999,
+              999,
+              11
+            ],
+            0,
+            120
+          ],
+          "expected": [
+            50,
+            37,
+            24,
+            11
+          ]
+        },
+        {
+          "args": [
+            [
+              999,
+              -5,
+              70,
+              80
+            ],
+            0,
+            120
+          ],
+          "expected": [
+            70,
+            70,
+            70,
+            80
+          ]
+        },
+        {
+          "args": [
+            [
+              60,
+              70,
+              500
+            ],
+            0,
+            120
+          ],
+          "expected": [
+            60,
+            70,
+            70
+          ]
+        },
+        {
+          "args": [
+            [
+              500,
+              600
+            ],
+            10,
+            50
+          ],
+          "expected": [
+            10,
+            10
+          ]
+        },
+        {
+          "args": [
+            [],
+            0,
+            120
+          ],
+          "expected": []
+        },
+        {
+          "args": [
+            [
+              0,
+              999,
+              1,
+              999,
+              999,
+              120
+            ],
+            0,
+            120
+          ],
+          "expected": [
+            0,
+            0,
+            1,
+            40,
+            80,
+            120
+          ],
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              121,
+              50,
+              -1
+            ],
+            0,
+            120
+          ],
+          "expected": [
+            50,
+            50,
+            50
+          ],
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              20,
+              999,
+              20
+            ],
+            0,
+            120
+          ],
+          "expected": [
+            20,
+            20,
+            20
+          ],
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              -7,
+              30,
+              999,
+              -4,
+              15,
+              16,
+              999
+            ],
+            0,
+            100
+          ],
+          "expected": [
+            30,
+            30,
+            25,
+            20,
+            15,
+            16,
+            16
+          ],
+          "hidden": true
+        },
+        { "args": [[10,999,999,0],0,120], "expected": [10,7,4,0], "hidden": true }
+      ],
+      "hint": "Repère chaque série de mesures aberrantes consécutives : il te faut la dernière valide avant et la première valide après. Ensuite, quatre cas (deux voisines, une seule, aucune). Pour l'arrondi, calcule toujours avec des écarts positifs, puis choisis le sens."
+    },
+    {
+      "id": "d06-expert",
+      "day": 6,
+      "level": "expert",
+      "title": "La neige entre les piquets",
+      "concept": "Bornes à gauche et à droite",
+      "statement": "La piste des rennes est bordée de piquets collés les uns aux autres, tous de la même largeur (1) mais de hauteurs différentes. Cette nuit, il a neigé à gros flocons, puis le vent a balayé tout ce qui n'était pas retenu : il ne reste de la neige que **dans les creux**, là où elle est bloquée par un piquet plus haut **à gauche** et un autre **à droite**.\n\nÉcris une fonction `{fn}(hauteurs)` qui renvoie la **quantité totale de neige retenue**. Au-dessus de chaque piquet, la neige monte jusqu'à la hauteur du plus bas des deux « murs » qui l'entourent (le plus haut piquet à sa gauche, le plus haut à sa droite), jamais plus haut. Un piquet qui dépasse déjà ce niveau ne retient rien.\n\nPrécisions :\n- `hauteurs` est une liste d'entiers `>= 0`. La neige s'échappe par les deux bords de la piste.\n- Une liste vide, ou sans aucun creux, donne `0`.\n- La piste peut compter des centaines de milliers de piquets : évite de rechercher les deux murs en repartant de zéro pour chaque piquet.\n\nExemple : `[3, 0, 2]` retient `2` (le creux du milieu se remplit jusqu'à la hauteur 2). `[0, 1, 0, 2, 1, 0, 1, 3, 2, 1, 2, 1]` retient `6`, et `[1, 2, 3]` ne retient rien.\n",
+      "fn": {
+        "javascript": "neigeRetenue",
+        "python": "neige_retenue"
+      },
+      "starter": {
+        "javascript": "function neigeRetenue(hauteurs) {\n  // Renvoie la quantité totale de neige retenue\n}\n",
+        "python": "def neige_retenue(hauteurs):\n    # Renvoie la quantité totale de neige retenue\n    pass\n"
+      },
+      "solution": {
+        "javascript": "function neigeRetenue(hauteurs) {\n  let gauche = 0;\n  let droite = hauteurs.length - 1;\n  let murGauche = 0;\n  let murDroit = 0;\n  let total = 0;\n  // On avance toujours du côté du mur le plus bas : c'est lui qui limite le niveau.\n  while (gauche <= droite) {\n    if (murGauche <= murDroit) {\n      murGauche = Math.max(murGauche, hauteurs[gauche]);\n      total += murGauche - hauteurs[gauche];\n      gauche++;\n    } else {\n      murDroit = Math.max(murDroit, hauteurs[droite]);\n      total += murDroit - hauteurs[droite];\n      droite--;\n    }\n  }\n  return total;\n}\n",
+        "python": "def neige_retenue(hauteurs):\n    gauche = 0\n    droite = len(hauteurs) - 1\n    mur_gauche = 0\n    mur_droit = 0\n    total = 0\n    # On avance toujours du côté du mur le plus bas : c'est lui qui limite le niveau.\n    while gauche <= droite:\n        if mur_gauche <= mur_droit:\n            mur_gauche = max(mur_gauche, hauteurs[gauche])\n            total += mur_gauche - hauteurs[gauche]\n            gauche += 1\n        else:\n            mur_droit = max(mur_droit, hauteurs[droite])\n            total += mur_droit - hauteurs[droite]\n            droite -= 1\n    return total\n"
+      },
+      "tests": [
+        {
+          "args": [
+            [
+              0,
+              1,
+              0,
+              2,
+              1,
+              0,
+              1,
+              3,
+              2,
+              1,
+              2,
+              1
+            ]
+          ],
+          "expected": 6
+        },
+        {
+          "args": [
+            [
+              3,
+              0,
+              2
+            ]
+          ],
+          "expected": 2
+        },
+        {
+          "args": [
+            [
+              1,
+              2,
+              3
+            ]
+          ],
+          "expected": 0
+        },
+        {
+          "args": [
+            [
+              4,
+              2,
+              0,
+              3,
+              2,
+              5
+            ]
+          ],
+          "expected": 9
+        },
+        {
+          "args": [
+            []
+          ],
+          "expected": 0,
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              5
+            ]
+          ],
+          "expected": 0,
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              2,
+              2,
+              2
+            ]
+          ],
+          "expected": 0,
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              5,
+              4,
+              3,
+              2,
+              1
+            ]
+          ],
+          "expected": 0,
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              9,
+              0,
+              0,
+              0,
+              9
+            ]
+          ],
+          "expected": 27,
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              12,
+              9,
+              1,
+              7,
+              12,
+              4,
+              0,
+              0,
+              2,
+              10,
+              9,
+              7,
+              12,
+              11,
+              5,
+              5,
+              12,
+              0,
+              4,
+              7
+            ]
+          ],
+          "expected": 96,
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              12,
+              3,
+              11,
+              6,
+              8,
+              8,
+              10,
+              1,
+              3,
+              9,
+              8,
+              11,
+              12,
+              11,
+              4,
+              10,
+              12,
+              9,
+              10,
+              1,
+              6,
+              5,
+              1,
+              5,
+              12,
+              6,
+              12,
+              4,
+              7,
+              11,
+              1,
+              12,
+              3,
+              11,
+              10,
+              12,
+              4,
+              1,
+              0,
+              9,
+              3,
+              10,
+              5,
+              7,
+              3
+            ]
+          ],
+          "expected": 190,
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              8,
+              9,
+              10,
+              11,
+              12,
+              8,
+              0,
+              10,
+              5,
+              3,
+              9,
+              6,
+              4,
+              5,
+              9,
+              1,
+              1,
+              8,
+              10,
+              8,
+              3,
+              1,
+              9,
+              10,
+              4,
+              4,
+              11,
+              3,
+              6,
+              7,
+              3,
+              2,
+              9,
+              3,
+              11,
+              8,
+              0,
+              3,
+              12,
+              2,
+              0,
+              10,
+              5,
+              8,
+              10,
+              9,
+              9,
+              4,
+              5,
+              6,
+              8,
+              6,
+              4,
+              2,
+              10,
+              7,
+              0,
+              2,
+              6,
+              9,
+              11,
+              6,
+              1,
+              7,
+              3,
+              12,
+              1,
+              9,
+              10,
+              7,
+              7,
+              12,
+              6,
+              12,
+              1,
+              8,
+              6,
+              7,
+              4,
+              11
+            ]
+          ],
+          "expected": 435,
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              6,
+              1,
+              3,
+              11,
+              10,
+              4,
+              7,
+              7,
+              11,
+              12,
+              2,
+              0,
+              0,
+              8,
+              1,
+              4,
+              9,
+              12,
+              5,
+              3,
+              4,
+              8,
+              7,
+              5,
+              8,
+              4,
+              6,
+              6,
+              9,
+              7,
+              4,
+              9,
+              7,
+              10,
+              7,
+              7,
+              2,
+              11,
+              6,
+              7,
+              4,
+              10,
+              12,
+              7,
+              5,
+              5,
+              10,
+              2,
+              9,
+              6,
+              11,
+              9,
+              4,
+              5,
+              10,
+              6,
+              7,
+              11,
+              12,
+              2,
+              4,
+              8,
+              0,
+              9,
+              7,
+              0,
+              2,
+              0,
+              9,
+              12,
+              9,
+              1,
+              10,
+              11,
+              5,
+              5,
+              7,
+              9,
+              0,
+              3,
+              2,
+              4,
+              9,
+              0,
+              6,
+              12,
+              12,
+              12,
+              8,
+              7,
+              1,
+              7,
+              3,
+              1,
+              5,
+              5,
+              2,
+              10,
+              10,
+              3,
+              9,
+              5,
+              2,
+              0,
+              10,
+              10,
+              1,
+              11,
+              1,
+              0,
+              10,
+              7,
+              7,
+              11,
+              1,
+              10,
+              0,
+              11,
+              8,
+              2,
+              9,
+              1,
+              2,
+              9,
+              10,
+              4,
+              10,
+              7,
+              7,
+              11,
+              0,
+              12,
+              10,
+              2,
+              3,
+              7,
+              7,
+              12,
+              7,
+              7,
+              8,
+              4,
+              7,
+              11,
+              9,
+              1,
+              12,
+              4,
+              5,
+              4
+            ]
+          ],
+          "expected": 809,
+          "hidden": true
+        }
+      ],
+      "hint": "Pour un piquet donné, le niveau de la neige dépend de deux bornes : le plus haut piquet rencontré à gauche, et le plus haut à droite. Chacune se calcule en un seul passage sur la piste. Et si tu avançais par les deux bouts à la fois ?"
+    }
+  ]
+}

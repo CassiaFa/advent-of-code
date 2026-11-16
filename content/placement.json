@@ -1,0 +1,181 @@
+{
+  "intro": "Douze questions, sans langage précis, pour te proposer un niveau. Tu pourras toujours le changer ensuite. Pas de panique si tu hésites : « Je ne sais pas » est une réponse honnête, et elle nous aide autant qu'une bonne.",
+  "bands": [
+    {
+      "id": "bases",
+      "label": "Lire du code",
+      "level": "debutant",
+      "minCorrect": 3
+    },
+    {
+      "id": "notions",
+      "label": "Connaître les notions",
+      "level": "intermediaire",
+      "minCorrect": 3
+    },
+    {
+      "id": "application",
+      "label": "Suivre un algorithme",
+      "level": "confirme",
+      "minCorrect": 3
+    }
+  ],
+  "questions": [
+    {
+      "id": "q1",
+      "band": "bases",
+      "prompt": "On exécute ces lignes dans l'ordre :\n\n`x = 5`\n`y = x * 2`\n`x = 3`\n\nQue vaut `y` à la fin ?",
+      "options": [
+        "3",
+        "6",
+        "10",
+        "Je ne sais pas"
+      ],
+      "answer": 2,
+      "explain": "`y` est calculé quand `x` vaut 5 : il vaut donc 10. Changer `x` ensuite ne recalcule pas `y`."
+    },
+    {
+      "id": "q2",
+      "band": "bases",
+      "prompt": "Que vaut `total` à la fin ?\n\n`total = 0`\n`pour i de 1 à 4 :`\n`    total = total + i`",
+      "options": [
+        "4",
+        "10",
+        "24",
+        "Je ne sais pas"
+      ],
+      "answer": 1,
+      "explain": "1 + 2 + 3 + 4 = 10. La boucle ajoute chaque valeur de `i` à `total`."
+    },
+    {
+      "id": "q3",
+      "band": "bases",
+      "prompt": "Dans la liste `[7, 4, 9]`, en comptant à partir de 0, quel est l'élément d'indice 1 ?",
+      "options": [
+        "7",
+        "4",
+        "9",
+        "Je ne sais pas"
+      ],
+      "answer": 1,
+      "explain": "Les indices commencent à 0 : 7 est en position 0, 4 en position 1, 9 en position 2."
+    },
+    {
+      "id": "q4",
+      "band": "bases",
+      "prompt": "Que vaut `compte` à la fin ?\n\n`compte = 0`\n`pour chaque n dans [3, 8, 5, 10] :`\n`    si n > 4 :`\n`        compte = compte + 1`",
+      "options": [
+        "2",
+        "3",
+        "23",
+        "Je ne sais pas"
+      ],
+      "answer": 1,
+      "explain": "Trois nombres dépassent 4 (8, 5 et 10), donc `compte` vaut 3. Le piège : 23 est leur somme, mais la boucle ajoute 1 à chaque fois, pas `n`."
+    },
+    {
+      "id": "q5",
+      "band": "notions",
+      "prompt": "On cherche un nom dans une liste de `n` noms **non triée**, en la parcourant depuis le début. Au pire, combien de comparaisons faut-il ?",
+      "options": [
+        "Environ log(n)",
+        "Environ n / 2",
+        "n",
+        "Je ne sais pas"
+      ],
+      "answer": 2,
+      "explain": "Sans ordre, le nom peut se trouver en dernier ou être absent : au pire, il faut tout regarder. `n / 2`, c'est la moyenne quand le nom est présent, pas le pire cas. On dit que c'est linéaire, en O(n)."
+    },
+    {
+      "id": "q6",
+      "band": "notions",
+      "prompt": "Que renvoie `f(4)` ?\n\n`f(n) :`\n`    si n == 0 : renvoyer 1`\n`    sinon : renvoyer n * f(n - 1)`",
+      "options": [
+        "4",
+        "10",
+        "24",
+        "Je ne sais pas"
+      ],
+      "answer": 2,
+      "explain": "C'est la factorielle : 4 × 3 × 2 × 1 = 24. La fonction s'appelle elle-même jusqu'au cas de base `n == 0`."
+    },
+    {
+      "id": "q7",
+      "band": "notions",
+      "prompt": "Tu veux compter combien de fois chaque mot apparaît dans un long texte, en mettant à jour le compte à chaque mot lu. Quelle structure de données est la plus adaptée ?",
+      "options": [
+        "Une liste des mots, triée par ordre alphabétique",
+        "Un dictionnaire (mot → nombre)",
+        "Une pile de mots",
+        "Je ne sais pas"
+      ],
+      "answer": 1,
+      "explain": "Un dictionnaire associe directement une clé (le mot) à une valeur (le compteur), avec un accès rapide."
+    },
+    {
+      "id": "q8",
+      "band": "notions",
+      "prompt": "Une liste de 1 000 numéros est **triée**. On cherche un numéro en regardant celui du milieu, puis en recommençant sur la bonne moitié. Au pire, combien de numéros faut-il regarder ?",
+      "options": [
+        "Environ 10",
+        "Environ 500",
+        "1 000",
+        "Je ne sais pas"
+      ],
+      "answer": 0,
+      "explain": "Chaque regard élimine la moitié de ce qui reste : 1 000, 500, 250… En une dizaine d'étapes, il ne reste qu'un numéro. C'est la recherche dichotomique, en O(log n)."
+    },
+    {
+      "id": "q9",
+      "band": "application",
+      "prompt": "`a = [1, 2]`\n`b = a`\n`c = copie de a`\n`ajouter 3 à la fin de b`\n`ajouter 4 à la fin de c`\n\nQue contient `a` à la fin ?",
+      "options": [
+        "[1, 2]",
+        "[1, 2, 3]",
+        "[1, 2, 3, 4]",
+        "Je ne sais pas"
+      ],
+      "answer": 1,
+      "explain": "`b = a` ne copie rien : `a` et `b` sont deux noms pour la même liste, donc le 3 apparaît aussi dans `a`. `c` est une vraie copie : le 4 n'y touche pas."
+    },
+    {
+      "id": "q10",
+      "band": "application",
+      "prompt": "On cherche `cible` dans une liste triée avec cette boucle (`//` est la division entière) :\n\n`tant que bas < haut :`\n`    milieu = (bas + haut) // 2`\n`    si liste[milieu] < cible : bas = milieu`\n`    sinon : haut = milieu`\n\nÀ un moment, `bas = 3`, `haut = 4` et `liste[3] < cible`. Que se passe-t-il ?",
+      "options": [
+        "La boucle s'arrête au tour suivant, avec `bas = 4`",
+        "La boucle s'arrête tout de suite, avec `bas = 3`",
+        "La boucle tourne sans fin",
+        "Je ne sais pas"
+      ],
+      "answer": 2,
+      "explain": "`milieu` vaut `(3 + 4) // 2 = 3`, donc `bas` reste à 3 : rien ne change, et la boucle recommence à l'identique, sans fin. Il fallait écrire `bas = milieu + 1`."
+    },
+    {
+      "id": "q11",
+      "band": "application",
+      "prompt": "Deux listes `A` et `B` contiennent chacune 1 000 numéros. Pour compter les numéros de `A` présents dans `B`, on compare chaque numéro de `A` à chaque numéro de `B` : un million de comparaisons.\n\nOn range d'abord les numéros de `B` dans un **ensemble** (une table de hachage), puis on demande pour chaque numéro de `A` s'il est dans l'ensemble. Combien d'opérations faut-il environ ?",
+      "options": [
+        "Environ 2 000",
+        "Environ 10 000",
+        "Toujours environ un million",
+        "Je ne sais pas"
+      ],
+      "answer": 0,
+      "explain": "Ranger `B` dans l'ensemble coûte environ 1 000 opérations, puis chaque question « est-il dedans ? » se règle en une seule : 1 000 de plus. Environ 2 000 en tout, au lieu d'un million."
+    },
+    {
+      "id": "q12",
+      "band": "application",
+      "prompt": "`f(n) :`\n`    si n < 2 : renvoyer n`\n`    sinon : renvoyer f(n - 1) + f(n - 2)`\n\nTelle quelle, `f(30)` s'appelle elle-même plus d'un million de fois. On ajoute un carnet : chaque résultat y est noté la première fois, puis relu au lieu d'être recalculé. Pour combien de valeurs de `n` différentes le calcul est-il alors vraiment fait ?",
+      "options": [
+        "31",
+        "Environ 900",
+        "Toujours plus d'un million",
+        "Je ne sais pas"
+      ],
+      "answer": 0,
+      "explain": "Avec le carnet, chaque valeur de `n` de 0 à 30 n'est calculée qu'une fois : 31 calculs. C'est la mémoïsation, et c'est ce qui rend ce genre de fonction utilisable."
+    }
+  ]
+}

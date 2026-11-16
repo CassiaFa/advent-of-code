@@ -1,0 +1,94 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="color-scheme" content="dark">
+  <meta name="theme-color" content="#0a1520">
+  <title>Le Calendrier de l'Avent du Code</title>
+  <meta name="description" content="24 petits exercices de programmation, une histoire de Noël. JavaScript ou Python, trois niveaux : débutant, intermédiaire, confirmé.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Bricolage+Grotesque:opsz,wght@12..96,300..800&family=Fraunces:opsz,wght@9..144,400..800&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <a class="skip" href="#main">Aller au contenu</a>
+
+  <header class="top">
+    <div class="top-in">
+      <a class="brand" href="#/" aria-label="Le Calendrier de l'Avent du Code, retour au calendrier">
+        <span class="brand-mark" aria-hidden="true">✦</span>
+        <span class="brand-name">Avent du Code</span>
+      </a>
+
+      <div class="controls" role="group" aria-label="Réglages du jeu">
+        <fieldset class="seg" id="seg-lang">
+          <legend class="sr-only">Langage</legend>
+        </fieldset>
+        <fieldset class="seg" id="seg-level">
+          <legend class="sr-only">Niveau</legend>
+        </fieldset>
+
+        <details class="menu" id="menu">
+          <summary><span aria-hidden="true">⚙</span><span class="menu-label">Réglages</span></summary>
+          <div class="menu-panel">
+            <label class="check">
+              <input type="checkbox" id="chk-dates">
+              <span>
+                <strong>Une porte par jour</strong>
+                <small>Chaque porte s'ouvre à sa date, à partir du 1er décembre.</small>
+              </span>
+            </label>
+            <button id="btn-placement" class="menu-item" type="button">
+              <strong>Test de niveau</strong>
+              <small>Huit questions pour te proposer un niveau.</small>
+            </button>
+            <button id="btn-reset-all" class="menu-item danger" type="button">
+              <strong>Tout effacer</strong>
+              <small>Supprime ta progression et ton code de ce navigateur.</small>
+            </button>
+          </div>
+        </details>
+      </div>
+    </div>
+  </header>
+
+  <main id="main" tabindex="-1">
+    <section id="view-calendar" aria-labelledby="cal-title">
+      <div class="hero">
+        <div class="hero-text">
+          <p class="eyebrow">Givreville, quelques nuits avant Noël</p>
+          <h1 id="cal-title">Le Calendrier de l'Avent du Code</h1>
+          <p class="tagline" id="tagline"></p>
+          <div id="resume"></div>
+        </div>
+        <div class="gauge" id="gauge" aria-live="polite"></div>
+      </div>
+
+      <div id="welcome"></div>
+
+      <div class="cal-head">
+        <h2>Les 24 portes</h2>
+        <ul class="legend" aria-label="Légende">
+          <li><span class="swatch" data-state="closed"></span>à ouvrir</li>
+          <li><span class="swatch" data-state="started"></span>en cours</li>
+          <li><span class="swatch" data-state="solved"></span>réparé</li>
+        </ul>
+      </div>
+      <ol id="grid" class="grid"></ol>
+    </section>
+
+    <section id="view-day" hidden></section>
+  </main>
+
+  <footer class="foot">
+    <p>Ta progression et ton code restent dans ce navigateur : rien n'est envoyé ailleurs.</p>
+  </footer>
+
+  <dialog id="dlg-placement" aria-labelledby="dlg-title"></dialog>
+
+  <noscript><p class="noscript">Cette page a besoin de JavaScript pour fonctionner.</p></noscript>
+  <script type="module" src="app.js"></script>
+</body>
+</html>

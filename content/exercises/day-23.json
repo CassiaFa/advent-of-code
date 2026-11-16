@@ -1,0 +1,824 @@
+{
+  "day": 23,
+  "concept": "Lire un journal de panne",
+  "exercises": [
+    {
+      "id": "d23-debutant",
+      "level": "debutant",
+      "title": "La première ligne rouge",
+      "concept": "Parcourir et repérer",
+      "statement": "La veille de Noël, Pixel ouvre le journal du cristal : cent ans de lignes gelées. Pour retrouver la panne, il faut d'abord repérer **la première fois** où tout a déraillé.\n\nChaque ligne du journal est un texte de la forme `HH:MM ETAT composant` : trois champs séparés par **un seul espace**. L'heure ressemble à `06:15`, l'état est `OK`, `WARN` ou `ERR` (en majuscules), et le composant est un mot en minuscules sans espace (`tapis`, `serrure`, `cristal`…). Les lignes sont déjà dans l'ordre chronologique.\n\nÉcris une fonction `{fn}(journal)` qui reçoit la liste des lignes et renvoie le **numéro de la première ligne dont l'état est `ERR`**. La première ligne du journal porte le numéro `1`. S'il n'y a aucune erreur (ou aucune ligne), renvoie `0`.\n\nAttention : seul l'**état** compte. Une ligne `WARN` est un simple avertissement, et un composant dont le nom contient les lettres « err » (comme `serrure`) n'est pas pour autant en erreur.\n",
+      "fn": {
+        "javascript": "premiereErreur",
+        "python": "premiere_erreur"
+      },
+      "starter": {
+        "javascript": "function premiereErreur(journal) {\n  // Renvoie le numéro (à partir de 1) de la première ligne ERR, ou 0\n}\n",
+        "python": "def premiere_erreur(journal):\n    # Renvoie le numéro (à partir de 1) de la première ligne ERR, ou 0\n    pass\n"
+      },
+      "solution": {
+        "javascript": "function premiereErreur(journal) {\n  for (let i = 0; i < journal.length; i++) {\n    const champs = journal[i].split(\" \");\n    if (champs[1] === \"ERR\") {\n      return i + 1;\n    }\n  }\n  return 0;\n}\n",
+        "python": "def premiere_erreur(journal):\n    for i in range(len(journal)):\n        champs = journal[i].split(\" \")\n        if champs[1] == \"ERR\":\n            return i + 1\n    return 0\n"
+      },
+      "hint": "Découpe chaque ligne avec le séparateur « espace » : l'état est le deuxième morceau. Compare-le à `ERR` en entier, plutôt que de chercher des lettres dans toute la ligne. Pense que les numéros commencent à 1, pas à 0.",
+      "tests": [
+        {
+          "args": [
+            [
+              "06:00 OK tapis",
+              "06:05 WARN serrure",
+              "06:10 ERR cristal",
+              "06:15 ERR tapis"
+            ]
+          ],
+          "expected": 3
+        },
+        {
+          "args": [
+            [
+              "06:00 OK tapis",
+              "06:05 WARN serrure"
+            ]
+          ],
+          "expected": 0
+        },
+        {
+          "args": [
+            []
+          ],
+          "expected": 0
+        },
+        {
+          "args": [
+            [
+              "00:01 ERR renne",
+              "00:02 OK renne"
+            ]
+          ],
+          "expected": 1
+        },
+        {
+          "args": [
+            [
+              "05:00 OK serrure",
+              "05:10 OK tapis",
+              "05:20 ERR tapis"
+            ]
+          ],
+          "expected": 3,
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              "01:00 WARN serrure",
+              "01:05 WARN tapis",
+              "01:10 OK serrure",
+              "01:15 OK tapis",
+              "23:59 ERR serrure"
+            ]
+          ],
+          "expected": 5,
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              "12:00 OK serrure"
+            ]
+          ],
+          "expected": 0,
+          "hidden": true
+        }
+      ],
+      "day": 23
+    },
+    {
+      "id": "d23-intermediaire",
+      "level": "intermediaire",
+      "title": "Le bilan par composant",
+      "concept": "Résumer avec un dictionnaire",
+      "statement": "Pixel veut un bilan lisible du journal du cristal : composant par composant, combien d'erreurs, et dans quel état il a fini.\n\nChaque ligne du journal est un texte de la forme `HH:MM ETAT composant` : trois champs séparés par **un seul espace**. L'heure ressemble à `06:15`, l'état est `OK`, `WARN` ou `ERR` (en majuscules), et le composant est un mot en minuscules sans espace (`tapis`, `serrure`, `cristal`…). Les lignes sont déjà dans l'ordre chronologique.\n\nÉcris une fonction `{fn}(journal)` qui renvoie un dictionnaire : pour **chaque composant qui apparaît** dans le journal, une entrée `composant → {\"erreurs\": ..., \"dernier\": ...}` où :\n\n- `erreurs` est le nombre de lignes `ERR` de ce composant (`0` s'il n'en a aucune : il doit quand même apparaître) ;\n- `dernier` est l'**état de sa dernière ligne** dans le journal (`\"OK\"`, `\"WARN\"` ou `\"ERR\"`).\n\nUn journal vide donne un dictionnaire vide. L'ordre des clés n'a pas d'importance.\n\nExemple : `[\"06:00 OK tapis\", \"06:05 ERR cristal\", \"06:10 ERR tapis\"]` donne `{\"tapis\": {\"erreurs\": 1, \"dernier\": \"ERR\"}, \"cristal\": {\"erreurs\": 1, \"dernier\": \"ERR\"}}`.\n",
+      "fn": {
+        "javascript": "resumerJournal",
+        "python": "resumer_journal"
+      },
+      "starter": {
+        "javascript": "function resumerJournal(journal) {\n  // Renvoie { composant: { erreurs, dernier } }\n}\n",
+        "python": "def resumer_journal(journal):\n    # Renvoie { composant: { \"erreurs\": ..., \"dernier\": ... } }\n    pass\n"
+      },
+      "solution": {
+        "javascript": "function resumerJournal(journal) {\n  const bilan = {};\n  for (const ligne of journal) {\n    const [, etat, composant] = ligne.split(\" \");\n    if (!(composant in bilan)) {\n      bilan[composant] = { erreurs: 0, dernier: etat };\n    }\n    if (etat === \"ERR\") {\n      bilan[composant].erreurs += 1;\n    }\n    bilan[composant].dernier = etat;\n  }\n  return bilan;\n}\n",
+        "python": "def resumer_journal(journal):\n    bilan = {}\n    for ligne in journal:\n        _, etat, composant = ligne.split(\" \")\n        if composant not in bilan:\n            bilan[composant] = {\"erreurs\": 0, \"dernier\": etat}\n        if etat == \"ERR\":\n            bilan[composant][\"erreurs\"] += 1\n        bilan[composant][\"dernier\"] = etat\n    return bilan\n"
+      },
+      "hint": "Un dictionnaire dont les clés sont les composants. À chaque ligne : si le composant est nouveau, crée-lui une entrée à zéro erreur ; puis ajoute 1 si l'état est ERR ; puis note l'état comme « dernier » (la ligne suivante l'écrasera si besoin).",
+      "tests": [
+        {
+          "args": [
+            [
+              "06:00 OK tapis",
+              "06:05 ERR cristal",
+              "06:10 ERR tapis",
+              "06:15 OK cristal",
+              "06:20 WARN tapis"
+            ]
+          ],
+          "expected": {
+            "tapis": {
+              "erreurs": 1,
+              "dernier": "WARN"
+            },
+            "cristal": {
+              "erreurs": 1,
+              "dernier": "OK"
+            }
+          }
+        },
+        {
+          "args": [
+            []
+          ],
+          "expected": {}
+        },
+        {
+          "args": [
+            [
+              "07:00 OK serrure"
+            ]
+          ],
+          "expected": {
+            "serrure": {
+              "erreurs": 0,
+              "dernier": "OK"
+            }
+          }
+        },
+        {
+          "args": [
+            [
+              "01:00 ERR renne",
+              "01:01 ERR renne",
+              "01:02 ERR renne"
+            ]
+          ],
+          "expected": {
+            "renne": {
+              "erreurs": 3,
+              "dernier": "ERR"
+            }
+          }
+        },
+        {
+          "args": [
+            [
+              "02:00 WARN moteur",
+              "02:10 ERR serrure",
+              "02:20 OK moteur",
+              "02:30 ERR moteur",
+              "02:40 OK serrure",
+              "02:50 ERR moteur"
+            ]
+          ],
+          "expected": {
+            "moteur": {
+              "erreurs": 2,
+              "dernier": "ERR"
+            },
+            "serrure": {
+              "erreurs": 1,
+              "dernier": "OK"
+            }
+          },
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              "03:00 OK tapis",
+              "03:10 WARN tapis",
+              "03:20 OK tapis"
+            ]
+          ],
+          "expected": {
+            "tapis": {
+              "erreurs": 0,
+              "dernier": "OK"
+            }
+          },
+          "hidden": true
+        }
+      ],
+      "day": 23
+    },
+    {
+      "id": "d23-confirme",
+      "level": "confirme",
+      "title": "Qui a lâché le premier ?",
+      "concept": "Simulation sur un journal avec dépendances",
+      "statement": "Dernière enquête avant Noël : la panne d'il y a cent ans s'est propagée de composant en composant, comme une cascade. Pixel veut savoir **qui a lâché le premier**, et combien de pannes chaque origine a fini par entraîner.\n\nChaque ligne du journal est un texte de la forme `HH:MM ETAT composant` : trois champs séparés par **un seul espace**. L'heure ressemble à `06:15`, l'état est `OK`, `WARN` ou `ERR` (en majuscules), et le composant est un mot en minuscules sans espace (`tapis`, `serrure`, `cristal`…). Les lignes sont déjà dans l'ordre chronologique.\n\nOn te donne aussi `dependances` : un dictionnaire `composant → liste des composants dont il dépend directement`. Un composant absent du dictionnaire ne dépend de rien. Les composants cités comme dépendances n'apparaissent pas forcément dans le journal.\n\n**Règles.**\n- L'état courant d'un composant est celui de sa dernière ligne déjà lue. Avant sa première ligne, il n'est pas en panne. Un composant est **en panne** si son état courant est `ERR`.\n- Une ligne `ERR` pour un composant **déjà en panne** est ignorée (la panne continue, rien de nouveau).\n- Une ligne `ERR` pour un composant qui n'était pas en panne est une **nouvelle panne**. Au moment de cette ligne, regarde les dépendances directes du composant **dans l'ordre de la liste** et retiens la **première** qui est en panne :\n  - s'il y en a une, la nouvelle panne est **induite** : elle a la même **origine** que cette dépendance ;\n  - sinon, le composant est lui-même une **origine**.\n- L'origine d'une panne est fixée au moment où elle commence : elle ne change plus, même si cette origine est réparée ensuite.\n- Un état `OK` ou `WARN` met fin à la panne du composant. S'il retombe plus tard en `ERR`, c'est une nouvelle panne, à reclasser avec les mêmes règles.\n\nÉcris une fonction `{fn}(journal, dependances)` qui renvoie un dictionnaire `origine → nombre de nouvelles pannes attribuées à cette origine` (l'origine elle-même comptée, à chaque fois qu'elle tombe en panne). Les composants qui n'ont jamais été une origine n'apparaissent pas. Sans aucune panne, renvoie un dictionnaire vide. L'ordre des clés n'a pas d'importance.\n\nExemple : avec `{\"tapis\": [\"moteur\"], \"moteur\": [\"cristal\"]}` et le journal `[\"01:00 ERR cristal\", \"01:05 ERR moteur\", \"01:10 ERR tapis\"]`, la réponse est `{\"cristal\": 3}` : le moteur a lâché à cause du cristal, et le tapis à cause du moteur, donc, au bout du compte, à cause du cristal.\n",
+      "fn": {
+        "javascript": "trouverOrigines",
+        "python": "trouver_origines"
+      },
+      "starter": {
+        "javascript": "function trouverOrigines(journal, dependances) {\n  // Renvoie { origine: nombre de pannes attribuées }\n}\n",
+        "python": "def trouver_origines(journal, dependances):\n    # Renvoie { origine: nombre de pannes attribuées }\n    pass\n"
+      },
+      "solution": {
+        "javascript": "function trouverOrigines(journal, dependances) {\n  const etat = {};\n  const origine = {};\n  const bilan = {};\n  for (const ligne of journal) {\n    const [, nouveau, composant] = ligne.split(\" \");\n    const avant = etat[composant];\n    if (nouveau === \"ERR\" && avant !== \"ERR\") {\n      let racine = composant;\n      for (const dep of dependances[composant] || []) {\n        if (etat[dep] === \"ERR\") {\n          racine = origine[dep];\n          break;\n        }\n      }\n      origine[composant] = racine;\n      bilan[racine] = (bilan[racine] || 0) + 1;\n    }\n    etat[composant] = nouveau;\n  }\n  return bilan;\n}\n",
+        "python": "def trouver_origines(journal, dependances):\n    etat = {}\n    origine = {}\n    bilan = {}\n    for ligne in journal:\n        _, nouveau, composant = ligne.split(\" \")\n        avant = etat.get(composant)\n        if nouveau == \"ERR\" and avant != \"ERR\":\n            racine = composant\n            for dep in dependances.get(composant, []):\n                if etat.get(dep) == \"ERR\":\n                    racine = origine[dep]\n                    break\n            origine[composant] = racine\n            bilan[racine] = bilan.get(racine, 0) + 1\n        etat[composant] = nouveau\n    return bilan\n"
+      },
+      "hint": "Rejoue le journal ligne par ligne en gardant deux dictionnaires : l'état courant de chaque composant, et l'origine de sa panne en cours. Une dépendance en panne a déjà une origine connue : hérite-la telle quelle, sans remonter toi-même la chaîne.",
+      "tests": [
+        {
+          "args": [
+            [
+              "01:00 ERR cristal",
+              "01:05 ERR moteur",
+              "01:10 ERR tapis"
+            ],
+            {
+              "tapis": [
+                "moteur"
+              ],
+              "moteur": [
+                "cristal"
+              ]
+            }
+          ],
+          "expected": {
+            "cristal": 3
+          }
+        },
+        {
+          "args": [
+            [
+              "02:00 ERR serrure",
+              "02:05 ERR moteur",
+              "02:06 ERR tapis"
+            ],
+            {
+              "tapis": [
+                "moteur"
+              ]
+            }
+          ],
+          "expected": {
+            "serrure": 1,
+            "moteur": 2
+          }
+        },
+        {
+          "args": [
+            [
+              "03:00 WARN moteur",
+              "03:05 ERR tapis"
+            ],
+            {
+              "tapis": [
+                "moteur"
+              ]
+            }
+          ],
+          "expected": {
+            "tapis": 1
+          }
+        },
+        {
+          "args": [
+            [
+              "04:00 ERR cristal",
+              "04:05 OK cristal",
+              "04:10 ERR moteur"
+            ],
+            {
+              "moteur": [
+                "cristal"
+              ]
+            }
+          ],
+          "expected": {
+            "cristal": 1,
+            "moteur": 1
+          }
+        },
+        {
+          "args": [
+            [],
+            {
+              "tapis": [
+                "moteur"
+              ]
+            }
+          ],
+          "expected": {}
+        },
+        {
+          "args": [
+            [
+              "05:00 ERR cristal",
+              "05:01 ERR cristal",
+              "05:02 ERR moteur",
+              "05:03 ERR moteur"
+            ],
+            {
+              "moteur": [
+                "cristal"
+              ]
+            }
+          ],
+          "expected": {
+            "cristal": 2
+          },
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              "06:00 ERR serrure",
+              "06:01 ERR moteur",
+              "06:02 ERR tapis"
+            ],
+            {
+              "tapis": [
+                "moteur",
+                "serrure"
+              ]
+            }
+          ],
+          "expected": {
+            "serrure": 1,
+            "moteur": 2
+          },
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              "06:00 ERR serrure",
+              "06:01 ERR moteur",
+              "06:02 ERR tapis"
+            ],
+            {
+              "tapis": [
+                "serrure",
+                "moteur"
+              ]
+            }
+          ],
+          "expected": {
+            "serrure": 2,
+            "moteur": 1
+          },
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              "07:00 ERR cristal",
+              "07:01 ERR moteur",
+              "07:02 OK moteur",
+              "07:03 OK cristal",
+              "07:04 ERR cristal",
+              "07:05 ERR moteur"
+            ],
+            {
+              "moteur": [
+                "cristal"
+              ]
+            }
+          ],
+          "expected": {
+            "cristal": 4
+          },
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              "08:00 ERR moteur",
+              "08:01 ERR cristal"
+            ],
+            {
+              "moteur": [
+                "cristal"
+              ]
+            }
+          ],
+          "expected": {
+            "moteur": 1,
+            "cristal": 1
+          },
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              "09:00 ERR cristal",
+              "09:01 ERR moteur",
+              "09:02 OK cristal",
+              "09:03 ERR tapis",
+              "09:04 ERR renne"
+            ],
+            {
+              "moteur": [
+                "cristal"
+              ],
+              "tapis": [
+                "moteur"
+              ],
+              "renne": [
+                "cristal",
+                "tapis"
+              ]
+            }
+          ],
+          "expected": {
+            "cristal": 4
+          },
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              "10:00 ERR cristal",
+              "10:01 WARN cristal",
+              "10:02 ERR cristal"
+            ],
+            {}
+          ],
+          "expected": {
+            "cristal": 2
+          },
+          "hidden": true
+        },
+        { "args": [["01:00 ERR moteur","01:01 ERR cristal","01:02 ERR moteur"],{"moteur":["cristal"]}], "expected": {"moteur":1,"cristal":1}, "hidden": true },
+        { "args": [["06:00 ERR serrure","06:01 ERR tapis"],{"tapis":["moteur","serrure"]}], "expected": {"serrure":2}, "hidden": true }
+      ],
+      "day": 23
+    },
+    {
+      "id": "d23-expert",
+      "day": 23,
+      "level": "expert",
+      "title": "Le cercle de ceux qui attendent",
+      "concept": "Rejouer un journal et détecter un blocage",
+      "statement": "Pixel a enfin trouvé la page du journal qui raconte la panne d'il y a cent ans. Rien n'a cassé : les machines se sont simplement mises à **s'attendre les unes les autres**, en rond, et plus rien n'a bougé. Reste à trouver l'instant exact où le cercle s'est refermé.\n\nChaque ligne du journal a l'une de ces deux formes, les champs étant séparés par **une seule espace** :\n- `HH:MM machine ATTEND autre` : à partir de cette ligne, `machine` est à l'arrêt et attend `autre` ;\n- `HH:MM machine REPREND` : `machine` n'attend plus personne.\n\nUne machine n'attend qu'**une seule** autre machine à la fois : un nouveau `ATTEND` de sa part **remplace** le précédent. Un `REPREND` d'une machine qui n'attendait personne ne change rien.\n\nIl y a **blocage** dès qu'un cercle se forme : une machine attend une deuxième, qui en attend une troisième... et la dernière attend la première. Une machine qui s'attend elle-même forme un cercle à elle toute seule.\n\nÉcris une fonction `{fn}(journal)` qui rejoue les lignes **dans l'ordre** et s'arrête au **premier** blocage. Elle renvoie alors `[heure, machines]` : l'heure de la ligne qui a refermé le cercle (le texte `HH:MM` tel qu'il est écrit), et la liste des machines du cercle, **triée par ordre alphabétique**. S'il n'y a jamais de blocage, elle renvoie la liste vide `[]`.\n\nPrécisions : les lignes sont déjà dans l'ordre chronologique, et plusieurs peuvent porter la même heure. Les noms de machines sont en minuscules, avec éventuellement des chiffres et des tirets, sans espace. Une machine qui attend un cercle sans en faire partie n'est pas dans la réponse.\n\nExemple : avec `[\"08:00 four ATTEND tapis\", \"08:05 tapis ATTEND grue\", \"08:07 four REPREND\", \"08:10 grue ATTEND four\", \"08:12 four ATTEND tapis\"]`, à 08:10 la grue attend le four, mais le four est reparti : pas de cercle. À 08:12, le four attend le tapis, qui attend la grue, qui attend le four : la réponse est `[\"08:12\", [\"four\", \"grue\", \"tapis\"]]`.\n",
+      "fn": {
+        "javascript": "premierBlocage",
+        "python": "premier_blocage"
+      },
+      "starter": {
+        "javascript": "function premierBlocage(journal) {\n  // Renvoie [heure, noms triés] du premier blocage, ou []\n}\n",
+        "python": "def premier_blocage(journal):\n    # Renvoie [heure, noms triés] du premier blocage, ou []\n    pass\n"
+      },
+      "solution": {
+        "javascript": "function premierBlocage(journal) {\n  const attend = new Map(); // machine -> la machine qu'elle attend\n  for (const ligne of journal) {\n    const [heure, machine, action, autre] = ligne.split(\" \");\n    if (action === \"REPREND\") {\n      attend.delete(machine);\n      continue;\n    }\n    attend.set(machine, autre);\n    // Un nouveau cercle passe forcément par `machine` : on suit la file en partant d'elle.\n    const file = [machine];\n    let suivante = autre;\n    while (suivante !== machine && attend.has(suivante) && !file.includes(suivante)) {\n      file.push(suivante);\n      suivante = attend.get(suivante);\n    }\n    if (suivante === machine) return [heure, file.sort()];\n  }\n  return [];\n}\n",
+        "python": "def premier_blocage(journal):\n    attend = {}  # machine -> la machine qu'elle attend\n    for ligne in journal:\n        champs = ligne.split(\" \")\n        heure, machine, action = champs[0], champs[1], champs[2]\n        if action == \"REPREND\":\n            attend.pop(machine, None)\n            continue\n        attend[machine] = champs[3]\n        # Un nouveau cercle passe forcément par `machine` : on suit la file en partant d'elle.\n        file = [machine]\n        suivante = champs[3]\n        while suivante != machine and suivante in attend and suivante not in file:\n            file.append(suivante)\n            suivante = attend[suivante]\n        if suivante == machine:\n            return [heure, sorted(file)]\n    return []\n"
+      },
+      "tests": [
+        {
+          "args": [
+            [
+              "08:00 four ATTEND tapis",
+              "08:05 tapis ATTEND grue",
+              "08:07 four REPREND",
+              "08:10 grue ATTEND four",
+              "08:12 four ATTEND tapis"
+            ]
+          ],
+          "expected": [
+            "08:12",
+            [
+              "four",
+              "grue",
+              "tapis"
+            ]
+          ]
+        },
+        {
+          "args": [
+            [
+              "09:00 a ATTEND b",
+              "09:01 b ATTEND c",
+              "09:02 c REPREND"
+            ]
+          ],
+          "expected": []
+        },
+        {
+          "args": [
+            [
+              "10:30 cristal ATTEND cristal"
+            ]
+          ],
+          "expected": [
+            "10:30",
+            [
+              "cristal"
+            ]
+          ]
+        },
+        {
+          "args": [
+            [
+              "11:00 a ATTEND b",
+              "11:00 b ATTEND a",
+              "11:05 c ATTEND a"
+            ]
+          ],
+          "expected": [
+            "11:00",
+            [
+              "a",
+              "b"
+            ]
+          ]
+        },
+        {
+          "args": [
+            []
+          ],
+          "expected": [],
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              "07:00 a REPREND"
+            ]
+          ],
+          "expected": [],
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              "07:00 a ATTEND b",
+              "07:01 a ATTEND c",
+              "07:02 c ATTEND a",
+              "07:03 b ATTEND a"
+            ]
+          ],
+          "expected": [
+            "07:02",
+            [
+              "a",
+              "c"
+            ]
+          ],
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              "07:00 a ATTEND b",
+              "07:01 b ATTEND c",
+              "07:02 a ATTEND c",
+              "07:03 c ATTEND b"
+            ]
+          ],
+          "expected": [
+            "07:03",
+            [
+              "b",
+              "c"
+            ]
+          ],
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              "07:00 d ATTEND a",
+              "07:01 a ATTEND b",
+              "07:02 b ATTEND c",
+              "07:03 c ATTEND a"
+            ]
+          ],
+          "expected": [
+            "07:03",
+            [
+              "a",
+              "b",
+              "c"
+            ]
+          ],
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              "23:58 x-1 ATTEND x-2",
+              "23:59 x-2 ATTEND x-3",
+              "23:59 x-3 ATTEND x-1"
+            ]
+          ],
+          "expected": [
+            "23:59",
+            [
+              "x-1",
+              "x-2",
+              "x-3"
+            ]
+          ],
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              "06:04 four REPREND",
+              "06:08 cloche ATTEND tapis",
+              "06:10 tapis REPREND",
+              "06:10 tapis ATTEND four",
+              "06:11 four ATTEND grue",
+              "06:17 four ATTEND cloche",
+              "06:23 grue ATTEND four",
+              "06:23 grue ATTEND cloche",
+              "06:26 grue ATTEND tapis",
+              "06:30 grue ATTEND tapis",
+              "06:32 cloche ATTEND tapis",
+              "06:34 tapis ATTEND cloche"
+            ]
+          ],
+          "expected": [
+            "06:17",
+            [
+              "cloche",
+              "four",
+              "tapis"
+            ]
+          ],
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              "06:05 f ATTEND b",
+              "06:06 a REPREND",
+              "06:06 e REPREND",
+              "06:10 e ATTEND c",
+              "06:14 e ATTEND d",
+              "06:17 c REPREND",
+              "06:18 f ATTEND d",
+              "06:21 c ATTEND f",
+              "06:22 d REPREND",
+              "06:22 a ATTEND e",
+              "06:22 b ATTEND a",
+              "06:25 f ATTEND e",
+              "06:32 f REPREND",
+              "06:32 d ATTEND a",
+              "06:33 c ATTEND b",
+              "06:40 c REPREND",
+              "06:41 e ATTEND b",
+              "06:44 c REPREND",
+              "06:46 a ATTEND d",
+              "06:52 b ATTEND e"
+            ]
+          ],
+          "expected": [
+            "06:32",
+            [
+              "a",
+              "d",
+              "e"
+            ]
+          ],
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              "06:01 m4 ATTEND m5",
+              "06:07 m5 ATTEND m6",
+              "06:07 m5 REPREND",
+              "06:09 m6 ATTEND m7",
+              "06:15 m4 REPREND",
+              "06:16 m6 ATTEND m5",
+              "06:17 m4 ATTEND m5",
+              "06:24 m5 REPREND",
+              "06:30 m1 ATTEND m3",
+              "06:36 m4 ATTEND m1",
+              "06:38 m8 ATTEND m1",
+              "06:44 m5 ATTEND m7",
+              "06:46 m5 REPREND",
+              "06:47 m4 ATTEND m8",
+              "06:54 m7 ATTEND m6",
+              "07:01 m7 REPREND",
+              "07:06 m7 ATTEND m3",
+              "07:10 m6 REPREND",
+              "07:10 m7 ATTEND m6",
+              "07:17 m5 ATTEND m7",
+              "07:18 m7 REPREND",
+              "07:22 m3 ATTEND m1",
+              "07:29 m2 REPREND",
+              "07:36 m1 ATTEND m4",
+              "07:37 m4 ATTEND m6",
+              "07:44 m1 ATTEND m2",
+              "07:48 m4 ATTEND m2",
+              "07:49 m3 ATTEND m5",
+              "07:54 m5 ATTEND m6",
+              "07:56 m1 ATTEND m7"
+            ]
+          ],
+          "expected": [
+            "07:22",
+            [
+              "m1",
+              "m3"
+            ]
+          ],
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              "06:02 a REPREND",
+              "06:04 e ATTEND f",
+              "06:04 a ATTEND c",
+              "06:09 a REPREND",
+              "06:10 c ATTEND e",
+              "06:16 f ATTEND d",
+              "06:22 f ATTEND d",
+              "06:26 h ATTEND c",
+              "06:31 g ATTEND e",
+              "06:31 h ATTEND d",
+              "06:33 d ATTEND h",
+              "06:33 a ATTEND h",
+              "06:40 c ATTEND h",
+              "06:45 d ATTEND a",
+              "06:49 h ATTEND g",
+              "06:54 j ATTEND a",
+              "07:00 j REPREND",
+              "07:07 d ATTEND h",
+              "07:08 h ATTEND g",
+              "07:14 e REPREND",
+              "07:14 g ATTEND e",
+              "07:16 c ATTEND b",
+              "07:23 i ATTEND b",
+              "07:29 h ATTEND e",
+              "07:30 j REPREND"
+            ]
+          ],
+          "expected": [
+            "06:33",
+            [
+              "d",
+              "h"
+            ]
+          ],
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              "06:03 p8 ATTEND p5",
+              "06:07 p4 ATTEND p7",
+              "06:14 p8 ATTEND p9",
+              "06:18 p5 ATTEND p0",
+              "06:21 p12 ATTEND p13",
+              "06:23 p1 ATTEND p3",
+              "06:24 p11 ATTEND p4",
+              "06:25 p13 ATTEND p1",
+              "06:25 p11 ATTEND p10",
+              "06:25 p8 REPREND",
+              "06:31 p10 ATTEND p3",
+              "06:32 p10 ATTEND p2",
+              "06:35 p7 REPREND",
+              "06:37 p4 ATTEND p0",
+              "06:43 p12 REPREND",
+              "06:49 p12 REPREND",
+              "06:49 p2 REPREND",
+              "06:49 p5 ATTEND p9",
+              "06:55 p0 ATTEND p2",
+              "07:02 p5 REPREND",
+              "07:02 p13 REPREND",
+              "07:06 p12 ATTEND p1",
+              "07:08 p2 REPREND",
+              "07:09 p9 ATTEND p13",
+              "07:12 p12 REPREND",
+              "07:15 p13 REPREND",
+              "07:16 p13 ATTEND p12",
+              "07:18 p1 ATTEND p6",
+              "07:19 p3 ATTEND p7",
+              "07:24 p12 ATTEND p11",
+              "07:27 p2 ATTEND p7",
+              "07:34 p3 REPREND",
+              "07:37 p5 REPREND",
+              "07:38 p12 REPREND",
+              "07:40 p1 ATTEND p11",
+              "07:40 p12 REPREND",
+              "07:40 p2 ATTEND p5",
+              "07:45 p11 REPREND",
+              "07:50 p4 REPREND",
+              "07:56 p7 ATTEND p1"
+            ]
+          ],
+          "expected": [],
+          "hidden": true
+        }
+      ],
+      "hint": "À chaque instant, l'état du Pôle tient dans un seul dictionnaire : qui attend qui. Une ligne `REPREND` ne peut jamais créer de cercle. Une ligne `ATTEND`, si : et dans ce cas, le cercle passe forcément par la machine qui vient de se mettre à attendre. Pars d'elle, et suis la file."
+    }
+  ]
+}

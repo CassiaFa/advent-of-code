@@ -1,0 +1,636 @@
+{
+  "day": 13,
+  "concept": "Motifs et expressions régulières",
+  "exercises": [
+    {
+      "id": "d13-debutant",
+      "day": 13,
+      "level": "debutant",
+      "title": "Le code des vieilles commandes",
+      "concept": "Reconnaître un format",
+      "statement": "Dans le grimoire du sous-sol, chaque commande porte un code au format très précis : **3 lettres majuscules** (de `A` à `Z`), **un tiret**, puis **4 chiffres** (de `0` à `9`). Par exemple `GIV-0042` est valide.\n\nÉcris une fonction `{fn}(texte)` qui renvoie `true` si le texte **entier** respecte ce format, et `false` sinon.\n\n- Le texte doit faire exactement 8 caractères : pas un de plus, pas un de moins.\n- Les minuscules, les espaces et les autres symboles sont refusés.\n- Un texte vide est refusé.\n\nTu peux vérifier les caractères un par un, ou t'offrir une expression régulière : c'est ton choix.",
+      "fn": {
+        "javascript": "codeValide",
+        "python": "code_valide"
+      },
+      "starter": {
+        "javascript": "function codeValide(texte) {\n  // Renvoie true si le texte respecte le format LLL-CCCC\n}\n",
+        "python": "def code_valide(texte):\n    # Renvoie True si le texte respecte le format LLL-CCCC\n    pass\n"
+      },
+      "solution": {
+        "javascript": "function codeValide(texte) {\n  if (texte.length !== 8 || texte[3] !== \"-\") {\n    return false;\n  }\n  for (let i = 0; i < 8; i++) {\n    const c = texte[i];\n    if (i < 3 && !(c >= \"A\" && c <= \"Z\")) {\n      return false;\n    }\n    if (i > 3 && !(c >= \"0\" && c <= \"9\")) {\n      return false;\n    }\n  }\n  return true;\n}\n",
+        "python": "def code_valide(texte):\n    if len(texte) != 8 or texte[3] != \"-\":\n        return False\n    for i in range(8):\n        c = texte[i]\n        if i < 3 and not (\"A\" <= c <= \"Z\"):\n            return False\n        if i > 3 and not (\"0\" <= c <= \"9\"):\n            return False\n    return True\n"
+      },
+      "tests": [
+        {
+          "args": [
+            "GIV-0042"
+          ],
+          "expected": true
+        },
+        {
+          "args": [
+            "giv-0042"
+          ],
+          "expected": false
+        },
+        {
+          "args": [
+            "AB-12345"
+          ],
+          "expected": false
+        },
+        {
+          "args": [
+            "ABC_1234"
+          ],
+          "expected": false
+        },
+        {
+          "args": [
+            ""
+          ],
+          "expected": false,
+          "hidden": true
+        },
+        {
+          "args": [
+            "ABC-12a4"
+          ],
+          "expected": false,
+          "hidden": true
+        },
+        {
+          "args": [
+            "ABC-1234 "
+          ],
+          "expected": false,
+          "hidden": true
+        },
+        {
+          "args": [
+            "ABC-1234"
+          ],
+          "expected": true,
+          "hidden": true
+        },
+        { "args": ["ABC-1234\n"], "expected": false, "hidden": true },
+        { "args": ["ABC-١٢٣٤"], "expected": false, "hidden": true }
+      ],
+      "hint": "Vérifie d'abord la longueur, puis le tiret à la position 3, puis chaque caractère selon sa place : les trois premiers doivent être des lettres majuscules, les quatre derniers des chiffres. Comparer un caractère avec `\"A\"` et `\"Z\"` (ou `\"0\"` et `\"9\"`) suffit."
+    },
+    {
+      "id": "d13-intermediaire",
+      "day": 13,
+      "level": "intermediaire",
+      "title": "Chasse aux codes",
+      "concept": "Extraire les morceaux d'un format",
+      "statement": "Le grimoire est un long texte où les codes de commande sont noyés dans des phrases. Un code, c'est toujours le même format : **3 lettres majuscules** (`A` à `Z`), **un tiret**, **4 chiffres** (`0` à `9`), soit 8 caractères.\n\nÉcris une fonction `{fn}(texte)` qui renvoie la liste de tous les codes trouvés dans le texte, **dans l'ordre d'apparition**.\n\nRègles précises :\n\n- Un code peut être collé à d'autres caractères : dans `\"xABC-1234y\"`, on trouve `\"ABC-1234\"`.\n- Tu lis de gauche à droite : dès qu'un code commence à une position, tu le prends en entier et tu reprends la lecture **juste après lui**.\n- Si une suite plus longue contient un code, on le prend quand même : dans `\"ABCD-12345\"`, la lecture échoue en `A` puis trouve `\"BCD-1234\"`.\n- Un même code trouvé deux fois est renvoyé deux fois.\n- Aucun code : liste vide.",
+      "fn": {
+        "javascript": "extraireCodes",
+        "python": "extraire_codes"
+      },
+      "starter": {
+        "javascript": "function extraireCodes(texte) {\n  // Renvoie la liste des codes trouvés, dans l'ordre\n}\n",
+        "python": "def extraire_codes(texte):\n    # Renvoie la liste des codes trouvés, dans l'ordre\n    pass\n"
+      },
+      "solution": {
+        "javascript": "function extraireCodes(texte) {\n  const codes = [];\n  let i = 0;\n  while (i + 8 <= texte.length) {\n    const morceau = texte.slice(i, i + 8);\n    let ok = morceau[3] === \"-\";\n    for (let k = 0; k < 8 && ok; k++) {\n      const c = morceau[k];\n      if (k < 3 && !(c >= \"A\" && c <= \"Z\")) ok = false;\n      if (k > 3 && !(c >= \"0\" && c <= \"9\")) ok = false;\n    }\n    if (ok) {\n      codes.push(morceau);\n      i += 8;\n    } else {\n      i += 1;\n    }\n  }\n  return codes;\n}\n",
+        "python": "def extraire_codes(texte):\n    codes = []\n    i = 0\n    while i + 8 <= len(texte):\n        morceau = texte[i:i + 8]\n        ok = morceau[3] == \"-\"\n        for k in range(8):\n            c = morceau[k]\n            if k < 3 and not (\"A\" <= c <= \"Z\"):\n                ok = False\n            if k > 3 and not (\"0\" <= c <= \"9\"):\n                ok = False\n        if ok:\n            codes.append(morceau)\n            i += 8\n        else:\n            i += 1\n    return codes\n"
+      },
+      "tests": [
+        {
+          "args": [
+            "Commande ABC-1234 puis XYZ-0007."
+          ],
+          "expected": [
+            "ABC-1234",
+            "XYZ-0007"
+          ]
+        },
+        {
+          "args": [
+            "rien à signaler ici"
+          ],
+          "expected": []
+        },
+        {
+          "args": [
+            "xGIV-0042y"
+          ],
+          "expected": [
+            "GIV-0042"
+          ]
+        },
+        {
+          "args": [
+            "ABCD-12345"
+          ],
+          "expected": [
+            "BCD-1234"
+          ]
+        },
+        {
+          "args": [
+            ""
+          ],
+          "expected": [],
+          "hidden": true
+        },
+        {
+          "args": [
+            "ABC-1234ABC-1234"
+          ],
+          "expected": [
+            "ABC-1234",
+            "ABC-1234"
+          ],
+          "hidden": true
+        },
+        {
+          "args": [
+            "AB-1234 abc-1234 ABC-123 ABC-12a4"
+          ],
+          "expected": [],
+          "hidden": true
+        },
+        {
+          "args": [
+            "ABC-ABC-9999 et RUE-0001-0002"
+          ],
+          "expected": [
+            "ABC-9999",
+            "RUE-0001"
+          ],
+          "hidden": true
+        },
+        { "args": ["ABC-١٢٣٤ puis ABC-1234"], "expected": ["ABC-1234"], "hidden": true }
+      ],
+      "hint": "Parcours le texte avec un indice `i`. À chaque position, regarde le morceau de 8 caractères qui commence là : s'il respecte le format, garde-le et saute de 8 ; sinon avance d'un seul. Pense à écrire à part une petite vérification de format pour un morceau."
+    },
+    {
+      "id": "d13-confirme",
+      "day": 13,
+      "level": "confirme",
+      "title": "Le moteur de jokers",
+      "concept": "Écrire son propre moteur de motifs",
+      "statement": "Le grimoire est écrit dans un vieux langage de motifs, et Pixel n'a pas de quoi le lire. À toi de fabriquer le décodeur, **sans** utiliser les expressions régulières du langage.\n\nUn **motif** est un texte où deux caractères sont spéciaux :\n\n- `?` remplace **exactement un** caractère quelconque ;\n- `*` remplace **une suite quelconque** de caractères, éventuellement **vide**.\n\nTous les autres caractères du motif se représentent eux-mêmes, **casse comprise** (`a` ne correspond pas à `A`).\n\nÉcris une fonction `{fn}(motif, texte)` qui renvoie `true` si le motif correspond au texte **en entier**, et `false` sinon. Quelques repères :\n\n- `\"g?v*e\"` correspond à `\"givre\"` ;\n- `\"*a\"` correspond à `\"aba\"` (le `*` absorbe `\"ab\"`) ;\n- le motif vide ne correspond qu'au texte vide ;\n- `\"*\"` correspond à tout, texte vide compris ; `\"?\"` ne correspond pas au texte vide.\n\nDans le **texte**, les caractères `?` et `*` n'ont rien de spécial : ce sont des caractères comme les autres (`\"a?\"` correspond au texte `\"a?\"`, et aussi à `\"ab\"`). Motifs et textes ne contiennent que des caractères ASCII. Attention aux motifs avec beaucoup de `*` : une méthode trop naïve peut mettre un temps fou à répondre.",
+      "fn": {
+        "javascript": "correspond",
+        "python": "correspond"
+      },
+      "starter": {
+        "javascript": "function correspond(motif, texte) {\n  // Renvoie true si le motif correspond au texte en entier\n}\n",
+        "python": "def correspond(motif, texte):\n    # Renvoie True si le motif correspond au texte en entier\n    pass\n"
+      },
+      "solution": {
+        "javascript": "function correspond(motif, texte) {\n  const n = texte.length;\n  // prec[j] : les premiers caractères du motif traités correspondent à texte[0..j[\n  let prec = new Array(n + 1).fill(false);\n  prec[0] = true;\n  for (const m of motif) {\n    const cur = new Array(n + 1).fill(false);\n    if (m === \"*\") {\n      cur[0] = prec[0];\n      for (let j = 1; j <= n; j++) {\n        cur[j] = prec[j] || cur[j - 1];\n      }\n    } else {\n      for (let j = 1; j <= n; j++) {\n        cur[j] = prec[j - 1] && (m === \"?\" || m === texte[j - 1]);\n      }\n    }\n    prec = cur;\n  }\n  return prec[n];\n}\n",
+        "python": "def correspond(motif, texte):\n    n = len(texte)\n    # prec[j] : les premiers caractères du motif traités correspondent à texte[0:j]\n    prec = [False] * (n + 1)\n    prec[0] = True\n    for m in motif:\n        cur = [False] * (n + 1)\n        if m == \"*\":\n            cur[0] = prec[0]\n            for j in range(1, n + 1):\n                cur[j] = prec[j] or cur[j - 1]\n        else:\n            for j in range(1, n + 1):\n                cur[j] = prec[j - 1] and (m == \"?\" or m == texte[j - 1])\n        prec = cur\n    return prec[n]\n"
+      },
+      "tests": [
+        {
+          "args": [
+            "g?v*e",
+            "givre"
+          ],
+          "expected": true
+        },
+        {
+          "args": [
+            "*a",
+            "aba"
+          ],
+          "expected": true
+        },
+        {
+          "args": [
+            "a*b*c",
+            "axxbxxbxc"
+          ],
+          "expected": true
+        },
+        {
+          "args": [
+            "*chaud*",
+            "un chocolat chaud !"
+          ],
+          "expected": true
+        },
+        {
+          "args": [
+            "",
+            ""
+          ],
+          "expected": true
+        },
+        {
+          "args": [
+            "",
+            "a"
+          ],
+          "expected": false
+        },
+        {
+          "args": [
+            "?",
+            ""
+          ],
+          "expected": false
+        },
+        {
+          "args": [
+            "*",
+            ""
+          ],
+          "expected": true
+        },
+        {
+          "args": [
+            "a*",
+            "a"
+          ],
+          "expected": true,
+          "hidden": true
+        },
+        {
+          "args": [
+            "?*?",
+            "a"
+          ],
+          "expected": false,
+          "hidden": true
+        },
+        {
+          "args": [
+            "Pixel",
+            "pixel"
+          ],
+          "expected": false,
+          "hidden": true
+        },
+        {
+          "args": [
+            "a?",
+            "a?"
+          ],
+          "expected": true,
+          "hidden": true
+        },
+        {
+          "args": [
+            "a*b*c",
+            "axxbxxbxcx"
+          ],
+          "expected": false,
+          "hidden": true
+        },
+        {
+          "args": [
+            "**",
+            ""
+          ],
+          "expected": true,
+          "hidden": true
+        },
+        {
+          "args": [
+            "*a*a*a*a*a*a*b",
+            "aaaaaaaaaaaaaaaaaaaa"
+          ],
+          "expected": false,
+          "hidden": true
+        },
+        {
+          "args": [
+            "*a*a*a*a*a*a",
+            "aaaaa"
+          ],
+          "expected": false,
+          "hidden": true
+        },
+        { "args": ["a.c","abc"], "expected": false, "hidden": true },
+        { "args": ["a*","a\nb"], "expected": true, "hidden": true }
+      ],
+      "hint": "Pense à une petite table de vérité : `prec[j]` dit si le début du motif traité jusqu'ici colle aux `j` premiers caractères du texte. Pour un caractère ordinaire ou `?`, on avance d'un cran dans les deux ; pour `*`, le texte peut avancer sans que le motif avance. Une récursion avec retour en arrière marche aussi, mais attention au temps."
+    },
+    {
+      "id": "d13-expert",
+      "day": 13,
+      "level": "expert",
+      "title": "Le moteur du grimoire",
+      "concept": "Moteur de motifs avec classes et répétitions",
+      "statement": "Le grimoire du sous-sol est écrit dans un langage de motifs plus riche que le précédent, et Pixel veut savoir **quelles vieilles commandes** il reconnaît. À toi d'écrire le moteur, **sans** utiliser les expressions régulières du langage.\n\nUn **motif** est une suite d'**éléments**. Un élément décrit **un seul caractère** :\n- une lettre minuscule ou un chiffre : ce caractère-là, et pas un autre ;\n- un point `.` : n'importe quel caractère ;\n- une **classe** entre crochets : un des caractères listés. Dans une classe, `a-f` désigne tous les caractères de `a` à `f` inclus. `[a-cx0-9]` accepte donc `a`, `b`, `c`, `x` et tous les chiffres.\n\nUn élément peut être suivi d'un **signe de répétition**, qui ne porte que sur lui :\n- `*` : l'élément peut apparaître zéro, une ou plusieurs fois ;\n- `+` : une ou plusieurs fois ;\n- `?` : zéro ou une fois.\n\nÉcris une fonction `{fn}(motif, mots)` qui renvoie la liste des mots que le motif décrit **en entier** (du premier au dernier caractère, sans rien laisser de côté), dans l'ordre où ils apparaissent dans `mots`.\n\nPrécisions : le motif est toujours bien formé. Une classe n'est jamais vide, et le tiret n'y sert qu'à former un intervalle. Les mots ne contiennent que des lettres minuscules et des chiffres, et peuvent être vides. Le motif vide ne décrit que le mot vide.\n\nExemple : le motif `lut?ins*` reconnaît `lutin`, `luins`, `lutins` et `lutinss`, mais pas `luti`. Le motif `[a-c]+[0-9]` reconnaît `ab1` et `c9`, mais ni `d1`, ni `abc`, ni `a12`.\n\nAttention au piège : devant `a?a?a?aaa`, un moteur qui essaie toutes les possibilités une par une peut s'y perdre très longtemps.\n",
+      "fn": {
+        "javascript": "motsReconnus",
+        "python": "mots_reconnus"
+      },
+      "starter": {
+        "javascript": "function motsReconnus(motif, mots) {\n  // Renvoie les mots que le motif décrit en entier\n}\n",
+        "python": "def mots_reconnus(motif, mots):\n    # Renvoie les mots que le motif décrit en entier\n    pass\n"
+      },
+      "solution": {
+        "javascript": "function motsReconnus(motif, mots) {\n  // 1. Traduire le motif en éléments : { tout, lettres, repetition }.\n  const elements = [];\n  let p = 0;\n  while (p < motif.length) {\n    const element = { tout: false, lettres: new Set(), repetition: \"\" };\n    if (motif[p] === \".\") {\n      element.tout = true;\n      p++;\n    } else if (motif[p] === \"[\") {\n      p++;\n      while (motif[p] !== \"]\") {\n        if (motif[p + 1] === \"-\" && motif[p + 2] !== \"]\") {\n          for (let c = motif.charCodeAt(p); c <= motif.charCodeAt(p + 2); c++) element.lettres.add(String.fromCharCode(c));\n          p += 3;\n        } else {\n          element.lettres.add(motif[p]);\n          p++;\n        }\n      }\n      p++;\n    } else {\n      element.lettres.add(motif[p]);\n      p++;\n    }\n    if (p < motif.length && \"*+?\".includes(motif[p])) {\n      element.repetition = motif[p];\n      p++;\n    }\n    elements.push(element);\n  }\n\n  // 2. ok[j][i] : les éléments à partir de j décrivent-ils le mot à partir de la position i ?\n  const reconnu = (mot) => {\n    const m = elements.length;\n    const n = mot.length;\n    const ok = Array.from({ length: m + 1 }, () => new Array(n + 1).fill(false));\n    ok[m][n] = true;\n    for (let j = m - 1; j >= 0; j--) {\n      const e = elements[j];\n      for (let i = n; i >= 0; i--) {\n        const convient = i < n && (e.tout || e.lettres.has(mot[i]));\n        if (e.repetition === \"\") ok[j][i] = convient && ok[j + 1][i + 1];\n        else if (e.repetition === \"?\") ok[j][i] = ok[j + 1][i] || (convient && ok[j + 1][i + 1]);\n        else if (e.repetition === \"*\") ok[j][i] = ok[j + 1][i] || (convient && ok[j][i + 1]);\n        else ok[j][i] = convient && (ok[j][i + 1] || ok[j + 1][i + 1]);\n      }\n    }\n    return ok[0][0];\n  };\n  return mots.filter(reconnu);\n}\n",
+        "python": "def mots_reconnus(motif, mots):\n    # 1. Traduire le motif en éléments : (tout, lettres, repetition).\n    elements = []\n    p = 0\n    while p < len(motif):\n        tout = False\n        lettres = set()\n        if motif[p] == \".\":\n            tout = True\n            p += 1\n        elif motif[p] == \"[\":\n            p += 1\n            while motif[p] != \"]\":\n                if motif[p + 1] == \"-\" and motif[p + 2] != \"]\":\n                    for c in range(ord(motif[p]), ord(motif[p + 2]) + 1):\n                        lettres.add(chr(c))\n                    p += 3\n                else:\n                    lettres.add(motif[p])\n                    p += 1\n            p += 1\n        else:\n            lettres.add(motif[p])\n            p += 1\n        repetition = \"\"\n        if p < len(motif) and motif[p] in \"*+?\":\n            repetition = motif[p]\n            p += 1\n        elements.append((tout, lettres, repetition))\n\n    # 2. ok[j][i] : les éléments à partir de j décrivent-ils le mot à partir de la position i ?\n    def reconnu(mot):\n        m = len(elements)\n        n = len(mot)\n        ok = [[False] * (n + 2) for _ in range(m + 1)]\n        ok[m][n] = True\n        for j in range(m - 1, -1, -1):\n            tout, lettres, repetition = elements[j]\n            for i in range(n, -1, -1):\n                convient = i < n and (tout or mot[i] in lettres)\n                if repetition == \"\":\n                    ok[j][i] = convient and ok[j + 1][i + 1]\n                elif repetition == \"?\":\n                    ok[j][i] = ok[j + 1][i] or (convient and ok[j + 1][i + 1])\n                elif repetition == \"*\":\n                    ok[j][i] = ok[j + 1][i] or (convient and ok[j][i + 1])\n                else:\n                    ok[j][i] = convient and (ok[j][i + 1] or ok[j + 1][i + 1])\n        return ok[0][0]\n\n    return [mot for mot in mots if reconnu(mot)]\n"
+      },
+      "tests": [
+        {
+          "args": [
+            "lut?ins*",
+            [
+              "lutin",
+              "luins",
+              "lutins",
+              "lutinss",
+              "luti"
+            ]
+          ],
+          "expected": [
+            "lutin",
+            "luins",
+            "lutins",
+            "lutinss"
+          ]
+        },
+        {
+          "args": [
+            "[a-c]+[0-9]",
+            [
+              "ab1",
+              "c9",
+              "d1",
+              "abc",
+              "a12"
+            ]
+          ],
+          "expected": [
+            "ab1",
+            "c9"
+          ]
+        },
+        {
+          "args": [
+            ".*",
+            [
+              "",
+              "noel",
+              "x9"
+            ]
+          ],
+          "expected": [
+            "",
+            "noel",
+            "x9"
+          ]
+        },
+        {
+          "args": [
+            "gr.l+ots?",
+            [
+              "grelot",
+              "grellots",
+              "grlot",
+              "grelo",
+              "grolllot"
+            ]
+          ],
+          "expected": [
+            "grelot",
+            "grellots",
+            "grolllot"
+          ]
+        },
+        {
+          "args": [
+            "",
+            [
+              "",
+              "a"
+            ]
+          ],
+          "expected": [
+            ""
+          ],
+          "hidden": true
+        },
+        {
+          "args": [
+            "a*",
+            [
+              "",
+              "a",
+              "aaaa",
+              "ab",
+              "b"
+            ]
+          ],
+          "expected": [
+            "",
+            "a",
+            "aaaa"
+          ],
+          "hidden": true
+        },
+        {
+          "args": [
+            "a+b?",
+            [
+              "a",
+              "ab",
+              "b",
+              "aab",
+              "abb",
+              ""
+            ]
+          ],
+          "expected": [
+            "a",
+            "ab",
+            "aab"
+          ],
+          "hidden": true
+        },
+        {
+          "args": [
+            "[xyz]",
+            [
+              "x",
+              "y",
+              "w",
+              "xy",
+              ""
+            ]
+          ],
+          "expected": [
+            "x",
+            "y"
+          ],
+          "hidden": true
+        },
+        {
+          "args": [
+            "[a-cx-z0-2]*",
+            [
+              "abc",
+              "xyz012",
+              "d",
+              "",
+              "a3"
+            ]
+          ],
+          "expected": [
+            "abc",
+            "xyz012",
+            ""
+          ],
+          "hidden": true
+        },
+        {
+          "args": [
+            ".+",
+            [
+              "",
+              "a",
+              "ab"
+            ]
+          ],
+          "expected": [
+            "a",
+            "ab"
+          ],
+          "hidden": true
+        },
+        {
+          "args": [
+            "a.*b.*c",
+            [
+              "abc",
+              "axbyc",
+              "acb",
+              "abcabc",
+              "ac"
+            ]
+          ],
+          "expected": [
+            "abc",
+            "axbyc",
+            "abcabc"
+          ],
+          "hidden": true
+        },
+        {
+          "args": [
+            "[a-z]+[0-9]?[a-z]+",
+            [
+              "ab",
+              "a1b",
+              "a",
+              "a12b",
+              "abc9z",
+              "9ab"
+            ]
+          ],
+          "expected": [
+            "ab",
+            "a1b",
+            "abc9z"
+          ],
+          "hidden": true
+        },
+        {
+          "args": [
+            "a?a?a?aaa",
+            [
+              "aaa",
+              "aaaa",
+              "aaaaaa",
+              "aaaaaaa",
+              "aa"
+            ]
+          ],
+          "expected": [
+            "aaa",
+            "aaaa",
+            "aaaaaa"
+          ],
+          "hidden": true
+        },
+        {
+          "args": [
+            "[ab]*a[ab][ab]",
+            [
+              "aaa",
+              "babb",
+              "bbb",
+              "abab",
+              "ab"
+            ]
+          ],
+          "expected": [
+            "aaa",
+            "babb"
+          ],
+          "hidden": true
+        },
+        {
+          "args": [
+            "s.p?in+",
+            [
+              "sapin",
+              "sain",
+              "spin",
+              "sapinnn",
+              "sapi",
+              "sppin"
+            ]
+          ],
+          "expected": [
+            "sapin",
+            "sain",
+            "spin",
+            "sapinnn",
+            "sppin"
+          ],
+          "hidden": true
+        },
+        {
+          "args": [
+            "0*[1-9][0-9]*",
+            [
+              "007",
+              "0",
+              "10",
+              "000120",
+              "",
+              "1a"
+            ]
+          ],
+          "expected": [
+            "007",
+            "10",
+            "000120"
+          ],
+          "hidden": true
+        },
+        {
+          "args": [
+            "a?a?a?a?a?a?a?a?a?a?a?a?a?a?a?a?a?a?a?a?a?a?aaaaaaaaaaaaaaaaaaaaaa",
+            [
+              "aaaaaaaaaaaaaaaaaaaaaa",
+              "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+              "aaaaaaaaaaaaaaaaaaaaa"
+            ]
+          ],
+          "expected": [
+            "aaaaaaaaaaaaaaaaaaaaaa",
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+            "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+          ],
+          "hidden": true
+        }
+      ],
+      "hint": "Commence par traduire le motif en une liste d'éléments, chacun avec ses caractères acceptés et sa répétition. Puis pose la question en deux nombres : « les éléments à partir du numéro `j` décrivent-ils le mot à partir de la position `i` ? ». Chaque réponse ne dépend que de réponses voisines : retiens-les au lieu de les recalculer."
+    }
+  ]
+}

@@ -1,0 +1,614 @@
+{
+  "day": 1,
+  "concept": "Arithmétique et fonctions",
+  "exercises": [
+    {
+      "id": "d01-debutant",
+      "day": 1,
+      "level": "debutant",
+      "title": "Compter les cadeaux",
+      "concept": "Fonctions et multiplication",
+      "statement": "Le Registre sait combien il y a de traîneaux et combien de cadeaux chacun porte. Ta fonction `{fn}` reçoit ces deux nombres, **dans cet ordre** : d'abord les traîneaux, ensuite les cadeaux par traîneau.\n\nElle doit **renvoyer** le nombre total de cadeaux de la tournée.",
+      "fn": { "javascript": "totalCadeaux", "python": "total_cadeaux" },
+      "starter": {
+        "javascript": "function totalCadeaux(traineaux, parTraineau) {\n  // Renvoie le nombre total de cadeaux\n}\n",
+        "python": "def total_cadeaux(traineaux, par_traineau):\n    # Renvoie le nombre total de cadeaux\n    pass\n"
+      },
+      "solution": {
+        "javascript": "function totalCadeaux(traineaux, parTraineau) {\n  return traineaux * parTraineau;\n}\n",
+        "python": "def total_cadeaux(traineaux, par_traineau):\n    return traineaux * par_traineau\n"
+      },
+      "tests": [
+        { "args": [3, 12], "expected": 36 },
+        { "args": [0, 50], "expected": 0 },
+        { "args": [9, 8], "expected": 72 },
+        { "args": [24, 100], "expected": 2400, "hidden": true }
+      ],
+      "hint": "Il suffit d'une seule opération. N'oublie pas `return` : afficher un nombre n'est pas le renvoyer."
+    },
+    {
+      "id": "d01-intermediaire",
+      "day": 1,
+      "level": "intermediaire",
+      "title": "Combien de traîneaux ?",
+      "concept": "Division et arrondi",
+      "statement": "Le Registre a `cadeaux` cadeaux à livrer. Un traîneau peut en porter au maximum `capacite`.\n\nÉcris une fonction `{fn}(cadeaux, capacite)` qui renvoie le **nombre minimal de traîneaux** nécessaires.\n\nUn traîneau rempli à moitié compte quand même. S'il n'y a aucun cadeau, il faut 0 traîneau.",
+      "fn": { "javascript": "traineauxNecessaires", "python": "traineaux_necessaires" },
+      "starter": {
+        "javascript": "function traineauxNecessaires(cadeaux, capacite) {\n  // Renvoie le nombre minimal de traîneaux\n}\n",
+        "python": "def traineaux_necessaires(cadeaux, capacite):\n    # Renvoie le nombre minimal de traîneaux\n    pass\n"
+      },
+      "solution": {
+        "javascript": "function traineauxNecessaires(cadeaux, capacite) {\n  return Math.ceil(cadeaux / capacite);\n}\n",
+        "python": "def traineaux_necessaires(cadeaux, capacite):\n    return -(-cadeaux // capacite)\n"
+      },
+      "tests": [
+        { "args": [100, 30], "expected": 4 },
+        { "args": [90, 30], "expected": 3 },
+        { "args": [0, 30], "expected": 0 },
+        { "args": [1, 30], "expected": 1 },
+        { "args": [1000, 7], "expected": 143, "hidden": true }
+      ],
+      "hint": "Divise, puis arrondis **vers le haut**. En JavaScript, regarde `Math.ceil`. En Python, `math.ceil` existe, ou on peut jouer avec `//`."
+    },
+    {
+      "id": "d01-confirme",
+      "day": 1,
+      "level": "confirme",
+      "title": "Répartir la tournée",
+      "concept": "Division entière, restes et contraintes",
+      "statement": "Mère Noëlle veut une tournée équitable : aucun traîneau ne doit finir la nuit essoufflé pendant que son voisin se tourne les pouces.\n\nÉcris `{fn}(cadeaux, capacite, minimum, flotte)` qui renvoie la **liste des charges** des traîneaux (le nombre de cadeaux porté par chacun), avec ces règles :\n\n- chaque traîneau porte au plus `capacite` cadeaux (on garantit `capacite >= 1`) ;\n- on utilise le **nombre minimal** de traîneaux ;\n- la répartition est la plus équitable possible : deux traîneaux diffèrent d'**au plus 1** cadeau ;\n- la liste est rangée de la charge la plus lourde à la plus légère ;\n- chaque traîneau doit porter au moins `minimum` cadeaux, et l'écurie ne compte que `flotte` traîneaux.\n\nSi ces conditions ne peuvent pas être réunies, renvoie `null` (`None` en Python). S'il n'y a aucun cadeau, renvoie la liste vide, quels que soient `minimum` et `flotte`.\n\nExemple : 10 cadeaux, capacité 4, minimum 0, flotte 5 donnent `[4, 3, 3]`.",
+      "fn": {
+        "javascript": "planTournee",
+        "python": "plan_tournee"
+      },
+      "starter": {
+        "javascript": "function planTournee(cadeaux, capacite, minimum, flotte) {\n  // Renvoie la liste des charges, ou null si c'est impossible\n}\n",
+        "python": "def plan_tournee(cadeaux, capacite, minimum, flotte):\n    # Renvoie la liste des charges, ou None si c'est impossible\n    pass\n"
+      },
+      "solution": {
+        "javascript": "function planTournee(cadeaux, capacite, minimum, flotte) {\n  if (cadeaux === 0) {\n    return [];\n  }\n  const nb = Math.floor((cadeaux + capacite - 1) / capacite);\n  if (nb > flotte) {\n    return null;\n  }\n  const base = Math.floor(cadeaux / nb);\n  const reste = cadeaux % nb;\n  if (base < minimum) {\n    return null;\n  }\n  const charges = [];\n  for (let i = 0; i < nb; i++) {\n    charges.push(i < reste ? base + 1 : base);\n  }\n  return charges;\n}\n",
+        "python": "def plan_tournee(cadeaux, capacite, minimum, flotte):\n    if cadeaux == 0:\n        return []\n    nb = (cadeaux + capacite - 1) // capacite\n    if nb > flotte:\n        return None\n    base = cadeaux // nb\n    reste = cadeaux % nb\n    if base < minimum:\n        return None\n    charges = []\n    for i in range(nb):\n        charges.append(base + 1 if i < reste else base)\n    return charges\n"
+      },
+      "tests": [
+        {
+          "args": [
+            10,
+            4,
+            0,
+            5
+          ],
+          "expected": [
+            4,
+            3,
+            3
+          ]
+        },
+        {
+          "args": [
+            100,
+            30,
+            20,
+            10
+          ],
+          "expected": [
+            25,
+            25,
+            25,
+            25
+          ]
+        },
+        {
+          "args": [
+            7,
+            10,
+            3,
+            2
+          ],
+          "expected": [
+            7
+          ]
+        },
+        {
+          "args": [
+            10,
+            4,
+            4,
+            5
+          ],
+          "expected": null
+        },
+        {
+          "args": [
+            10,
+            4,
+            0,
+            2
+          ],
+          "expected": null
+        },
+        {
+          "args": [
+            0,
+            5,
+            3,
+            0
+          ],
+          "expected": []
+        },
+        {
+          "args": [
+            1000,
+            7,
+            5,
+            200
+          ],
+          "expected": [
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            7,
+            6
+          ],
+          "hidden": true
+        },
+        {
+          "args": [
+            12,
+            4,
+            0,
+            3
+          ],
+          "expected": [
+            4,
+            4,
+            4
+          ],
+          "hidden": true
+        },
+        {
+          "args": [
+            13,
+            5,
+            2,
+            3
+          ],
+          "expected": [
+            5,
+            4,
+            4
+          ],
+          "hidden": true
+        },
+        {
+          "args": [
+            12,
+            4,
+            5,
+            3
+          ],
+          "expected": null,
+          "hidden": true
+        },
+        { "args": [9,4,3,5], "expected": [3,3,3], "hidden": true }
+      ],
+      "hint": "Le nombre minimal de traîneaux est un arrondi vers le haut. Une fois ce nombre fixé, que vaut la plus petite charge possible ? Et combien de traîneaux porteront un cadeau de plus ? Un test sur la plus petite charge suffit pour `minimum`."
+    },
+    {
+      "id": "d01-expert",
+      "day": 1,
+      "level": "expert",
+      "title": "Les grelots synchronisés",
+      "concept": "Congruences et PPCM",
+      "statement": "Pour relancer le Grand Registre, il faut appuyer sur le bouton à l'instant précis où **tous les grelots de l'atelier sonnent en même temps**. Chaque grelot est une paire `[periode, decalage]` : il sonne à la minute `decalage`, puis toutes les `periode` minutes (donc aux minutes `decalage`, `decalage + periode`, `decalage + 2 * periode`, et ainsi de suite).\n\nÉcris une fonction `{fn}(grelots)` qui renvoie la **première minute** (un entier `>= 0`) où tous les grelots sonnent ensemble, ou `-1` si cela n'arrive jamais.\n\nPrécisions :\n- `periode` est un entier `>= 1` et `0 <= decalage < periode`.\n- Sans aucun grelot, la réponse est `0`.\n- Il peut y avoir beaucoup de grelots, et la réponse peut dépasser le milliard : essayer les minutes une par une ne suffira pas. Quand elle existe, la réponse reste inférieure à `1 000 000 000 000`.\n\nExemple : avec `[[3, 2], [5, 3]]`, le premier grelot sonne aux minutes 2, 5, 8, 11... et le second aux minutes 3, 8, 13... : la réponse est `8`. Avec `[[4, 1], [6, 2]]`, le premier ne sonne qu'aux minutes impaires et le second qu'aux minutes paires : la réponse est `-1`.\n",
+      "fn": {
+        "javascript": "premierAccord",
+        "python": "premier_accord"
+      },
+      "starter": {
+        "javascript": "function premierAccord(grelots) {\n  // Renvoie la première minute où tous les grelots sonnent ensemble, ou -1\n}\n",
+        "python": "def premier_accord(grelots):\n    # Renvoie la première minute où tous les grelots sonnent ensemble, ou -1\n    pass\n"
+      },
+      "solution": {
+        "javascript": "function premierAccord(grelots) {\n  const pgcd = (a, b) => (b === 0 ? a : pgcd(b, a % b));\n  let minute = 0; // première minute qui convient aux grelots déjà vus\n  let pas = 1; // ensuite, ça revient toutes les `pas` minutes\n  for (const [periode, decalage] of grelots) {\n    const commun = pgcd(pas, periode);\n    const ecart = (((decalage - minute) % periode) + periode) % periode;\n    if (ecart % commun !== 0) return -1;\n    while (minute % periode !== decalage) minute += pas;\n    pas = (pas / commun) * periode;\n  }\n  return minute;\n}\n",
+        "python": "def premier_accord(grelots):\n    def pgcd(a, b):\n        while b:\n            a, b = b, a % b\n        return a\n\n    minute = 0  # première minute qui convient aux grelots déjà vus\n    pas = 1  # ensuite, ça revient toutes les `pas` minutes\n    for periode, decalage in grelots:\n        commun = pgcd(pas, periode)\n        if (decalage - minute) % commun != 0:\n            return -1\n        while minute % periode != decalage:\n            minute += pas\n        pas = pas // commun * periode\n    return minute\n"
+      },
+      "tests": [
+        {
+          "args": [
+            [
+              [
+                3,
+                2
+              ],
+              [
+                5,
+                3
+              ]
+            ]
+          ],
+          "expected": 8
+        },
+        {
+          "args": [
+            [
+              [
+                4,
+                1
+              ],
+              [
+                6,
+                2
+              ]
+            ]
+          ],
+          "expected": -1
+        },
+        {
+          "args": [
+            [
+              [
+                4,
+                3
+              ],
+              [
+                6,
+                5
+              ]
+            ]
+          ],
+          "expected": 11
+        },
+        {
+          "args": [
+            [
+              [
+                7,
+                0
+              ]
+            ]
+          ],
+          "expected": 0
+        },
+        {
+          "args": [
+            []
+          ],
+          "expected": 0,
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              [
+                1,
+                0
+              ],
+              [
+                1,
+                0
+              ]
+            ]
+          ],
+          "expected": 0,
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              [
+                6,
+                4
+              ],
+              [
+                10,
+                8
+              ],
+              [
+                15,
+                13
+              ]
+            ]
+          ],
+          "expected": 28,
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              [
+                2,
+                1
+              ],
+              [
+                4,
+                0
+              ]
+            ]
+          ],
+          "expected": -1,
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              [
+                9,
+                4
+              ],
+              [
+                12,
+                7
+              ],
+              [
+                5,
+                0
+              ]
+            ]
+          ],
+          "expected": 175,
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              [
+                12,
+                5
+              ],
+              [
+                18,
+                11
+              ],
+              [
+                8,
+                1
+              ]
+            ]
+          ],
+          "expected": 65,
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              [
+                17,
+                3
+              ],
+              [
+                19,
+                18
+              ],
+              [
+                23,
+                22
+              ],
+              [
+                4,
+                3
+              ]
+            ]
+          ],
+          "expected": 17479,
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              [
+                10,
+                3
+              ],
+              [
+                10,
+                4
+              ]
+            ]
+          ],
+          "expected": -1,
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              [
+                97,
+                96
+              ],
+              [
+                89,
+                0
+              ],
+              [
+                64,
+                63
+              ]
+            ]
+          ],
+          "expected": 24831,
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              [
+                9973,
+                9972
+              ],
+              [
+                9967,
+                1
+              ],
+              [
+                10,
+                9
+              ]
+            ]
+          ],
+          "expected": 563275039,
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              [
+                1000,
+                999
+              ],
+              [
+                999,
+                998
+              ],
+              [
+                997,
+                996
+              ]
+            ]
+          ],
+          "expected": 996002999,
+          "hidden": true
+        }
+      ],
+      "hint": "Traite les grelots un par un. Si tu connais une minute qui convient aux premiers grelots, les suivantes reviennent à intervalle régulier : lequel ? Pour savoir si un nouveau grelot est compatible, regarde ce que ton intervalle et sa période ont en commun."
+    }
+  ]
+}

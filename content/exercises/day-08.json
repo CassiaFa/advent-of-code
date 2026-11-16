@@ -1,0 +1,627 @@
+{
+  "day": 8,
+  "concept": "Recherche",
+  "exercises": [
+    {
+      "id": "d08-debutant",
+      "day": 8,
+      "level": "debutant",
+      "title": "Une par une",
+      "concept": "Recherche linéaire",
+      "statement": "Un paquet est coincé quelque part dans la tournée. Tu as la liste des numéros d'adresses, dans l'ordre de passage du traîneau, et le numéro que tu cherches.\n\nÉcris une fonction `{fn}(adresses, cible)` qui renvoie la **position** de `cible` dans la liste. Les positions commencent à `0`.\n\n- Si le numéro apparaît plusieurs fois, renvoie la position de la **première** apparition.\n- S'il n'apparaît pas (ou si la liste est vide), renvoie `-1`.",
+      "fn": {"javascript":"chercherAdresse","python":"chercher_adresse"},
+      "starter": {
+        "javascript": "function chercherAdresse(adresses, cible) {\n  // Renvoie la position de cible, ou -1\n}\n",
+        "python": "def chercher_adresse(adresses, cible):\n    # Renvoie la position de cible, ou -1\n    pass\n"
+      },
+      "solution": {
+        "javascript": "function chercherAdresse(adresses, cible) {\n  for (let i = 0; i < adresses.length; i++) {\n    if (adresses[i] === cible) {\n      return i;\n    }\n  }\n  return -1;\n}\n",
+        "python": "def chercher_adresse(adresses, cible):\n    for i in range(len(adresses)):\n        if adresses[i] == cible:\n            return i\n    return -1\n"
+      },
+      "tests": [
+        { "args": [[12,7,30,4],30], "expected": 2 },
+        { "args": [[12,7,30,4],5], "expected": -1 },
+        { "args": [[],1], "expected": -1 },
+        { "args": [[8,3,8,3],3], "expected": 1 },
+        { "args": [[9],9], "expected": 0, "hidden": true },
+        { "args": [[1,2,3,4,5,6],6], "expected": 5, "hidden": true }
+      ],
+      "hint": "Parcours la liste avec un indice. Dès que tu tombes sur la cible, tu peux répondre tout de suite. Si la boucle se termine sans l'avoir vue, c'est qu'elle n'y est pas."
+    },
+    {
+      "id": "d08-intermediaire",
+      "day": 8,
+      "level": "intermediaire",
+      "title": "Couper en deux",
+      "concept": "Recherche dichotomique",
+      "statement": "Cette fois, les mille adresses sont **triées par numéro croissant**. Inutile de tout relire : en regardant l'adresse du **milieu**, tu peux éliminer la moitié de la liste d'un coup, puis recommencer sur la moitié restante.\n\nÉcris une fonction `{fn}(adresses, cible)` qui renvoie la position où le paquet `cible` doit être rangé, c'est-à-dire la position de la **première adresse supérieure ou égale à `cible`**. Les positions commencent à `0`.\n\n- Si `cible` est déjà dans la liste (même plusieurs fois), c'est la position de sa **première** apparition.\n- Si toutes les adresses sont plus petites que `cible`, renvoie la **longueur** de la liste.\n- Pour une liste vide, renvoie `0`.\n\nUne boucle qui relit tout passera les tests, mais le défi du jour est de ne regarder qu'une poignée d'adresses : une dizaine suffit pour mille.",
+      "fn": {"javascript":"positionRangement","python":"position_rangement"},
+      "starter": {
+        "javascript": "function positionRangement(adresses, cible) {\n  // Renvoie la position de la première adresse >= cible\n}\n",
+        "python": "def position_rangement(adresses, cible):\n    # Renvoie la position de la première adresse >= cible\n    pass\n"
+      },
+      "solution": {
+        "javascript": "function positionRangement(adresses, cible) {\n  let debut = 0;\n  let fin = adresses.length;\n  while (debut < fin) {\n    const milieu = Math.floor((debut + fin) / 2);\n    if (adresses[milieu] < cible) {\n      debut = milieu + 1;\n    } else {\n      fin = milieu;\n    }\n  }\n  return debut;\n}\n",
+        "python": "def position_rangement(adresses, cible):\n    debut = 0\n    fin = len(adresses)\n    while debut < fin:\n        milieu = (debut + fin) // 2\n        if adresses[milieu] < cible:\n            debut = milieu + 1\n        else:\n            fin = milieu\n    return debut\n"
+      },
+      "tests": [
+        { "args": [[2,5,9,14,20],9], "expected": 2 },
+        { "args": [[2,5,9,14,20],10], "expected": 3 },
+        { "args": [[2,5,9,14,20],99], "expected": 5 },
+        { "args": [[4,7,7,7,12],7], "expected": 1 },
+        { "args": [[],3], "expected": 0 },
+        { "args": [[2,5,9,14,20],1], "expected": 0, "hidden": true },
+        { "args": [[6],6], "expected": 0, "hidden": true },
+        { "args": [[1,3,3,5,8,8,8,13,21,34,55],8], "expected": 4, "hidden": true },
+        { "args": [[1,3,3,5,8,8,8,13,21,34,55],54], "expected": 10, "hidden": true }
+      ],
+      "hint": "Garde deux bornes, `debut` et `fin`, qui encadrent la zone où la réponse peut encore se trouver. Regarde le milieu : s'il est trop petit, la réponse est strictement après lui ; sinon, elle est à cette position ou avant. Arrête-toi quand la zone est vide."
+    },
+    {
+      "id": "d08-confirme",
+      "day": 8,
+      "level": "confirme",
+      "title": "Le plus petit traîneau",
+      "concept": "Recherche dichotomique sur la réponse",
+      "statement": "Mère Noëlle doit commander un nouveau traîneau, et elle veut le plus petit possible. Les colis sont rangés dans l'**ordre de la tournée** : `poids[i]` est le poids (entier strictement positif) du colis `i`. Chaque **voyage** emporte une série de colis **consécutifs** (on ne peut ni réordonner, ni sauter un colis), et la tournée se fait en **au plus `k` voyages**.\n\nDeux limites s'appliquent à chaque voyage : son poids total ne doit pas dépasser la **capacité** `c` du traîneau, et il ne contient pas plus de **`m` colis**.\n\nÉcris une fonction `{fn}(poids, k, m)` qui renvoie la plus petite capacité entière `c` qui permet de tout livrer en au plus `k` voyages.\n\n- `k` et `m` sont des entiers supérieurs ou égaux à `1`.\n- Un voyage doit contenir au moins un colis, mais il n'est pas obligatoire d'utiliser les `k` voyages.\n- Si, même avec une capacité illimitée, `k` voyages de `m` colis ne suffisent pas à emporter tous les colis, renvoie `-1`.\n- S'il n'y a aucun colis, renvoie `0`.\n\nExemple : avec `poids = [7, 2, 5, 10, 8]`, `k = 2` et `m = 5`, la réponse est `18` (`7 + 2 + 5` d'un côté, `10 + 8` de l'autre).\n\nLes poids peuvent être grands et la liste longue : essayer toutes les capacités une par une serait bien trop lent.",
+      "fn": {
+        "javascript": "capaciteMinimale",
+        "python": "capacite_minimale"
+      },
+      "starter": {
+        "javascript": "function capaciteMinimale(poids, k, m) {\n  // Renvoie la plus petite capacité qui permet de livrer en au plus k voyages\n}\n",
+        "python": "def capacite_minimale(poids, k, m):\n    # Renvoie la plus petite capacité qui permet de livrer en au plus k voyages\n    pass\n"
+      },
+      "solution": {
+        "javascript": "function capaciteMinimale(poids, k, m) {\n  if (poids.length === 0) {\n    return 0;\n  }\n  if (Math.ceil(poids.length / m) > k) {\n    return -1;\n  }\n  const voyages = (capacite) => {\n    let total = 1;\n    let charge = 0;\n    let nombre = 0;\n    for (const p of poids) {\n      if (charge + p > capacite || nombre === m) {\n        total++;\n        charge = 0;\n        nombre = 0;\n      }\n      charge += p;\n      nombre++;\n    }\n    return total;\n  };\n  let bas = 0;\n  let haut = 0;\n  for (const p of poids) {\n    bas = Math.max(bas, p);\n    haut += p;\n  }\n  while (bas < haut) {\n    const milieu = Math.floor((bas + haut) / 2);\n    if (voyages(milieu) <= k) {\n      haut = milieu;\n    } else {\n      bas = milieu + 1;\n    }\n  }\n  return bas;\n}\n",
+        "python": "def capacite_minimale(poids, k, m):\n    if len(poids) == 0:\n        return 0\n    if (len(poids) + m - 1) // m > k:\n        return -1\n\n    def voyages(capacite):\n        total = 1\n        charge = 0\n        nombre = 0\n        for p in poids:\n            if charge + p > capacite or nombre == m:\n                total += 1\n                charge = 0\n                nombre = 0\n            charge += p\n            nombre += 1\n        return total\n\n    bas = max(poids)\n    haut = sum(poids)\n    while bas < haut:\n        milieu = (bas + haut) // 2\n        if voyages(milieu) <= k:\n            haut = milieu\n        else:\n            bas = milieu + 1\n    return bas\n"
+      },
+      "tests": [
+        {
+          "args": [
+            [
+              7,
+              2,
+              5,
+              10,
+              8
+            ],
+            2,
+            5
+          ],
+          "expected": 18
+        },
+        {
+          "args": [
+            [
+              7,
+              2,
+              5,
+              10,
+              8
+            ],
+            2,
+            3
+          ],
+          "expected": 18
+        },
+        {
+          "args": [
+            [
+              7,
+              2,
+              5,
+              10,
+              8
+            ],
+            2,
+            2
+          ],
+          "expected": -1
+        },
+        {
+          "args": [
+            [
+              4
+            ],
+            1,
+            1
+          ],
+          "expected": 4
+        },
+        {
+          "args": [
+            [
+              5,
+              5,
+              5,
+              1,
+              1,
+              1,
+              1,
+              1,
+              1
+            ],
+            3,
+            3
+          ],
+          "expected": 15
+        },
+        {
+          "args": [
+            [],
+            3,
+            2
+          ],
+          "expected": 0,
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              900000000,
+              800000000,
+              700000000
+            ],
+            1,
+            3
+          ],
+          "expected": 2400000000,
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              3,
+              1,
+              4,
+              1,
+              5,
+              9,
+              2,
+              6,
+              5,
+              3,
+              5
+            ],
+            4,
+            3
+          ],
+          "expected": 15,
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              6,
+              6,
+              6,
+              6
+            ],
+            4,
+            1
+          ],
+          "expected": 6,
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              1,
+              1,
+              1,
+              1,
+              1,
+              1,
+              9
+            ],
+            3,
+            3
+          ],
+          "expected": 9,
+          "hidden": true
+        },
+        { "args": [[2,9],4,2], "expected": 9, "hidden": true }
+      ],
+      "hint": "Si tu connais une capacité, il est facile de vérifier si elle suffit : charge le traîneau au maximum, et pars pour un nouveau voyage dès que le colis suivant ne rentre plus (en poids ou en nombre). Et si une capacité suffit, toute capacité plus grande suffit aussi : cherche donc la réponse elle-même par dichotomie, entre le colis le plus lourd et le poids total."
+    },
+    {
+      "id": "d08-expert",
+      "day": 8,
+      "level": "expert",
+      "title": "La k-ième adresse",
+      "concept": "Recherche dichotomique sur la réponse, avec comptage",
+      "statement": "Pour retrouver le paquet perdu, Pixel a deux listes de numéros, chacune **triée par ordre croissant** : les numéros de rue `a` et les numéros de porte `b`. L'adresse d'un paquet est la **somme** d'un numéro de chaque liste. Le givre a laissé un indice : le paquet se trouve à la `k`-ième plus petite adresse.\n\nÉcris une fonction `{fn}(a, b, k)` qui renvoie la **`k`-ième plus petite somme** `a[i] + b[j]`, toutes les paires `(i, j)` comptant, **doublons compris** (deux paires différentes qui donnent la même somme occupent deux rangs).\n\nPrécisions :\n- `a` et `b` sont des listes non vides d'entiers triées par ordre croissant (les entiers peuvent être négatifs et se répéter).\n- `k` commence à `1` (la plus petite somme) et ne dépasse jamais le nombre de paires.\n- Les listes peuvent contenir des dizaines de milliers de numéros : fabriquer et trier toutes les sommes prendrait trop de place et de temps. Cherche la **valeur** de la réponse, pas sa position.\n\nExemple : avec `a = [1, 3, 5]` et `b = [2, 4]`, les sommes rangées sont `3, 5, 5, 7, 7, 9`. Pour `k = 3` la réponse est `5`, pour `k = 4` c'est `7`.\n",
+      "fn": {
+        "javascript": "kiemeSomme",
+        "python": "kieme_somme"
+      },
+      "starter": {
+        "javascript": "function kiemeSomme(a, b, k) {\n  // Renvoie la k-ième plus petite somme a[i] + b[j]\n}\n",
+        "python": "def kieme_somme(a, b, k):\n    # Renvoie la k-ième plus petite somme a[i] + b[j]\n    pass\n"
+      },
+      "solution": {
+        "javascript": "function kiemeSomme(a, b, k) {\n  // Combien de paires ont une somme inférieure ou égale à x ?\n  const compter = (x) => {\n    let total = 0;\n    let j = b.length - 1;\n    for (let i = 0; i < a.length; i++) {\n      while (j >= 0 && a[i] + b[j] > x) j--;\n      total += j + 1;\n    }\n    return total;\n  };\n  let bas = a[0] + b[0];\n  let haut = a[a.length - 1] + b[b.length - 1];\n  // La plus petite valeur x pour laquelle au moins k sommes sont <= x.\n  while (bas < haut) {\n    const milieu = Math.floor((bas + haut) / 2);\n    if (compter(milieu) >= k) haut = milieu;\n    else bas = milieu + 1;\n  }\n  return bas;\n}\n",
+        "python": "def kieme_somme(a, b, k):\n    # Combien de paires ont une somme inférieure ou égale à x ?\n    def compter(x):\n        total = 0\n        j = len(b) - 1\n        for valeur in a:\n            while j >= 0 and valeur + b[j] > x:\n                j -= 1\n            total += j + 1\n        return total\n\n    bas = a[0] + b[0]\n    haut = a[-1] + b[-1]\n    # La plus petite valeur x pour laquelle au moins k sommes sont <= x.\n    while bas < haut:\n        milieu = (bas + haut) // 2\n        if compter(milieu) >= k:\n            haut = milieu\n        else:\n            bas = milieu + 1\n    return bas\n"
+      },
+      "tests": [
+        {
+          "args": [
+            [
+              1,
+              3,
+              5
+            ],
+            [
+              2,
+              4
+            ],
+            1
+          ],
+          "expected": 3
+        },
+        {
+          "args": [
+            [
+              1,
+              3,
+              5
+            ],
+            [
+              2,
+              4
+            ],
+            3
+          ],
+          "expected": 5
+        },
+        {
+          "args": [
+            [
+              1,
+              3,
+              5
+            ],
+            [
+              2,
+              4
+            ],
+            4
+          ],
+          "expected": 7
+        },
+        {
+          "args": [
+            [
+              1,
+              3,
+              5
+            ],
+            [
+              2,
+              4
+            ],
+            6
+          ],
+          "expected": 9
+        },
+        {
+          "args": [
+            [
+              7
+            ],
+            [
+              5
+            ],
+            1
+          ],
+          "expected": 12,
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              -5,
+              -1
+            ],
+            [
+              -4,
+              0
+            ],
+            2
+          ],
+          "expected": -5,
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              2,
+              2,
+              2
+            ],
+            [
+              3,
+              3
+            ],
+            5
+          ],
+          "expected": 5,
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              -25,
+              -20,
+              -14,
+              -13,
+              -6,
+              -1,
+              1,
+              17,
+              18,
+              60
+            ],
+            [
+              -27,
+              -6,
+              -4,
+              19,
+              21,
+              28,
+              28,
+              32,
+              33,
+              34,
+              43,
+              52
+            ],
+            115
+          ],
+          "expected": 88,
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              -28,
+              -22,
+              -19,
+              -18,
+              -17,
+              -16,
+              -1,
+              3,
+              4,
+              18,
+              18,
+              19,
+              21,
+              22,
+              30,
+              32,
+              36,
+              49,
+              54,
+              59
+            ],
+            [
+              -26,
+              -23,
+              -22,
+              -19,
+              -12,
+              -12,
+              -6,
+              -4,
+              0,
+              13,
+              32,
+              33,
+              36,
+              39,
+              44,
+              47,
+              53,
+              54,
+              58,
+              59
+            ],
+            297
+          ],
+          "expected": 58,
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              -21,
+              -18,
+              -13,
+              -11,
+              -10,
+              -5,
+              -2,
+              1,
+              6,
+              6,
+              9,
+              10,
+              14,
+              15,
+              15,
+              15,
+              24,
+              26,
+              28,
+              33,
+              34,
+              34,
+              35,
+              37,
+              38,
+              39,
+              41,
+              44,
+              46,
+              49,
+              52,
+              54,
+              58,
+              59,
+              59
+            ],
+            [
+              -29,
+              -26,
+              -2,
+              2,
+              4,
+              7,
+              13,
+              24
+            ],
+            193
+          ],
+          "expected": 39,
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              -29,
+              -27,
+              -26,
+              -22,
+              -20,
+              -20,
+              -18,
+              -17,
+              -16,
+              -16,
+              -13,
+              -11,
+              -10,
+              -9,
+              -9,
+              -8,
+              -5,
+              -1,
+              6,
+              8,
+              8,
+              13,
+              16,
+              18,
+              20,
+              22,
+              22,
+              23,
+              23,
+              25,
+              27,
+              36,
+              37,
+              42,
+              42,
+              45,
+              54,
+              54,
+              54,
+              60
+            ],
+            [
+              -30,
+              -28,
+              -26,
+              -23,
+              -22,
+              -20,
+              -15,
+              -15,
+              -13,
+              -11,
+              -11,
+              -8,
+              -8,
+              -6,
+              -5,
+              -4,
+              -2,
+              8,
+              11,
+              13,
+              13,
+              14,
+              16,
+              18,
+              19,
+              25,
+              26,
+              30,
+              32,
+              33,
+              33,
+              34,
+              43,
+              44,
+              47,
+              47,
+              49,
+              52,
+              54,
+              60
+            ],
+            250
+          ],
+          "expected": -20,
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              -17
+            ],
+            [
+              -30,
+              -28,
+              -24,
+              -24,
+              -19,
+              -19,
+              -17,
+              -16,
+              -14,
+              -5,
+              -3,
+              -2,
+              16,
+              16,
+              20,
+              25,
+              26,
+              27,
+              27,
+              28,
+              30,
+              35,
+              37,
+              42,
+              44,
+              46,
+              48,
+              52,
+              53,
+              60
+            ],
+            24
+          ],
+          "expected": 25,
+          "hidden": true
+        }
+      ],
+      "hint": "Retourne la question : pour une valeur `x` donnée, combien de sommes sont inférieures ou égales à `x` ? Comme les deux listes sont triées, ce comptage se fait en un seul passage, avec une position qui avance dans une liste pendant que l'autre recule. Il reste à trouver la plus petite valeur `x` pour laquelle ce compte atteint `k`."
+    }
+  ]
+}

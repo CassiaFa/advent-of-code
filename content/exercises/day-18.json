@@ -1,0 +1,1745 @@
+{
+  "day": 18,
+  "concept": "Arbres",
+  "exercises": [
+    {
+      "id": "d18-debutant",
+      "day": 18,
+      "level": "debutant",
+      "title": "Combien de membres ?",
+      "concept": "Compter les nœuds d'un arbre",
+      "statement": "Le Grand Registre range les familles de Givreville en arbre. Chaque membre est un dictionnaire `{\"nom\": \"...\", \"enfants\": [ ... ]}`, où `enfants` est la liste (éventuellement vide) de ses enfants, de la même forme.\n\nÉcris une fonction `{fn}(membre)` qui renvoie le **nombre total de membres** de l'arbre, en comptant le membre reçu lui-même et tous ses descendants.\n\nUn membre sans enfant compte pour `1`. L'arbre n'est jamais vide.",
+      "fn": {
+        "javascript": "compterMembres",
+        "python": "compter_membres"
+      },
+      "starter": {
+        "javascript": "function compterMembres(membre) {\n  // Renvoie le nombre de membres de l'arbre\n}\n",
+        "python": "def compter_membres(membre):\n    # Renvoie le nombre de membres de l'arbre\n    pass\n"
+      },
+      "solution": {
+        "javascript": "function compterMembres(membre) {\n  let total = 1;\n  for (const enfant of membre.enfants) {\n    total = total + compterMembres(enfant);\n  }\n  return total;\n}\n",
+        "python": "def compter_membres(membre):\n    total = 1\n    for enfant in membre[\"enfants\"]:\n        total = total + compter_membres(enfant)\n    return total\n"
+      },
+      "tests": [
+        {
+          "args": [
+            {
+              "nom": "solo",
+              "enfants": []
+            }
+          ],
+          "expected": 1
+        },
+        {
+          "args": [
+            {
+              "nom": "a",
+              "enfants": [
+                {
+                  "nom": "b",
+                  "enfants": []
+                },
+                {
+                  "nom": "c",
+                  "enfants": []
+                }
+              ]
+            }
+          ],
+          "expected": 3
+        },
+        {
+          "args": [
+            {
+              "nom": "aieul",
+              "enfants": [
+                {
+                  "nom": "marthe",
+                  "enfants": [
+                    {
+                      "nom": "luc",
+                      "enfants": []
+                    },
+                    {
+                      "nom": "noa",
+                      "enfants": [
+                        {
+                          "nom": "zoe",
+                          "enfants": []
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "nom": "paul",
+                  "enfants": [
+                    {
+                      "nom": "ines",
+                      "enfants": [
+                        {
+                          "nom": "leo",
+                          "enfants": []
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "nom": "rose",
+                  "enfants": []
+                }
+              ]
+            }
+          ],
+          "expected": 9
+        },
+        {
+          "args": [
+            {
+              "nom": "a",
+              "enfants": [
+                {
+                  "nom": "b",
+                  "enfants": [
+                    {
+                      "nom": "c",
+                      "enfants": [
+                        {
+                          "nom": "d",
+                          "enfants": [
+                            {
+                              "nom": "e",
+                              "enfants": []
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "expected": 5
+        },
+        {
+          "args": [
+            {
+              "nom": "x",
+              "enfants": [
+                {
+                  "nom": "y",
+                  "enfants": []
+                },
+                {
+                  "nom": "z",
+                  "enfants": [
+                    {
+                      "nom": "w",
+                      "enfants": []
+                    },
+                    {
+                      "nom": "v",
+                      "enfants": []
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "expected": 5,
+          "hidden": true
+        },
+        {
+          "args": [
+            {
+              "nom": "paul",
+              "enfants": [
+                {
+                  "nom": "ines",
+                  "enfants": [
+                    {
+                      "nom": "leo",
+                      "enfants": []
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "expected": 3,
+          "hidden": true
+        }
+      ],
+      "hint": "Un membre vaut « 1 (lui-même) plus le nombre de membres de chacun de ses enfants ». Parcours la liste des enfants et rappelle ta propre fonction sur chacun."
+    },
+    {
+      "id": "d18-intermediaire",
+      "day": 18,
+      "level": "intermediaire",
+      "title": "Génération par génération",
+      "concept": "Parcours d'un arbre par niveaux",
+      "statement": "Pour livrer sans rien oublier, Mère Noëlle veut la liste des membres **génération par génération** : d'abord l'ancêtre, puis ses enfants, puis ses petits-enfants, etc. Un membre est un dictionnaire `{\"nom\": \"...\", \"enfants\": [ ... ]}`.\n\nÉcris une fonction `{fn}(racine)` qui renvoie une **liste de listes de noms** : la première contient le nom de la racine, la deuxième les noms de ses enfants, la troisième ceux de ses petits-enfants, et ainsi de suite.\n\nDans une génération, les noms suivent l'ordre du registre : on lit de gauche à droite, en respectant l'ordre des listes `enfants` (les enfants du premier membre de la génération précédente d'abord, puis ceux du deuxième, etc.). Pas de tri alphabétique. Une racine sans enfant donne `[[nom]]`.",
+      "fn": {
+        "javascript": "parGenerations",
+        "python": "par_generations"
+      },
+      "starter": {
+        "javascript": "function parGenerations(racine) {\n  // Renvoie la liste des générations, chacune étant une liste de noms\n}\n",
+        "python": "def par_generations(racine):\n    # Renvoie la liste des générations, chacune étant une liste de noms\n    pass\n"
+      },
+      "solution": {
+        "javascript": "function parGenerations(racine) {\n  const resultat = [];\n  let generation = [racine];\n  while (generation.length > 0) {\n    resultat.push(generation.map((membre) => membre.nom));\n    const suivante = [];\n    for (const membre of generation) {\n      for (const enfant of membre.enfants) {\n        suivante.push(enfant);\n      }\n    }\n    generation = suivante;\n  }\n  return resultat;\n}\n",
+        "python": "def par_generations(racine):\n    resultat = []\n    generation = [racine]\n    while generation:\n        resultat.append([membre[\"nom\"] for membre in generation])\n        suivante = []\n        for membre in generation:\n            for enfant in membre[\"enfants\"]:\n                suivante.append(enfant)\n        generation = suivante\n    return resultat\n"
+      },
+      "tests": [
+        {
+          "args": [
+            {
+              "nom": "aieul",
+              "enfants": [
+                {
+                  "nom": "marthe",
+                  "enfants": [
+                    {
+                      "nom": "luc",
+                      "enfants": []
+                    },
+                    {
+                      "nom": "noa",
+                      "enfants": [
+                        {
+                          "nom": "zoe",
+                          "enfants": []
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "nom": "paul",
+                  "enfants": [
+                    {
+                      "nom": "ines",
+                      "enfants": [
+                        {
+                          "nom": "leo",
+                          "enfants": []
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "nom": "rose",
+                  "enfants": []
+                }
+              ]
+            }
+          ],
+          "expected": [
+            [
+              "aieul"
+            ],
+            [
+              "marthe",
+              "paul",
+              "rose"
+            ],
+            [
+              "luc",
+              "noa",
+              "ines"
+            ],
+            [
+              "zoe",
+              "leo"
+            ]
+          ]
+        },
+        {
+          "args": [
+            {
+              "nom": "solo",
+              "enfants": []
+            }
+          ],
+          "expected": [
+            [
+              "solo"
+            ]
+          ]
+        },
+        {
+          "args": [
+            {
+              "nom": "racine",
+              "enfants": [
+                {
+                  "nom": "a",
+                  "enfants": [
+                    {
+                      "nom": "a1",
+                      "enfants": [
+                        {
+                          "nom": "a11",
+                          "enfants": [
+                            {
+                              "nom": "a111",
+                              "enfants": []
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "nom": "a2",
+                      "enfants": []
+                    }
+                  ]
+                },
+                {
+                  "nom": "b",
+                  "enfants": [
+                    {
+                      "nom": "b1",
+                      "enfants": []
+                    }
+                  ]
+                },
+                {
+                  "nom": "c",
+                  "enfants": []
+                }
+              ]
+            }
+          ],
+          "expected": [
+            [
+              "racine"
+            ],
+            [
+              "a",
+              "b",
+              "c"
+            ],
+            [
+              "a1",
+              "a2",
+              "b1"
+            ],
+            [
+              "a11"
+            ],
+            [
+              "a111"
+            ]
+          ]
+        },
+        {
+          "args": [
+            {
+              "nom": "a",
+              "enfants": [
+                {
+                  "nom": "b",
+                  "enfants": [
+                    {
+                      "nom": "c",
+                      "enfants": []
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "expected": [
+            [
+              "a"
+            ],
+            [
+              "b"
+            ],
+            [
+              "c"
+            ]
+          ]
+        },
+        {
+          "args": [
+            {
+              "nom": "z",
+              "enfants": [
+                {
+                  "nom": "y",
+                  "enfants": []
+                },
+                {
+                  "nom": "x",
+                  "enfants": []
+                },
+                {
+                  "nom": "w",
+                  "enfants": []
+                }
+              ]
+            }
+          ],
+          "expected": [
+            [
+              "z"
+            ],
+            [
+              "y",
+              "x",
+              "w"
+            ]
+          ],
+          "hidden": true
+        },
+        {
+          "args": [
+            {
+              "nom": "r",
+              "enfants": [
+                {
+                  "nom": "p",
+                  "enfants": [
+                    {
+                      "nom": "p1",
+                      "enfants": []
+                    },
+                    {
+                      "nom": "p2",
+                      "enfants": []
+                    }
+                  ]
+                },
+                {
+                  "nom": "q",
+                  "enfants": [
+                    {
+                      "nom": "q1",
+                      "enfants": []
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "expected": [
+            [
+              "r"
+            ],
+            [
+              "p",
+              "q"
+            ],
+            [
+              "p1",
+              "p2",
+              "q1"
+            ]
+          ],
+          "hidden": true
+        }
+      ],
+      "hint": "Garde une liste « génération courante ». À chaque tour, note les noms de cette liste, puis construis la génération suivante en rassemblant les enfants de tous ses membres. Arrête-toi quand elle est vide."
+    },
+    {
+      "id": "d18-confirme",
+      "day": 18,
+      "level": "confirme",
+      "title": "De cousin à cousine",
+      "concept": "Chemin entre deux nœuds d'un arbre",
+      "statement": "Givrebug a glissé un message dans le Grand Registre : il faut le transmettre d'un membre de la famille à un autre, **en ne passant que par des liens parent-enfant**. On peut donc monter vers un parent, puis redescendre vers un enfant. Un membre est un dictionnaire `{\"nom\": \"...\", \"enfants\": [ ... ]}` et tous les noms de l'arbre sont **différents**.\n\nÉcris une fonction `{fn}(racine, depart, arrivee)` qui renvoie la liste des noms que le message traverse, de `depart` jusqu'à `arrivee` inclus, par le **chemin le plus court** (dans un arbre, il n'y en a qu'un).\n\nExemple : entre deux frères, le chemin est `[frere1, parent, frere2]`.\n\nCas limites :\n\n- si `depart` et `arrivee` sont le même membre, le chemin est `[nom]` ;\n- si l'un est l'ancêtre de l'autre, le chemin est simplement la ligne directe (montante ou descendante), sans détour ;\n- si `depart` **ou** `arrivee` est absent de l'arbre, renvoie la liste vide `[]`, même si les deux noms sont identiques.",
+      "fn": {
+        "javascript": "cheminEntre",
+        "python": "chemin_entre"
+      },
+      "starter": {
+        "javascript": "function cheminEntre(racine, depart, arrivee) {\n  // Renvoie la liste des noms de depart à arrivee, ou []\n}\n",
+        "python": "def chemin_entre(racine, depart, arrivee):\n    # Renvoie la liste des noms de depart à arrivee, ou []\n    pass\n"
+      },
+      "solution": {
+        "javascript": "function cheminEntre(racine, depart, arrivee) {\n  function depuisRacine(membre, cible) {\n    if (membre.nom === cible) {\n      return [cible];\n    }\n    for (const enfant of membre.enfants) {\n      const sous = depuisRacine(enfant, cible);\n      if (sous !== null) {\n        return [membre.nom, ...sous];\n      }\n    }\n    return null;\n  }\n  const haut = depuisRacine(racine, depart);\n  const bas = depuisRacine(racine, arrivee);\n  if (haut === null || bas === null) {\n    return [];\n  }\n  let commun = 0;\n  while (commun < haut.length && commun < bas.length && haut[commun] === bas[commun]) {\n    commun = commun + 1;\n  }\n  const montee = haut.slice(commun - 1).reverse();\n  return montee.concat(bas.slice(commun));\n}\n",
+        "python": "def chemin_entre(racine, depart, arrivee):\n    def depuis_racine(membre, cible):\n        if membre[\"nom\"] == cible:\n            return [cible]\n        for enfant in membre[\"enfants\"]:\n            sous = depuis_racine(enfant, cible)\n            if sous is not None:\n                return [membre[\"nom\"]] + sous\n        return None\n\n    haut = depuis_racine(racine, depart)\n    bas = depuis_racine(racine, arrivee)\n    if haut is None or bas is None:\n        return []\n    commun = 0\n    while commun < len(haut) and commun < len(bas) and haut[commun] == bas[commun]:\n        commun = commun + 1\n    montee = list(reversed(haut[commun - 1:]))\n    return montee + bas[commun:]\n"
+      },
+      "tests": [
+        {
+          "args": [
+            {
+              "nom": "aieul",
+              "enfants": [
+                {
+                  "nom": "marthe",
+                  "enfants": [
+                    {
+                      "nom": "luc",
+                      "enfants": []
+                    },
+                    {
+                      "nom": "noa",
+                      "enfants": [
+                        {
+                          "nom": "zoe",
+                          "enfants": []
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "nom": "paul",
+                  "enfants": [
+                    {
+                      "nom": "ines",
+                      "enfants": [
+                        {
+                          "nom": "leo",
+                          "enfants": []
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "nom": "rose",
+                  "enfants": []
+                }
+              ]
+            },
+            "luc",
+            "noa"
+          ],
+          "expected": [
+            "luc",
+            "marthe",
+            "noa"
+          ]
+        },
+        {
+          "args": [
+            {
+              "nom": "aieul",
+              "enfants": [
+                {
+                  "nom": "marthe",
+                  "enfants": [
+                    {
+                      "nom": "luc",
+                      "enfants": []
+                    },
+                    {
+                      "nom": "noa",
+                      "enfants": [
+                        {
+                          "nom": "zoe",
+                          "enfants": []
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "nom": "paul",
+                  "enfants": [
+                    {
+                      "nom": "ines",
+                      "enfants": [
+                        {
+                          "nom": "leo",
+                          "enfants": []
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "nom": "rose",
+                  "enfants": []
+                }
+              ]
+            },
+            "zoe",
+            "leo"
+          ],
+          "expected": [
+            "zoe",
+            "noa",
+            "marthe",
+            "aieul",
+            "paul",
+            "ines",
+            "leo"
+          ]
+        },
+        {
+          "args": [
+            {
+              "nom": "aieul",
+              "enfants": [
+                {
+                  "nom": "marthe",
+                  "enfants": [
+                    {
+                      "nom": "luc",
+                      "enfants": []
+                    },
+                    {
+                      "nom": "noa",
+                      "enfants": [
+                        {
+                          "nom": "zoe",
+                          "enfants": []
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "nom": "paul",
+                  "enfants": [
+                    {
+                      "nom": "ines",
+                      "enfants": [
+                        {
+                          "nom": "leo",
+                          "enfants": []
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "nom": "rose",
+                  "enfants": []
+                }
+              ]
+            },
+            "aieul",
+            "zoe"
+          ],
+          "expected": [
+            "aieul",
+            "marthe",
+            "noa",
+            "zoe"
+          ]
+        },
+        {
+          "args": [
+            {
+              "nom": "aieul",
+              "enfants": [
+                {
+                  "nom": "marthe",
+                  "enfants": [
+                    {
+                      "nom": "luc",
+                      "enfants": []
+                    },
+                    {
+                      "nom": "noa",
+                      "enfants": [
+                        {
+                          "nom": "zoe",
+                          "enfants": []
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "nom": "paul",
+                  "enfants": [
+                    {
+                      "nom": "ines",
+                      "enfants": [
+                        {
+                          "nom": "leo",
+                          "enfants": []
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "nom": "rose",
+                  "enfants": []
+                }
+              ]
+            },
+            "zoe",
+            "aieul"
+          ],
+          "expected": [
+            "zoe",
+            "noa",
+            "marthe",
+            "aieul"
+          ]
+        },
+        {
+          "args": [
+            {
+              "nom": "aieul",
+              "enfants": [
+                {
+                  "nom": "marthe",
+                  "enfants": [
+                    {
+                      "nom": "luc",
+                      "enfants": []
+                    },
+                    {
+                      "nom": "noa",
+                      "enfants": [
+                        {
+                          "nom": "zoe",
+                          "enfants": []
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "nom": "paul",
+                  "enfants": [
+                    {
+                      "nom": "ines",
+                      "enfants": [
+                        {
+                          "nom": "leo",
+                          "enfants": []
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "nom": "rose",
+                  "enfants": []
+                }
+              ]
+            },
+            "rose",
+            "rose"
+          ],
+          "expected": [
+            "rose"
+          ]
+        },
+        {
+          "args": [
+            {
+              "nom": "aieul",
+              "enfants": [
+                {
+                  "nom": "marthe",
+                  "enfants": [
+                    {
+                      "nom": "luc",
+                      "enfants": []
+                    },
+                    {
+                      "nom": "noa",
+                      "enfants": [
+                        {
+                          "nom": "zoe",
+                          "enfants": []
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "nom": "paul",
+                  "enfants": [
+                    {
+                      "nom": "ines",
+                      "enfants": [
+                        {
+                          "nom": "leo",
+                          "enfants": []
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "nom": "rose",
+                  "enfants": []
+                }
+              ]
+            },
+            "luc",
+            "inconnu"
+          ],
+          "expected": []
+        },
+        {
+          "args": [
+            {
+              "nom": "aieul",
+              "enfants": [
+                {
+                  "nom": "marthe",
+                  "enfants": [
+                    {
+                      "nom": "luc",
+                      "enfants": []
+                    },
+                    {
+                      "nom": "noa",
+                      "enfants": [
+                        {
+                          "nom": "zoe",
+                          "enfants": []
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "nom": "paul",
+                  "enfants": [
+                    {
+                      "nom": "ines",
+                      "enfants": [
+                        {
+                          "nom": "leo",
+                          "enfants": []
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "nom": "rose",
+                  "enfants": []
+                }
+              ]
+            },
+            "inconnu",
+            "inconnu"
+          ],
+          "expected": [],
+          "hidden": true
+        },
+        {
+          "args": [
+            {
+              "nom": "aieul",
+              "enfants": [
+                {
+                  "nom": "marthe",
+                  "enfants": [
+                    {
+                      "nom": "luc",
+                      "enfants": []
+                    },
+                    {
+                      "nom": "noa",
+                      "enfants": [
+                        {
+                          "nom": "zoe",
+                          "enfants": []
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "nom": "paul",
+                  "enfants": [
+                    {
+                      "nom": "ines",
+                      "enfants": [
+                        {
+                          "nom": "leo",
+                          "enfants": []
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "nom": "rose",
+                  "enfants": []
+                }
+              ]
+            },
+            "marthe",
+            "zoe"
+          ],
+          "expected": [
+            "marthe",
+            "noa",
+            "zoe"
+          ],
+          "hidden": true
+        },
+        {
+          "args": [
+            {
+              "nom": "aieul",
+              "enfants": [
+                {
+                  "nom": "marthe",
+                  "enfants": [
+                    {
+                      "nom": "luc",
+                      "enfants": []
+                    },
+                    {
+                      "nom": "noa",
+                      "enfants": [
+                        {
+                          "nom": "zoe",
+                          "enfants": []
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "nom": "paul",
+                  "enfants": [
+                    {
+                      "nom": "ines",
+                      "enfants": [
+                        {
+                          "nom": "leo",
+                          "enfants": []
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "nom": "rose",
+                  "enfants": []
+                }
+              ]
+            },
+            "zoe",
+            "marthe"
+          ],
+          "expected": [
+            "zoe",
+            "noa",
+            "marthe"
+          ],
+          "hidden": true
+        },
+        {
+          "args": [
+            {
+              "nom": "a",
+              "enfants": []
+            },
+            "a",
+            "a"
+          ],
+          "expected": [
+            "a"
+          ],
+          "hidden": true
+        },
+        {
+          "args": [
+            {
+              "nom": "aieul",
+              "enfants": [
+                {
+                  "nom": "marthe",
+                  "enfants": [
+                    {
+                      "nom": "luc",
+                      "enfants": []
+                    },
+                    {
+                      "nom": "noa",
+                      "enfants": [
+                        {
+                          "nom": "zoe",
+                          "enfants": []
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "nom": "paul",
+                  "enfants": [
+                    {
+                      "nom": "ines",
+                      "enfants": [
+                        {
+                          "nom": "leo",
+                          "enfants": []
+                        }
+                      ]
+                    }
+                  ]
+                },
+                {
+                  "nom": "rose",
+                  "enfants": []
+                }
+              ]
+            },
+            "leo",
+            "rose"
+          ],
+          "expected": [
+            "leo",
+            "ines",
+            "paul",
+            "aieul",
+            "rose"
+          ],
+          "hidden": true
+        },
+        { "args": [{"nom":"aieul","enfants":[{"nom":"marthe","enfants":[{"nom":"luc","enfants":[]},{"nom":"noa","enfants":[{"nom":"zoe","enfants":[]}]}]},{"nom":"paul","enfants":[{"nom":"ines","enfants":[{"nom":"leo","enfants":[]}]}]},{"nom":"rose","enfants":[]}]},"inconnu","luc"], "expected": [], "hidden": true }
+      ],
+      "hint": "Pour chaque membre, trouve d'abord son chemin depuis la racine. Les deux chemins commencent pareil, puis se séparent : le dernier membre commun est le point de rencontre. Le trajet monte le long du premier chemin jusqu'à ce point, puis descend le long du second."
+    },
+    {
+      "id": "d18-expert",
+      "day": 18,
+      "level": "expert",
+      "title": "Le réveillon sans dispute",
+      "concept": "Arbre : la meilleure réponse « avec » et « sans » chaque nœud",
+      "statement": "Mère Noëlle organise le grand réveillon de la famille. Une seule règle, mais elle y tient : pour éviter les disputes, on n'invite **jamais en même temps un parent et l'un de ses enfants directs**. Grands-parents et petits-enfants s'entendent très bien, eux : ils peuvent venir ensemble.\n\nChaque membre de la famille est un dictionnaire `{\"nom\": \"...\", \"joie\": ..., \"enfants\": [ ... ]}` : `joie` est un entier `>= 0`, la bonne humeur qu'il apporte à la fête, et `enfants` la liste de ses enfants, décrits de la même façon.\n\nÉcris une fonction `{fn}(arbre)` qui renvoie la **plus grande joie totale** possible : la somme des `joie` des invités, pour la meilleure liste d'invités qui respecte la règle.\n\nPrécisions :\n- `arbre` est le membre le plus ancien de la famille ; on peut très bien ne pas l'inviter.\n- Un membre sans enfant a une liste `enfants` vide.\n- La famille peut compter des milliers de membres : essayer toutes les listes d'invités est sans espoir.\n\nExemple : la mère (joie `10`) a un fils (`4`) et une fille (`8`). Le fils a deux enfants, de joie `7` et `6`. Inviter la mère et ses deux petits-enfants donne `10 + 7 + 6 = 23`, et aucune autre liste ne fait mieux : la réponse est `23`.\n\nMéfie-toi de l'idée « une génération sur deux » : avec une lignée de quatre personnes de joie `5`, `1`, `1`, `5`, la meilleure fête réunit la première et la dernière, pour une joie de `10`.\n",
+      "fn": {
+        "javascript": "joieMaximale",
+        "python": "joie_maximale"
+      },
+      "starter": {
+        "javascript": "function joieMaximale(arbre) {\n  // Renvoie la joie totale maximale des invités\n}\n",
+        "python": "def joie_maximale(arbre):\n    # Renvoie la joie totale maximale des invités\n    pass\n"
+      },
+      "solution": {
+        "javascript": "function joieMaximale(arbre) {\n  // Renvoie [meilleure joie de la branche si ce membre vient, meilleure joie s'il ne vient pas].\n  function visiter(membre) {\n    let avec = membre.joie;\n    let sans = 0;\n    for (const enfant of membre.enfants) {\n      const [avecEnfant, sansEnfant] = visiter(enfant);\n      avec += sansEnfant; // le parent vient : l'enfant reste chez lui\n      sans += Math.max(avecEnfant, sansEnfant); // sinon, l'enfant fait au mieux\n    }\n    return [avec, sans];\n  }\n  return Math.max(...visiter(arbre));\n}\n",
+        "python": "def joie_maximale(arbre):\n    # Renvoie (meilleure joie de la branche si ce membre vient, meilleure joie s'il ne vient pas).\n    def visiter(membre):\n        avec = membre[\"joie\"]\n        sans = 0\n        for enfant in membre[\"enfants\"]:\n            avec_enfant, sans_enfant = visiter(enfant)\n            avec += sans_enfant  # le parent vient : l'enfant reste chez lui\n            sans += max(avec_enfant, sans_enfant)  # sinon, l'enfant fait au mieux\n        return avec, sans\n\n    return max(visiter(arbre))\n"
+      },
+      "tests": [
+        {
+          "args": [
+            {
+              "nom": "mere",
+              "joie": 10,
+              "enfants": [
+                {
+                  "nom": "fils",
+                  "joie": 4,
+                  "enfants": [
+                    {
+                      "nom": "petit",
+                      "joie": 7,
+                      "enfants": []
+                    },
+                    {
+                      "nom": "petite",
+                      "joie": 6,
+                      "enfants": []
+                    }
+                  ]
+                },
+                {
+                  "nom": "fille",
+                  "joie": 8,
+                  "enfants": []
+                }
+              ]
+            }
+          ],
+          "expected": 23
+        },
+        {
+          "args": [
+            {
+              "nom": "seule",
+              "joie": 3,
+              "enfants": []
+            }
+          ],
+          "expected": 3
+        },
+        {
+          "args": [
+            {
+              "nom": "a",
+              "joie": 1,
+              "enfants": [
+                {
+                  "nom": "b",
+                  "joie": 10,
+                  "enfants": []
+                }
+              ]
+            }
+          ],
+          "expected": 10
+        },
+        {
+          "args": [
+            {
+              "nom": "a",
+              "joie": 5,
+              "enfants": [
+                {
+                  "nom": "b",
+                  "joie": 1,
+                  "enfants": [
+                    {
+                      "nom": "c",
+                      "joie": 1,
+                      "enfants": [
+                        {
+                          "nom": "d",
+                          "joie": 5,
+                          "enfants": []
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "expected": 10
+        },
+        {
+          "args": [
+            {
+              "nom": "zero",
+              "joie": 0,
+              "enfants": []
+            }
+          ],
+          "expected": 0,
+          "hidden": true
+        },
+        {
+          "args": [
+            {
+              "nom": "a",
+              "joie": 2,
+              "enfants": [
+                {
+                  "nom": "b",
+                  "joie": 2,
+                  "enfants": []
+                },
+                {
+                  "nom": "c",
+                  "joie": 2,
+                  "enfants": []
+                },
+                {
+                  "nom": "d",
+                  "joie": 2,
+                  "enfants": []
+                }
+              ]
+            }
+          ],
+          "expected": 6,
+          "hidden": true
+        },
+        {
+          "args": [
+            {
+              "nom": "c0",
+              "joie": 5,
+              "enfants": [
+                {
+                  "nom": "c1",
+                  "joie": 1,
+                  "enfants": [
+                    {
+                      "nom": "c2",
+                      "joie": 1,
+                      "enfants": [
+                        {
+                          "nom": "c3",
+                          "joie": 9,
+                          "enfants": [
+                            {
+                              "nom": "c4",
+                              "joie": 2,
+                              "enfants": [
+                                {
+                                  "nom": "c5",
+                                  "joie": 8,
+                                  "enfants": [
+                                    {
+                                      "nom": "c6",
+                                      "joie": 8,
+                                      "enfants": [
+                                        {
+                                          "nom": "c7",
+                                          "joie": 1,
+                                          "enfants": [
+                                            {
+                                              "nom": "c8",
+                                              "joie": 7,
+                                              "enfants": []
+                                            }
+                                          ]
+                                        }
+                                      ]
+                                    }
+                                  ]
+                                }
+                              ]
+                            }
+                          ]
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "expected": 29,
+          "hidden": true
+        },
+        {
+          "args": [
+            {
+              "nom": "m0",
+              "joie": 5,
+              "enfants": [
+                {
+                  "nom": "m1",
+                  "joie": 3,
+                  "enfants": [
+                    {
+                      "nom": "m3",
+                      "joie": 6,
+                      "enfants": [
+                        {
+                          "nom": "m4",
+                          "joie": 20,
+                          "enfants": []
+                        },
+                        {
+                          "nom": "m5",
+                          "joie": 5,
+                          "enfants": []
+                        },
+                        {
+                          "nom": "m6",
+                          "joie": 9,
+                          "enfants": []
+                        }
+                      ]
+                    },
+                    {
+                      "nom": "m7",
+                      "joie": 8,
+                      "enfants": []
+                    }
+                  ]
+                },
+                {
+                  "nom": "m2",
+                  "joie": 10,
+                  "enfants": []
+                }
+              ]
+            }
+          ],
+          "expected": 52,
+          "hidden": true
+        },
+        {
+          "args": [
+            {
+              "nom": "m0",
+              "joie": 8,
+              "enfants": [
+                {
+                  "nom": "m1",
+                  "joie": 3,
+                  "enfants": [
+                    {
+                      "nom": "m4",
+                      "joie": 7,
+                      "enfants": [
+                        {
+                          "nom": "m5",
+                          "joie": 11,
+                          "enfants": [
+                            {
+                              "nom": "m9",
+                              "joie": 0,
+                              "enfants": []
+                            }
+                          ]
+                        },
+                        {
+                          "nom": "m8",
+                          "joie": 9,
+                          "enfants": [
+                            {
+                              "nom": "m11",
+                              "joie": 12,
+                              "enfants": []
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "nom": "m6",
+                      "joie": 16,
+                      "enfants": []
+                    },
+                    {
+                      "nom": "m7",
+                      "joie": 15,
+                      "enfants": []
+                    }
+                  ]
+                },
+                {
+                  "nom": "m2",
+                  "joie": 16,
+                  "enfants": []
+                },
+                {
+                  "nom": "m3",
+                  "joie": 7,
+                  "enfants": [
+                    {
+                      "nom": "m10",
+                      "joie": 12,
+                      "enfants": []
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "expected": 82,
+          "hidden": true
+        },
+        {
+          "args": [
+            {
+              "nom": "m0",
+              "joie": 11,
+              "enfants": [
+                {
+                  "nom": "m1",
+                  "joie": 18,
+                  "enfants": [
+                    {
+                      "nom": "m2",
+                      "joie": 8,
+                      "enfants": []
+                    },
+                    {
+                      "nom": "m12",
+                      "joie": 18,
+                      "enfants": []
+                    }
+                  ]
+                },
+                {
+                  "nom": "m3",
+                  "joie": 17,
+                  "enfants": [
+                    {
+                      "nom": "m4",
+                      "joie": 9,
+                      "enfants": [
+                        {
+                          "nom": "m5",
+                          "joie": 18,
+                          "enfants": []
+                        }
+                      ]
+                    },
+                    {
+                      "nom": "m6",
+                      "joie": 4,
+                      "enfants": [
+                        {
+                          "nom": "m7",
+                          "joie": 20,
+                          "enfants": [
+                            {
+                              "nom": "m11",
+                              "joie": 16,
+                              "enfants": []
+                            }
+                          ]
+                        },
+                        {
+                          "nom": "m9",
+                          "joie": 6,
+                          "enfants": [
+                            {
+                              "nom": "m13",
+                              "joie": 6,
+                              "enfants": []
+                            }
+                          ]
+                        },
+                        {
+                          "nom": "m10",
+                          "joie": 4,
+                          "enfants": []
+                        }
+                      ]
+                    },
+                    {
+                      "nom": "m8",
+                      "joie": 5,
+                      "enfants": [
+                        {
+                          "nom": "m14",
+                          "joie": 8,
+                          "enfants": []
+                        }
+                      ]
+                    }
+                  ]
+                }
+              ]
+            }
+          ],
+          "expected": 99,
+          "hidden": true
+        },
+        {
+          "args": [
+            {
+              "nom": "m0",
+              "joie": 10,
+              "enfants": [
+                {
+                  "nom": "m1",
+                  "joie": 17,
+                  "enfants": [
+                    {
+                      "nom": "m2",
+                      "joie": 2,
+                      "enfants": [
+                        {
+                          "nom": "m7",
+                          "joie": 17,
+                          "enfants": []
+                        },
+                        {
+                          "nom": "m13",
+                          "joie": 12,
+                          "enfants": []
+                        }
+                      ]
+                    },
+                    {
+                      "nom": "m3",
+                      "joie": 4,
+                      "enfants": [
+                        {
+                          "nom": "m4",
+                          "joie": 4,
+                          "enfants": [
+                            {
+                              "nom": "m15",
+                              "joie": 4,
+                              "enfants": []
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "nom": "m5",
+                      "joie": 2,
+                      "enfants": []
+                    },
+                    {
+                      "nom": "m11",
+                      "joie": 4,
+                      "enfants": []
+                    }
+                  ]
+                },
+                {
+                  "nom": "m6",
+                  "joie": 20,
+                  "enfants": [
+                    {
+                      "nom": "m8",
+                      "joie": 6,
+                      "enfants": [
+                        {
+                          "nom": "m9",
+                          "joie": 18,
+                          "enfants": []
+                        }
+                      ]
+                    },
+                    {
+                      "nom": "m12",
+                      "joie": 15,
+                      "enfants": []
+                    },
+                    {
+                      "nom": "m14",
+                      "joie": 12,
+                      "enfants": []
+                    }
+                  ]
+                },
+                {
+                  "nom": "m10",
+                  "joie": 16,
+                  "enfants": []
+                }
+              ]
+            }
+          ],
+          "expected": 111,
+          "hidden": true
+        },
+        {
+          "args": [
+            {
+              "nom": "m0",
+              "joie": 12,
+              "enfants": [
+                {
+                  "nom": "m1",
+                  "joie": 11,
+                  "enfants": [
+                    {
+                      "nom": "m2",
+                      "joie": 10,
+                      "enfants": []
+                    },
+                    {
+                      "nom": "m3",
+                      "joie": 19,
+                      "enfants": [
+                        {
+                          "nom": "m4",
+                          "joie": 4,
+                          "enfants": [
+                            {
+                              "nom": "m17",
+                              "joie": 13,
+                              "enfants": [
+                                {
+                                  "nom": "m33",
+                                  "joie": 19,
+                                  "enfants": []
+                                }
+                              ]
+                            },
+                            {
+                              "nom": "m24",
+                              "joie": 16,
+                              "enfants": []
+                            },
+                            {
+                              "nom": "m28",
+                              "joie": 7,
+                              "enfants": []
+                            }
+                          ]
+                        },
+                        {
+                          "nom": "m6",
+                          "joie": 18,
+                          "enfants": [
+                            {
+                              "nom": "m7",
+                              "joie": 4,
+                              "enfants": [
+                                {
+                                  "nom": "m15",
+                                  "joie": 12,
+                                  "enfants": [
+                                    {
+                                      "nom": "m16",
+                                      "joie": 19,
+                                      "enfants": []
+                                    }
+                                  ]
+                                }
+                              ]
+                            },
+                            {
+                              "nom": "m8",
+                              "joie": 5,
+                              "enfants": [
+                                {
+                                  "nom": "m9",
+                                  "joie": 0,
+                                  "enfants": [
+                                    {
+                                      "nom": "m20",
+                                      "joie": 20,
+                                      "enfants": []
+                                    }
+                                  ]
+                                },
+                                {
+                                  "nom": "m10",
+                                  "joie": 17,
+                                  "enfants": [
+                                    {
+                                      "nom": "m34",
+                                      "joie": 11,
+                                      "enfants": []
+                                    }
+                                  ]
+                                },
+                                {
+                                  "nom": "m11",
+                                  "joie": 14,
+                                  "enfants": [
+                                    {
+                                      "nom": "m19",
+                                      "joie": 5,
+                                      "enfants": []
+                                    },
+                                    {
+                                      "nom": "m22",
+                                      "joie": 2,
+                                      "enfants": [
+                                        {
+                                          "nom": "m27",
+                                          "joie": 18,
+                                          "enfants": [
+                                            {
+                                              "nom": "m38",
+                                              "joie": 8,
+                                              "enfants": []
+                                            }
+                                          ]
+                                        }
+                                      ]
+                                    },
+                                    {
+                                      "nom": "m30",
+                                      "joie": 18,
+                                      "enfants": []
+                                    },
+                                    {
+                                      "nom": "m31",
+                                      "joie": 2,
+                                      "enfants": []
+                                    }
+                                  ]
+                                },
+                                {
+                                  "nom": "m25",
+                                  "joie": 6,
+                                  "enfants": []
+                                }
+                              ]
+                            },
+                            {
+                              "nom": "m14",
+                              "joie": 8,
+                              "enfants": []
+                            }
+                          ]
+                        },
+                        {
+                          "nom": "m29",
+                          "joie": 9,
+                          "enfants": []
+                        }
+                      ]
+                    },
+                    {
+                      "nom": "m21",
+                      "joie": 15,
+                      "enfants": []
+                    }
+                  ]
+                },
+                {
+                  "nom": "m5",
+                  "joie": 17,
+                  "enfants": [
+                    {
+                      "nom": "m18",
+                      "joie": 7,
+                      "enfants": []
+                    },
+                    {
+                      "nom": "m23",
+                      "joie": 17,
+                      "enfants": []
+                    },
+                    {
+                      "nom": "m26",
+                      "joie": 2,
+                      "enfants": [
+                        {
+                          "nom": "m35",
+                          "joie": 12,
+                          "enfants": []
+                        },
+                        {
+                          "nom": "m36",
+                          "joie": 16,
+                          "enfants": [
+                            {
+                              "nom": "m39",
+                              "joie": 1,
+                              "enfants": []
+                            }
+                          ]
+                        }
+                      ]
+                    },
+                    {
+                      "nom": "m32",
+                      "joie": 10,
+                      "enfants": []
+                    }
+                  ]
+                },
+                {
+                  "nom": "m12",
+                  "joie": 3,
+                  "enfants": [
+                    {
+                      "nom": "m13",
+                      "joie": 19,
+                      "enfants": []
+                    }
+                  ]
+                },
+                {
+                  "nom": "m37",
+                  "joie": 16,
+                  "enfants": []
+                }
+              ]
+            }
+          ],
+          "expected": 300,
+          "hidden": true
+        }
+      ],
+      "hint": "Pour chaque membre, calcule **deux** nombres au lieu d'un : la meilleure joie de sa branche s'il vient, et la meilleure s'il ne vient pas. S'il vient, ses enfants restent chez eux. S'il ne vient pas, chaque enfant est libre de faire ce qui l'arrange le mieux."
+    }
+  ]
+}

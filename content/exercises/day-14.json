@@ -1,0 +1,563 @@
+{
+  "day": 14,
+  "concept": "Dates et calendrier",
+  "exercises": [
+    {
+      "id": "d14-debutant",
+      "day": 14,
+      "level": "debutant",
+      "title": "L'année qui a un jour de plus",
+      "concept": "Année bissextile",
+      "statement": "Le Registre mélange les jours : Pixel veut d'abord savoir si février compte 28 ou 29 jours. Une année est **bissextile** quand :\n\n- elle est divisible par **4**, **sauf** si elle est divisible par **100** ;\n- **mais** une année divisible par **400** est bissextile quand même.\n\nAinsi 2024 et 2000 sont bissextiles, alors que 2023 et 1900 ne le sont pas.\n\nÉcris une fonction `{fn}(annee)` qui renvoie `true` si l'année est bissextile, `false` sinon. `annee` est un entier positif (au moins 1).",
+      "fn": {
+        "javascript": "estBissextile",
+        "python": "est_bissextile"
+      },
+      "starter": {
+        "javascript": "function estBissextile(annee) {\n  // Renvoie true si l'année est bissextile\n}\n",
+        "python": "def est_bissextile(annee):\n    # Renvoie True si l'année est bissextile\n    pass\n"
+      },
+      "solution": {
+        "javascript": "function estBissextile(annee) {\n  if (annee % 400 === 0) {\n    return true;\n  }\n  if (annee % 100 === 0) {\n    return false;\n  }\n  return annee % 4 === 0;\n}\n",
+        "python": "def est_bissextile(annee):\n    if annee % 400 == 0:\n        return True\n    if annee % 100 == 0:\n        return False\n    return annee % 4 == 0\n"
+      },
+      "tests": [
+        {
+          "args": [
+            2024
+          ],
+          "expected": true
+        },
+        {
+          "args": [
+            2023
+          ],
+          "expected": false
+        },
+        {
+          "args": [
+            1900
+          ],
+          "expected": false
+        },
+        {
+          "args": [
+            2000
+          ],
+          "expected": true
+        },
+        {
+          "args": [
+            2100
+          ],
+          "expected": false,
+          "hidden": true
+        },
+        {
+          "args": [
+            4
+          ],
+          "expected": true,
+          "hidden": true
+        },
+        {
+          "args": [
+            1
+          ],
+          "expected": false,
+          "hidden": true
+        },
+        {
+          "args": [
+            2400
+          ],
+          "expected": true,
+          "hidden": true
+        }
+      ],
+      "hint": "Trois questions dans le bon ordre : divisible par 400 ? (oui, bissextile) ; divisible par 100 ? (oui, pas bissextile) ; divisible par 4 ? Le reste de la division (`%`) vaut 0 quand c'est divisible."
+    },
+    {
+      "id": "d14-intermediaire",
+      "day": 14,
+      "level": "intermediaire",
+      "title": "Les nuits avant Noël",
+      "concept": "Compter les jours dans l'année",
+      "statement": "Pixel veut savoir combien de nuits il reste avant Noël. Une date est donnée par trois entiers : `jour`, `mois` (de 1 pour janvier à 12 pour décembre) et `annee`. Les dates sont toujours valides.\n\nÉcris une fonction `{fn}(jour, mois, annee)` qui renvoie le **nombre de nuits** entre cette date et le **25 décembre de la même année** : c'est la différence en jours entre les deux dates. Le 24 décembre, il reste 1 nuit ; le 25 décembre, 0.\n\n- Si la date est le 25 décembre **ou après** (jusqu'au 31), la réponse est `0`.\n- Février compte 29 jours dans une année bissextile (divisible par 4, sauf par 100, mais divisible par 400 compte quand même), 28 sinon.\n- Les autres mois : 31 jours en janvier, mars, mai, juillet, août, octobre et décembre ; 30 en avril, juin, septembre et novembre.\n\nPas d'objet date du langage : tout se calcule à la main avec des entiers.",
+      "fn": {
+        "javascript": "nuitsAvantNoel",
+        "python": "nuits_avant_noel"
+      },
+      "starter": {
+        "javascript": "function nuitsAvantNoel(jour, mois, annee) {\n  // Renvoie le nombre de nuits jusqu'au 25 décembre\n}\n",
+        "python": "def nuits_avant_noel(jour, mois, annee):\n    # Renvoie le nombre de nuits jusqu'au 25 décembre\n    pass\n"
+      },
+      "solution": {
+        "javascript": "function nuitsAvantNoel(jour, mois, annee) {\n  const bissextile = (annee % 4 === 0 && annee % 100 !== 0) || annee % 400 === 0;\n  const longueurs = [31, bissextile ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];\n  let rang = jour;\n  for (let m = 0; m < mois - 1; m++) {\n    rang += longueurs[m];\n  }\n  const noel = bissextile ? 360 : 359;\n  return Math.max(0, noel - rang);\n}\n",
+        "python": "def nuits_avant_noel(jour, mois, annee):\n    bissextile = (annee % 4 == 0 and annee % 100 != 0) or annee % 400 == 0\n    longueurs = [31, 29 if bissextile else 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]\n    rang = jour\n    for m in range(mois - 1):\n        rang += longueurs[m]\n    noel = 360 if bissextile else 359\n    return max(0, noel - rang)\n"
+      },
+      "tests": [
+        {
+          "args": [
+            24,
+            12,
+            2023
+          ],
+          "expected": 1
+        },
+        {
+          "args": [
+            1,
+            1,
+            2023
+          ],
+          "expected": 358
+        },
+        {
+          "args": [
+            1,
+            3,
+            2024
+          ],
+          "expected": 299
+        },
+        {
+          "args": [
+            1,
+            1,
+            2024
+          ],
+          "expected": 359
+        },
+        {
+          "args": [
+            25,
+            12,
+            2023
+          ],
+          "expected": 0,
+          "hidden": true
+        },
+        {
+          "args": [
+            31,
+            12,
+            2024
+          ],
+          "expected": 0,
+          "hidden": true
+        },
+        {
+          "args": [
+            29,
+            2,
+            2024
+          ],
+          "expected": 300,
+          "hidden": true
+        },
+        {
+          "args": [
+            1,
+            3,
+            1900
+          ],
+          "expected": 299,
+          "hidden": true
+        },
+        {
+          "args": [
+            26,
+            12,
+            2000
+          ],
+          "expected": 0,
+          "hidden": true
+        },
+        { "args": [1,1,1900], "expected": 358, "hidden": true },
+        { "args": [1,1,2000], "expected": 359, "hidden": true }
+      ],
+      "hint": "Calcule le **numéro du jour dans l'année** : le jour du mois plus la longueur de tous les mois entiers déjà écoulés (un petit tableau de longueurs aide). Fais pareil pour le 25 décembre : son numéro dépend de l'année bissextile ou non. Il ne reste plus qu'à soustraire, sans descendre sous zéro."
+    },
+    {
+      "id": "d14-confirme",
+      "day": 14,
+      "level": "confirme",
+      "title": "Noël tombe un mardi",
+      "concept": "Jour de la semaine à la main",
+      "statement": "Le Registre affiche « Noël tombe un mardi de février » : il faut savoir quel jour de la semaine tombe vraiment une date. Pas d'objet date du langage : calcule tout à la main à partir d'entiers.\n\nÉcris une fonction `{fn}(jour, mois, annee)` qui renvoie le jour de la semaine, parmi `\"lundi\"`, `\"mardi\"`, `\"mercredi\"`, `\"jeudi\"`, `\"vendredi\"`, `\"samedi\"`, `\"dimanche\"` (minuscules, sans accent).\n\nPoint de repère : le **1er janvier 2000 était un samedi**.\n\nRègles :\n\n- Le calendrier est le calendrier grégorien actuel, appliqué à toutes les années demandées. Une année est bissextile si elle est divisible par 4, sauf si elle est divisible par 100, mais divisible par 400 compte quand même (1900 et 2100 ne le sont pas, 2000 et 2400 le sont).\n- Février compte 29 jours les années bissextiles, 28 sinon ; janvier, mars, mai, juillet, août, octobre et décembre 31 ; avril, juin, septembre et novembre 30.\n- `annee` est comprise entre `1900` et `2500` : des dates **avant** comme **après** le repère sont possibles. Les dates sont toujours valides.",
+      "fn": {
+        "javascript": "jourDeLaSemaine",
+        "python": "jour_de_la_semaine"
+      },
+      "starter": {
+        "javascript": "function jourDeLaSemaine(jour, mois, annee) {\n  // Renvoie \"lundi\", \"mardi\", ... \"dimanche\"\n}\n",
+        "python": "def jour_de_la_semaine(jour, mois, annee):\n    # Renvoie \"lundi\", \"mardi\", ... \"dimanche\"\n    pass\n"
+      },
+      "solution": {
+        "javascript": "function jourDeLaSemaine(jour, mois, annee) {\n  const noms = [\"lundi\", \"mardi\", \"mercredi\", \"jeudi\", \"vendredi\", \"samedi\", \"dimanche\"];\n  const bissextile = (a) => (a % 4 === 0 && a % 100 !== 0) || a % 400 === 0;\n  const longueurs = [31, bissextile(annee) ? 29 : 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31];\n  // nombre de jours écoulés depuis le 1er janvier 2000 (négatif avant)\n  let ecart = jour - 1;\n  for (let m = 0; m < mois - 1; m++) {\n    ecart += longueurs[m];\n  }\n  if (annee >= 2000) {\n    for (let a = 2000; a < annee; a++) {\n      ecart += bissextile(a) ? 366 : 365;\n    }\n  } else {\n    for (let a = annee; a < 2000; a++) {\n      ecart -= bissextile(a) ? 366 : 365;\n    }\n  }\n  // le 1er janvier 2000 est le rang 5 de la liste (samedi)\n  return noms[(((5 + ecart) % 7) + 7) % 7];\n}\n",
+        "python": "def jour_de_la_semaine(jour, mois, annee):\n    noms = [\"lundi\", \"mardi\", \"mercredi\", \"jeudi\", \"vendredi\", \"samedi\", \"dimanche\"]\n\n    def bissextile(a):\n        return (a % 4 == 0 and a % 100 != 0) or a % 400 == 0\n\n    longueurs = [31, 29 if bissextile(annee) else 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31]\n    # nombre de jours écoulés depuis le 1er janvier 2000 (négatif avant)\n    ecart = jour - 1\n    for m in range(mois - 1):\n        ecart += longueurs[m]\n    if annee >= 2000:\n        for a in range(2000, annee):\n            ecart += 366 if bissextile(a) else 365\n    else:\n        for a in range(annee, 2000):\n            ecart -= 366 if bissextile(a) else 365\n    # le 1er janvier 2000 est le rang 5 de la liste (samedi)\n    return noms[((5 + ecart) % 7 + 7) % 7]\n"
+      },
+      "tests": [
+        {
+          "args": [
+            1,
+            1,
+            2000
+          ],
+          "expected": "samedi"
+        },
+        {
+          "args": [
+            25,
+            12,
+            2024
+          ],
+          "expected": "mercredi"
+        },
+        {
+          "args": [
+            29,
+            2,
+            2024
+          ],
+          "expected": "jeudi"
+        },
+        {
+          "args": [
+            31,
+            12,
+            1999
+          ],
+          "expected": "vendredi"
+        },
+        {
+          "args": [
+            1,
+            1,
+            1900
+          ],
+          "expected": "lundi",
+          "hidden": true
+        },
+        {
+          "args": [
+            1,
+            3,
+            1900
+          ],
+          "expected": "jeudi",
+          "hidden": true
+        },
+        {
+          "args": [
+            1,
+            3,
+            2100
+          ],
+          "expected": "lundi",
+          "hidden": true
+        },
+        {
+          "args": [
+            29,
+            2,
+            2000
+          ],
+          "expected": "mardi",
+          "hidden": true
+        },
+        {
+          "args": [
+            25,
+            12,
+            2500
+          ],
+          "expected": "samedi",
+          "hidden": true
+        },
+        {
+          "args": [
+            1,
+            3,
+            2400
+          ],
+          "expected": "mercredi",
+          "hidden": true
+        }
+      ],
+      "hint": "Compte les jours écoulés depuis le repère (le 1er janvier 2000), puis ne garde que le reste de la division par 7. Pour une date avant 2000, l'écart est négatif : fais attention à ce que `%` renvoie dans ce cas, et ramène le résultat entre 0 et 6. Les années 1900 et 2100 sont les pièges classiques."
+    },
+    {
+      "id": "d14-expert",
+      "day": 14,
+      "level": "expert",
+      "title": "Dans mille nuits",
+      "concept": "Convertir une date en numéro de jour, et retour",
+      "statement": "Le cristal du sous-sol compte en **nuits**, pas en dates : « la tournée a été interrompue il y a 36 525 nuits », dit le journal. Pour s'y retrouver, le Registre doit savoir avancer et reculer dans le calendrier d'un nombre quelconque de jours. Pas d'objet date du langage : tout se calcule à la main, avec des entiers.\n\nÉcris une fonction `{fn}(jour, mois, annee, n)` qui renvoie la date située `n` jours **après** la date donnée, sous la forme `[jour, mois, annee]`. Si `n` est négatif, on recule ; si `n` vaut `0`, la date ne change pas.\n\nRappels :\n- Une année est **bissextile** si elle est divisible par 4, sauf les années divisibles par 100, qui ne le sont que si elles sont aussi divisibles par 400. `2000` et `2024` sont bissextiles, `1900` et `2100` ne le sont pas.\n- Février a 29 jours les années bissextiles, 28 sinon. Avril, juin, septembre et novembre ont 30 jours, les autres mois 31.\n- Ces règles s'appliquent à toutes les années, sans exception, même les plus anciennes.\n\nPrécisions : la date de départ est toujours valide, et les deux dates (départ et arrivée) sont comprises entre le 1er janvier de l'an `1` et le 31 décembre de l'an `9999`. `n` peut dépasser **trois millions** dans un sens comme dans l'autre : avancer d'un jour à la fois est possible, mais il existe bien plus élégant.\n\nExemples : 7 jours après le 25 décembre 2024, on est le `[1, 1, 2025]`. Un jour avant le 1er mars 2024, c'est le `[29, 2, 2024]` ; un jour avant le 1er mars 1900, c'est le `[28, 2, 1900]`.\n",
+      "fn": {
+        "javascript": "ajouterJours",
+        "python": "ajouter_jours"
+      },
+      "starter": {
+        "javascript": "function ajouterJours(jour, mois, annee, n) {\n  // Renvoie la date [jour, mois, annee] située n jours plus tard\n}\n",
+        "python": "def ajouter_jours(jour, mois, annee, n):\n    # Renvoie la date [jour, mois, annee] située n jours plus tard\n    pass\n"
+      },
+      "solution": {
+        "javascript": "function ajouterJours(jour, mois, annee, n) {\n  const bissextile = (a) => (a % 4 === 0 && a % 100 !== 0) || a % 400 === 0;\n  const joursDuMois = (m, a) => (m === 2 ? (bissextile(a) ? 29 : 28) : [4, 6, 9, 11].includes(m) ? 30 : 31);\n  // Nombre de jours écoulés entre le 1er janvier de l'an 1 et le 1er janvier de l'année a.\n  const avantAnnee = (a) => {\n    const y = a - 1;\n    return y * 365 + Math.floor(y / 4) - Math.floor(y / 100) + Math.floor(y / 400);\n  };\n\n  // 1. De la date vers le numéro de jour.\n  let numero = avantAnnee(annee) + jour - 1;\n  for (let m = 1; m < mois; m++) numero += joursDuMois(m, annee);\n  numero += n;\n\n  // 2. Du numéro vers la date : une estimation de l'année, puis on ajuste.\n  let a = Math.floor(numero / 366) + 1;\n  while (avantAnnee(a + 1) <= numero) a++;\n  let reste = numero - avantAnnee(a);\n  let m = 1;\n  while (reste >= joursDuMois(m, a)) {\n    reste -= joursDuMois(m, a);\n    m++;\n  }\n  return [reste + 1, m, a];\n}\n",
+        "python": "def ajouter_jours(jour, mois, annee, n):\n    def bissextile(a):\n        return (a % 4 == 0 and a % 100 != 0) or a % 400 == 0\n\n    def jours_du_mois(m, a):\n        if m == 2:\n            return 29 if bissextile(a) else 28\n        return 30 if m in (4, 6, 9, 11) else 31\n\n    # Nombre de jours écoulés entre le 1er janvier de l'an 1 et le 1er janvier de l'année a.\n    def avant_annee(a):\n        y = a - 1\n        return y * 365 + y // 4 - y // 100 + y // 400\n\n    # 1. De la date vers le numéro de jour.\n    numero = avant_annee(annee) + jour - 1\n    for m in range(1, mois):\n        numero += jours_du_mois(m, annee)\n    numero += n\n\n    # 2. Du numéro vers la date : une estimation de l'année, puis on ajuste.\n    a = numero // 366 + 1\n    while avant_annee(a + 1) <= numero:\n        a += 1\n    reste = numero - avant_annee(a)\n    m = 1\n    while reste >= jours_du_mois(m, a):\n        reste -= jours_du_mois(m, a)\n        m += 1\n    return [reste + 1, m, a]\n"
+      },
+      "tests": [
+        {
+          "args": [
+            25,
+            12,
+            2024,
+            7
+          ],
+          "expected": [
+            1,
+            1,
+            2025
+          ]
+        },
+        {
+          "args": [
+            1,
+            3,
+            2024,
+            -1
+          ],
+          "expected": [
+            29,
+            2,
+            2024
+          ]
+        },
+        {
+          "args": [
+            1,
+            3,
+            1900,
+            -1
+          ],
+          "expected": [
+            28,
+            2,
+            1900
+          ]
+        },
+        {
+          "args": [
+            31,
+            12,
+            1999,
+            366
+          ],
+          "expected": [
+            31,
+            12,
+            2000
+          ]
+        },
+        {
+          "args": [
+            24,
+            12,
+            2025,
+            0
+          ],
+          "expected": [
+            24,
+            12,
+            2025
+          ],
+          "hidden": true
+        },
+        {
+          "args": [
+            1,
+            1,
+            2000,
+            -1
+          ],
+          "expected": [
+            31,
+            12,
+            1999
+          ],
+          "hidden": true
+        },
+        {
+          "args": [
+            28,
+            2,
+            2100,
+            1
+          ],
+          "expected": [
+            1,
+            3,
+            2100
+          ],
+          "hidden": true
+        },
+        {
+          "args": [
+            29,
+            2,
+            2000,
+            365
+          ],
+          "expected": [
+            28,
+            2,
+            2001
+          ],
+          "hidden": true
+        },
+        {
+          "args": [
+            29,
+            2,
+            2000,
+            1461
+          ],
+          "expected": [
+            29,
+            2,
+            2004
+          ],
+          "hidden": true
+        },
+        {
+          "args": [
+            1,
+            1,
+            1,
+            3652058
+          ],
+          "expected": [
+            31,
+            12,
+            9999
+          ],
+          "hidden": true
+        },
+        {
+          "args": [
+            31,
+            12,
+            9999,
+            -3652058
+          ],
+          "expected": [
+            1,
+            1,
+            1
+          ],
+          "hidden": true
+        },
+        {
+          "args": [
+            25,
+            12,
+            1,
+            1000000
+          ],
+          "expected": [
+            22,
+            11,
+            2739
+          ],
+          "hidden": true
+        },
+        {
+          "args": [
+            15,
+            6,
+            2024,
+            -739000
+          ],
+          "expected": [
+            21,
+            2,
+            1
+          ],
+          "hidden": true
+        },
+        {
+          "args": [
+            4,
+            10,
+            2219,
+            391890
+          ],
+          "expected": [
+            17,
+            9,
+            3292
+          ],
+          "hidden": true
+        },
+        {
+          "args": [
+            21,
+            9,
+            2462,
+            -141070
+          ],
+          "expected": [
+            26,
+            6,
+            2076
+          ],
+          "hidden": true
+        },
+        {
+          "args": [
+            9,
+            12,
+            1761,
+            -94848
+          ],
+          "expected": [
+            4,
+            4,
+            1502
+          ],
+          "hidden": true
+        },
+        {
+          "args": [
+            24,
+            2,
+            2174,
+            71588
+          ],
+          "expected": [
+            25,
+            2,
+            2370
+          ],
+          "hidden": true
+        },
+        {
+          "args": [
+            10,
+            8,
+            2200,
+            15942
+          ],
+          "expected": [
+            3,
+            4,
+            2244
+          ],
+          "hidden": true
+        }
+      ],
+      "hint": "Donne un numéro à chaque jour, en comptant depuis le 1er janvier de l'an 1. Avec ce numéro, ajouter `n` jours devient une simple addition. Il te faut donc deux traductions : de la date vers le numéro, et du numéro vers la date. Pour la première, compte les années entières écoulées (dont les bissextiles), puis les mois, puis les jours."
+    }
+  ]
+}

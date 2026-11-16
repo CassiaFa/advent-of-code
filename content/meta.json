@@ -1,0 +1,14 @@
+{
+  "title": "Le Calendrier de l'Avent du Code",
+  "tagline": "24 petites pannes à réparer avant Noël.",
+  "languages": [
+    { "id": "javascript", "label": "JavaScript", "ext": "js" },
+    { "id": "python", "label": "Python", "ext": "py" }
+  ],
+  "levels": [
+    { "id": "debutant", "label": "Débutant", "help": "Tu découvres, ou tu reprends depuis le début." },
+    { "id": "intermediaire", "label": "Intermédiaire", "help": "Tu codes déjà, tu veux consolider et réfléchir un peu plus." },
+    { "id": "confirme", "label": "Confirmé", "help": "Tu es à l'aise : tu veux de vrais problèmes d'algorithmique, avec des pièges." },
+    { "id": "expert", "label": "Expert", "help": "Tu cherches la bagarre : des problèmes coriaces, où la première idée qui vient est presque toujours trop lente." }
+  ]
+}

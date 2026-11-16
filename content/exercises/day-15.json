@@ -1,0 +1,951 @@
+{
+  "day": 15,
+  "concept": "Composer des fonctions",
+  "exercises": [
+    {
+      "id": "d15-debutant",
+      "day": 15,
+      "level": "debutant",
+      "title": "Une machine après l'autre",
+      "concept": "Appliquer une liste d'étapes dans l'ordre",
+      "statement": "Dans la chaîne d'emballage, chaque machine fait une petite chose, et le paquet passe de l'une à l'autre. Pixel décrit la chaîne par une **liste de noms de machines**, à appliquer **dans l'ordre** à un nombre :\n\n- `\"doubler\"` : multiplie le nombre par 2 ;\n- `\"ajouter3\"` : ajoute 3 ;\n- `\"carre\"` : multiplie le nombre par lui-même ;\n- `\"retirer1\"` : retire 1.\n\nÉcris une fonction `{fn}(nombre, etapes)` qui renvoie le nombre obtenu à la sortie de la chaîne. Une chaîne vide laisse le nombre inchangé. L'ordre compte : doubler puis ajouter 3 n'est pas ajouter 3 puis doubler. Tous les noms de la liste font partie des quatre ci-dessus.",
+      "fn": {
+        "javascript": "chaineNombre",
+        "python": "chaine_nombre"
+      },
+      "starter": {
+        "javascript": "function chaineNombre(nombre, etapes) {\n  // Renvoie le nombre après toutes les étapes\n}\n",
+        "python": "def chaine_nombre(nombre, etapes):\n    # Renvoie le nombre après toutes les étapes\n    pass\n"
+      },
+      "solution": {
+        "javascript": "function chaineNombre(nombre, etapes) {\n  let valeur = nombre;\n  for (const etape of etapes) {\n    if (etape === \"doubler\") {\n      valeur = valeur * 2;\n    } else if (etape === \"ajouter3\") {\n      valeur = valeur + 3;\n    } else if (etape === \"carre\") {\n      valeur = valeur * valeur;\n    } else if (etape === \"retirer1\") {\n      valeur = valeur - 1;\n    }\n  }\n  return valeur;\n}\n",
+        "python": "def chaine_nombre(nombre, etapes):\n    valeur = nombre\n    for etape in etapes:\n        if etape == \"doubler\":\n            valeur = valeur * 2\n        elif etape == \"ajouter3\":\n            valeur = valeur + 3\n        elif etape == \"carre\":\n            valeur = valeur * valeur\n        elif etape == \"retirer1\":\n            valeur = valeur - 1\n    return valeur\n"
+      },
+      "tests": [
+        {
+          "args": [
+            5,
+            [
+              "doubler",
+              "ajouter3"
+            ]
+          ],
+          "expected": 13
+        },
+        {
+          "args": [
+            5,
+            [
+              "ajouter3",
+              "doubler"
+            ]
+          ],
+          "expected": 16
+        },
+        {
+          "args": [
+            3,
+            [
+              "carre",
+              "retirer1"
+            ]
+          ],
+          "expected": 8
+        },
+        {
+          "args": [
+            7,
+            []
+          ],
+          "expected": 7
+        },
+        {
+          "args": [
+            -5,
+            [
+              "doubler",
+              "ajouter3"
+            ]
+          ],
+          "expected": -7,
+          "hidden": true
+        },
+        {
+          "args": [
+            0,
+            [
+              "ajouter3",
+              "carre",
+              "carre"
+            ]
+          ],
+          "expected": 81,
+          "hidden": true
+        },
+        {
+          "args": [
+            -2,
+            [
+              "carre",
+              "carre"
+            ]
+          ],
+          "expected": 16,
+          "hidden": true
+        },
+        { "args": [0,["retirer1"]], "expected": -1, "hidden": true }
+      ],
+      "hint": "Une variable `valeur` qui part du nombre de départ, une boucle sur la liste des étapes, et dans la boucle une condition par nom de machine. Chaque étape remplace `valeur` par son nouveau résultat."
+    },
+    {
+      "id": "d15-intermediaire",
+      "day": 15,
+      "level": "intermediaire",
+      "title": "La chaîne qui peut dire non",
+      "concept": "Étapes paramétrées sur un paquet",
+      "statement": "Le paquet est un objet (dictionnaire) avec au moins une clé `\"poids\"` (un entier, en grammes). Chaque machine est une **étape** : une liste dont le premier élément est le nom, le second son paramètre.\n\n- `[\"papier\", couleur]` : met la clé `\"papier\"` à `couleur` (remplace l'ancienne valeur s'il y en avait une) et **ajoute 10** au poids, à chaque fois ;\n- `[\"ruban\", cm]` : ajoute `cm` à la clé `\"ruban\"` (qui vaut `0` si elle n'existe pas encore ; la clé existe ensuite, même si `cm` vaut `0`) ; le poids ne change pas ;\n- `[\"etiquette\", texte]` : met la clé `\"etiquette\"` à `texte` ;\n- `[\"poidsMax\", n]` : **rejette** le paquet si son poids est **strictement supérieur** à `n` ;\n- `[\"exiger\", cle]` : **rejette** le paquet si la clé `cle` n'existe pas dans le paquet.\n\nÉcris une fonction `{fn}(paquet, etapes)` qui fait passer le paquet dans les étapes, **dans l'ordre**, et renvoie le paquet final. Dès qu'une étape rejette le paquet, la chaîne s'arrête et la fonction renvoie `null` (`None` en Python). Une chaîne vide renvoie le paquet tel quel. Le paquet reçu ne doit pas être modifié : travaille sur une copie.\n\nLes clés autres que celles ci-dessus restent intactes. Les noms d'étapes sont toujours parmi les cinq ci-dessus.",
+      "fn": {
+        "javascript": "emballer",
+        "python": "emballer"
+      },
+      "starter": {
+        "javascript": "function emballer(paquet, etapes) {\n  // Renvoie le paquet final, ou null s'il est rejeté\n}\n",
+        "python": "def emballer(paquet, etapes):\n    # Renvoie le paquet final, ou None s'il est rejeté\n    pass\n"
+      },
+      "solution": {
+        "javascript": "function emballer(paquet, etapes) {\n  const p = { ...paquet };\n  for (const etape of etapes) {\n    const nom = etape[0];\n    if (nom === \"papier\") {\n      p.papier = etape[1];\n      p.poids += 10;\n    } else if (nom === \"ruban\") {\n      p.ruban = (p.ruban === undefined ? 0 : p.ruban) + etape[1];\n    } else if (nom === \"etiquette\") {\n      p.etiquette = etape[1];\n    } else if (nom === \"poidsMax\" && p.poids > etape[1]) {\n      return null;\n    } else if (nom === \"exiger\" && !Object.hasOwn(p, etape[1])) {\n      return null;\n    }\n  }\n  return p;\n}\n",
+        "python": "def emballer(paquet, etapes):\n    p = dict(paquet)\n    for etape in etapes:\n        nom = etape[0]\n        if nom == \"papier\":\n            p[\"papier\"] = etape[1]\n            p[\"poids\"] += 10\n        elif nom == \"ruban\":\n            p[\"ruban\"] = p.get(\"ruban\", 0) + etape[1]\n        elif nom == \"etiquette\":\n            p[\"etiquette\"] = etape[1]\n        elif nom == \"poidsMax\" and p[\"poids\"] > etape[1]:\n            return None\n        elif nom == \"exiger\" and etape[1] not in p:\n            return None\n    return p\n"
+      },
+      "tests": [
+        {
+          "args": [
+            {
+              "poids": 100
+            },
+            [
+              [
+                "papier",
+                "rouge"
+              ],
+              [
+                "ruban",
+                30
+              ],
+              [
+                "ruban",
+                20
+              ]
+            ]
+          ],
+          "expected": {
+            "poids": 110,
+            "papier": "rouge",
+            "ruban": 50
+          }
+        },
+        {
+          "args": [
+            {
+              "poids": 100
+            },
+            [
+              [
+                "poidsMax",
+                100
+              ],
+              [
+                "etiquette",
+                "Zoe"
+              ]
+            ]
+          ],
+          "expected": {
+            "poids": 100,
+            "etiquette": "Zoe"
+          }
+        },
+        {
+          "args": [
+            {
+              "poids": 100
+            },
+            [
+              [
+                "papier",
+                "vert"
+              ],
+              [
+                "poidsMax",
+                100
+              ]
+            ]
+          ],
+          "expected": null
+        },
+        {
+          "args": [
+            {
+              "poids": 80
+            },
+            [
+              [
+                "exiger",
+                "etiquette"
+              ],
+              [
+                "etiquette",
+                "x"
+              ]
+            ]
+          ],
+          "expected": null
+        },
+        {
+          "args": [
+            {
+              "poids": 5
+            },
+            []
+          ],
+          "expected": {
+            "poids": 5
+          }
+        },
+        {
+          "args": [
+            {
+              "poids": 0
+            },
+            [
+              [
+                "papier",
+                "a"
+              ],
+              [
+                "papier",
+                "b"
+              ]
+            ]
+          ],
+          "expected": {
+            "poids": 20,
+            "papier": "b"
+          },
+          "hidden": true
+        },
+        {
+          "args": [
+            {
+              "poids": 500
+            },
+            [
+              [
+                "poidsMax",
+                100
+              ],
+              [
+                "exiger",
+                "zzz"
+              ]
+            ]
+          ],
+          "expected": null,
+          "hidden": true
+        },
+        {
+          "args": [
+            {
+              "poids": 10,
+              "ruban": 5,
+              "dest": "Leo"
+            },
+            [
+              [
+                "ruban",
+                7
+              ],
+              [
+                "exiger",
+                "dest"
+              ]
+            ]
+          ],
+          "expected": {
+            "poids": 10,
+            "ruban": 12,
+            "dest": "Leo"
+          },
+          "hidden": true
+        },
+        {
+          "args": [
+            {
+              "poids": 40
+            },
+            [
+              [
+                "ruban",
+                0
+              ],
+              [
+                "exiger",
+                "ruban"
+              ],
+              [
+                "etiquette",
+                ""
+              ],
+              [
+                "exiger",
+                "etiquette"
+              ]
+            ]
+          ],
+          "expected": {
+            "poids": 40,
+            "ruban": 0,
+            "etiquette": ""
+          },
+          "hidden": true
+        }
+      ],
+      "hint": "Recopie d'abord le paquet pour ne pas modifier l'original, puis parcours les étapes avec une condition par nom. Pour « rejeter », un `return` immédiat de `null` / `None` coupe la chaîne. Pour tester qu'une clé existe, ne te fie pas à sa valeur (elle peut valoir `0`) : demande si la clé est présente."
+    },
+    {
+      "id": "d15-confirme",
+      "day": 15,
+      "level": "confirme",
+      "title": "Le grand circuit d'emballage",
+      "concept": "Chaîne avec répétitions, conditions et arrêt",
+      "statement": "Pixel a branché les machines en circuit : une chaîne peut en contenir d'autres. Tu pars d'un entier `valeur` (positif ou nul), et une **chaîne** est une liste d'étapes. Chaque étape est une liste, son premier élément est le nom :\n\n- `[\"ajouter\", k]` : ajoute `k` à la valeur ;\n- `[\"retirer\", k]` : retire `k`, sans jamais descendre sous `0` (le résultat s'arrête à `0`) ;\n- `[\"multiplier\", k]` : multiplie la valeur par `k` (entier positif ou nul) ;\n- `[\"repeter\", n, chaine]` : applique la sous-chaîne `chaine` **n fois de suite** (`n` peut valoir `0` : on ne fait rien) ;\n- `[\"si_pair\", chaine]` : applique la sous-chaîne **une seule fois**, mais seulement si la valeur actuelle est paire (`0` est pair) ; sinon on passe ;\n- `[\"stop_si_plus_de\", m]` : si la valeur est **strictement supérieure** à `m`, **toute la chaîne s'arrête sur-le-champ**, y compris au milieu d'une répétition ou d'une sous-chaîne imbriquée : plus aucune étape n'est jouée. Sinon, rien ne se passe.\n\nÉcris une fonction `{fn}(valeur, chaine)` qui renvoie la valeur finale. La parité d'un `si_pair` se regarde au moment où on arrive sur l'étape ; si la sous-chaîne la change, cela n'a plus d'effet. Une chaîne vide renvoie la valeur de départ. L'imbrication ne dépasse jamais 100 niveaux, et les valeurs restent petites (bien en dessous de 10^12).\n\nExemple : `3` avec `[[\"repeter\", 10, [[\"multiplier\", 2], [\"stop_si_plus_de\", 50]]], [\"ajouter\", 1000]]` donne `96` : on double jusqu'à dépasser 50 (3, 6, 12, 24, 48, 96), puis tout s'arrête, même le `ajouter 1000`.",
+      "fn": {
+        "javascript": "executerChaine",
+        "python": "executer_chaine"
+      },
+      "starter": {
+        "javascript": "function executerChaine(valeur, chaine) {\n  // Renvoie la valeur après avoir joué toute la chaîne\n}\n",
+        "python": "def executer_chaine(valeur, chaine):\n    # Renvoie la valeur après avoir joué toute la chaîne\n    pass\n"
+      },
+      "solution": {
+        "javascript": "function executerChaine(valeur, chaine) {\n  const etat = { valeur: valeur, stop: false };\n  lancer(chaine, etat);\n  return etat.valeur;\n}\n\nfunction lancer(chaine, etat) {\n  for (const etape of chaine) {\n    const nom = etape[0];\n    if (nom === \"ajouter\") {\n      etat.valeur += etape[1];\n    } else if (nom === \"retirer\") {\n      etat.valeur = Math.max(0, etat.valeur - etape[1]);\n    } else if (nom === \"multiplier\") {\n      etat.valeur *= etape[1];\n    } else if (nom === \"repeter\") {\n      for (let i = 0; i < etape[1] && !etat.stop; i++) {\n        lancer(etape[2], etat);\n      }\n    } else if (nom === \"si_pair\") {\n      if (etat.valeur % 2 === 0) {\n        lancer(etape[1], etat);\n      }\n    } else if (nom === \"stop_si_plus_de\") {\n      if (etat.valeur > etape[1]) {\n        etat.stop = true;\n      }\n    }\n    if (etat.stop) {\n      return;\n    }\n  }\n}\n",
+        "python": "def executer_chaine(valeur, chaine):\n    etat = {\"valeur\": valeur, \"stop\": False}\n    lancer(chaine, etat)\n    return etat[\"valeur\"]\n\n\ndef lancer(chaine, etat):\n    for etape in chaine:\n        nom = etape[0]\n        if nom == \"ajouter\":\n            etat[\"valeur\"] += etape[1]\n        elif nom == \"retirer\":\n            etat[\"valeur\"] = max(0, etat[\"valeur\"] - etape[1])\n        elif nom == \"multiplier\":\n            etat[\"valeur\"] *= etape[1]\n        elif nom == \"repeter\":\n            i = 0\n            while i < etape[1] and not etat[\"stop\"]:\n                lancer(etape[2], etat)\n                i += 1\n        elif nom == \"si_pair\":\n            if etat[\"valeur\"] % 2 == 0:\n                lancer(etape[1], etat)\n        elif nom == \"stop_si_plus_de\":\n            if etat[\"valeur\"] > etape[1]:\n                etat[\"stop\"] = True\n        if etat[\"stop\"]:\n            return\n"
+      },
+      "tests": [
+        {
+          "args": [
+            1,
+            [
+              [
+                "repeter",
+                3,
+                [
+                  [
+                    "multiplier",
+                    2
+                  ],
+                  [
+                    "ajouter",
+                    1
+                  ]
+                ]
+              ]
+            ]
+          ],
+          "expected": 15
+        },
+        {
+          "args": [
+            5,
+            [
+              [
+                "si_pair",
+                [
+                  [
+                    "ajouter",
+                    100
+                  ]
+                ]
+              ],
+              [
+                "ajouter",
+                1
+              ]
+            ]
+          ],
+          "expected": 6
+        },
+        {
+          "args": [
+            3,
+            [
+              [
+                "repeter",
+                10,
+                [
+                  [
+                    "multiplier",
+                    2
+                  ],
+                  [
+                    "stop_si_plus_de",
+                    50
+                  ]
+                ]
+              ],
+              [
+                "ajouter",
+                1000
+              ]
+            ]
+          ],
+          "expected": 96
+        },
+        {
+          "args": [
+            1,
+            [
+              [
+                "repeter",
+                2,
+                [
+                  [
+                    "repeter",
+                    3,
+                    [
+                      [
+                        "ajouter",
+                        5
+                      ],
+                      [
+                        "stop_si_plus_de",
+                        12
+                      ]
+                    ]
+                  ],
+                  [
+                    "multiplier",
+                    2
+                  ]
+                ]
+              ]
+            ]
+          ],
+          "expected": 16
+        },
+        {
+          "args": [
+            7,
+            []
+          ],
+          "expected": 7
+        },
+        {
+          "args": [
+            4,
+            [
+              [
+                "si_pair",
+                [
+                  [
+                    "ajouter",
+                    1
+                  ]
+                ]
+              ],
+              [
+                "si_pair",
+                [
+                  [
+                    "multiplier",
+                    10
+                  ]
+                ]
+              ]
+            ]
+          ],
+          "expected": 5,
+          "hidden": true
+        },
+        {
+          "args": [
+            0,
+            [
+              [
+                "retirer",
+                5
+              ],
+              [
+                "si_pair",
+                [
+                  [
+                    "ajouter",
+                    7
+                  ]
+                ]
+              ]
+            ]
+          ],
+          "expected": 7,
+          "hidden": true
+        },
+        {
+          "args": [
+            10,
+            [
+              [
+                "repeter",
+                0,
+                [
+                  [
+                    "ajouter",
+                    1
+                  ]
+                ]
+              ]
+            ]
+          ],
+          "expected": 10,
+          "hidden": true
+        },
+        {
+          "args": [
+            50,
+            [
+              [
+                "stop_si_plus_de",
+                50
+              ],
+              [
+                "ajouter",
+                1
+              ]
+            ]
+          ],
+          "expected": 51,
+          "hidden": true
+        },
+        {
+          "args": [
+            3,
+            [
+              [
+                "retirer",
+                10
+              ],
+              [
+                "ajouter",
+                2
+              ]
+            ]
+          ],
+          "expected": 2,
+          "hidden": true
+        },
+        {
+          "args": [
+            2,
+            [
+              [
+                "repeter",
+                4,
+                [
+                  [
+                    "si_pair",
+                    [
+                      [
+                        "ajouter",
+                        1
+                      ],
+                      [
+                        "multiplier",
+                        3
+                      ]
+                    ]
+                  ],
+                  [
+                    "ajouter",
+                    1
+                  ]
+                ]
+              ]
+            ]
+          ],
+          "expected": 322,
+          "hidden": true
+        },
+        {
+          "args": [
+            1,
+            [
+              [
+                "repeter",
+                5,
+                [
+                  [
+                    "si_pair",
+                    [
+                      [
+                        "stop_si_plus_de",
+                        0
+                      ],
+                      [
+                        "ajouter",
+                        9
+                      ]
+                    ]
+                  ],
+                  [
+                    "ajouter",
+                    1
+                  ]
+                ]
+              ]
+            ]
+          ],
+          "expected": 2,
+          "hidden": true
+        }
+      ],
+      "hint": "Une fonction récursive qui joue une chaîne : les étapes `repeter` et `si_pair` la rappellent sur leur sous-chaîne. Pour l'arrêt général, un simple `return` ne suffit pas, il ne sort que d'un étage : il faut que l'information « tout est arrêté » remonte jusqu'en haut."
+    },
+    {
+      "id": "d15-expert",
+      "day": 15,
+      "level": "expert",
+      "title": "Un million de milliards de tours",
+      "concept": "Composer des fonctions, puis composer la composition",
+      "statement": "Givrebug a refermé la chaîne d'emballage sur elle-même : à la sortie de la dernière machine, le paquet repart dans la première. Et il a réglé le compteur sur un nombre de tours délirant.\n\nUne **chaîne** est une liste de machines, chacune étant `[\"ajouter\", k]` (ajoute `k` au compteur du paquet) ou `[\"multiplier\", k]` (le multiplie par `k`). Le compteur ne garde que le **reste de la division par `modulo`** : après chaque machine, la valeur est ramenée entre `0` et `modulo - 1`.\n\nÉcris une fonction `{fn}(valeur, chaine, tours, modulo)` qui renvoie la valeur du compteur après que le paquet a traversé la chaîne entière `tours` fois de suite.\n\nPrécisions :\n- `valeur` et les `k` sont des entiers `>= 0`, au plus égaux à `1 000 000`. `modulo` est un entier entre `2` et `1 000 003`.\n- `tours` est un entier `>= 0` qui peut atteindre `1 000 000 000 000 000` : simuler les tours un par un prendrait des années.\n- Avec `0` tour, ou une chaîne vide, la réponse est simplement le reste de `valeur` dans la division par `modulo`.\n- Dans ces limites, aucun calcul ne dépasse ce qu'un nombre entier ordinaire peut représenter exactement, à condition de prendre le reste **après chaque opération**.\n\nExemple : avec `valeur = 1`, la chaîne `[[\"multiplier\", 2], [\"ajouter\", 1]]`, `3` tours et `modulo = 1000`, le compteur vaut successivement `3`, `7`, puis `15` : la réponse est `15`.\n",
+      "fn": {
+        "javascript": "apresLesTours",
+        "python": "apres_les_tours"
+      },
+      "starter": {
+        "javascript": "function apresLesTours(valeur, chaine, tours, modulo) {\n  // Renvoie la valeur après `tours` passages dans la chaîne, modulo `modulo`\n}\n",
+        "python": "def apres_les_tours(valeur, chaine, tours, modulo):\n    # Renvoie la valeur après `tours` passages dans la chaîne, modulo `modulo`\n    pass\n"
+      },
+      "solution": {
+        "javascript": "function apresLesTours(valeur, chaine, tours, modulo) {\n  // Une transformation x -> a * x + b est notée [a, b].\n  // suivre(f, g) : faire f, puis g.\n  const suivre = ([a1, b1], [a2, b2]) => [(a2 * a1) % modulo, (a2 * b1 + b2) % modulo];\n\n  // 1. Un tour complet de la chaîne, résumé en une seule transformation.\n  let tour = [1, 0];\n  for (const [nom, k] of chaine) {\n    tour = suivre(tour, nom === \"ajouter\" ? [1, k % modulo] : [k % modulo, 0]);\n  }\n\n  // 2. Le tour répété `tours` fois : on double à chaque étape (1, 2, 4, 8 tours...).\n  let total = [1, 0];\n  let reste = tours;\n  while (reste > 0) {\n    if (reste % 2 === 1) total = suivre(total, tour);\n    tour = suivre(tour, tour);\n    reste = Math.floor(reste / 2);\n  }\n  return (total[0] * (valeur % modulo) + total[1]) % modulo;\n}\n",
+        "python": "def apres_les_tours(valeur, chaine, tours, modulo):\n    # Une transformation x -> a * x + b est notée (a, b).\n    # suivre(f, g) : faire f, puis g.\n    def suivre(f, g):\n        return (g[0] * f[0] % modulo, (g[0] * f[1] + g[1]) % modulo)\n\n    # 1. Un tour complet de la chaîne, résumé en une seule transformation.\n    tour = (1, 0)\n    for nom, k in chaine:\n        tour = suivre(tour, (1, k % modulo) if nom == \"ajouter\" else (k % modulo, 0))\n\n    # 2. Le tour répété `tours` fois : on double à chaque étape (1, 2, 4, 8 tours...).\n    total = (1, 0)\n    reste = tours\n    while reste > 0:\n        if reste % 2 == 1:\n            total = suivre(total, tour)\n        tour = suivre(tour, tour)\n        reste //= 2\n    return (total[0] * (valeur % modulo) + total[1]) % modulo\n"
+      },
+      "tests": [
+        {
+          "args": [
+            1,
+            [
+              [
+                "multiplier",
+                2
+              ],
+              [
+                "ajouter",
+                1
+              ]
+            ],
+            3,
+            1000
+          ],
+          "expected": 15
+        },
+        {
+          "args": [
+            1,
+            [
+              [
+                "multiplier",
+                2
+              ],
+              [
+                "ajouter",
+                1
+              ]
+            ],
+            0,
+            1000
+          ],
+          "expected": 1
+        },
+        {
+          "args": [
+            5,
+            [
+              [
+                "ajouter",
+                3
+              ]
+            ],
+            1000000000000,
+            7
+          ],
+          "expected": 1
+        },
+        {
+          "args": [
+            2,
+            [
+              [
+                "multiplier",
+                3
+              ]
+            ],
+            4,
+            50
+          ],
+          "expected": 12
+        },
+        {
+          "args": [
+            7,
+            [],
+            12,
+            5
+          ],
+          "expected": 2,
+          "hidden": true
+        },
+        {
+          "args": [
+            1234,
+            [
+              [
+                "ajouter",
+                1
+              ]
+            ],
+            0,
+            100
+          ],
+          "expected": 34,
+          "hidden": true
+        },
+        {
+          "args": [
+            3,
+            [
+              [
+                "multiplier",
+                0
+              ],
+              [
+                "ajouter",
+                4
+              ]
+            ],
+            5,
+            9
+          ],
+          "expected": 4,
+          "hidden": true
+        },
+        {
+          "args": [
+            13,
+            [
+              [
+                "ajouter",
+                16
+              ],
+              [
+                "ajouter",
+                5
+              ],
+              [
+                "ajouter",
+                0
+              ],
+              [
+                "ajouter",
+                28
+              ]
+            ],
+            17,
+            97
+          ],
+          "expected": 70,
+          "hidden": true
+        },
+        {
+          "args": [
+            43,
+            [
+              [
+                "ajouter",
+                27
+              ],
+              [
+                "multiplier",
+                7
+              ],
+              [
+                "ajouter",
+                10
+              ],
+              [
+                "multiplier",
+                22
+              ],
+              [
+                "multiplier",
+                8
+              ],
+              [
+                "multiplier",
+                8
+              ]
+            ],
+            1000,
+            1009
+          ],
+          "expected": 901,
+          "hidden": true
+        },
+        {
+          "args": [
+            22,
+            [
+              [
+                "ajouter",
+                29
+              ],
+              [
+                "ajouter",
+                27
+              ],
+              [
+                "multiplier",
+                25
+              ]
+            ],
+            12345,
+            2
+          ],
+          "expected": 0,
+          "hidden": true
+        },
+        {
+          "args": [
+            20,
+            [
+              [
+                "ajouter",
+                9
+              ],
+              [
+                "multiplier",
+                7
+              ],
+              [
+                "multiplier",
+                26
+              ],
+              [
+                "multiplier",
+                15
+              ],
+              [
+                "ajouter",
+                14
+              ],
+              [
+                "multiplier",
+                14
+              ],
+              [
+                "multiplier",
+                29
+              ],
+              [
+                "multiplier",
+                12
+              ]
+            ],
+            4096,
+            999983
+          ],
+          "expected": 921122,
+          "hidden": true
+        },
+        {
+          "args": [
+            1,
+            [
+              [
+                "multiplier",
+                2
+              ],
+              [
+                "ajouter",
+                1
+              ]
+            ],
+            1000000000000000,
+            1000003
+          ],
+          "expected": 395104,
+          "hidden": true
+        },
+        {
+          "args": [
+            9,
+            [
+              [
+                "ajouter",
+                5
+              ],
+              [
+                "multiplier",
+                7
+              ],
+              [
+                "ajouter",
+                11
+              ],
+              [
+                "multiplier",
+                13
+              ]
+            ],
+            999999999999999,
+            999983
+          ],
+          "expected": 519484,
+          "hidden": true
+        },
+        {
+          "args": [
+            0,
+            [
+              [
+                "multiplier",
+                1000000
+              ],
+              [
+                "ajouter",
+                999999
+              ]
+            ],
+            123456789012345,
+            1000003
+          ],
+          "expected": 885324,
+          "hidden": true
+        },
+        {
+          "args": [
+            4,
+            [
+              [
+                "multiplier",
+                1
+              ]
+            ],
+            1000000000000000,
+            10
+          ],
+          "expected": 4,
+          "hidden": true
+        }
+      ],
+      "hint": "Regarde ce que fait un tour complet, vu de l'extérieur : quelle que soit la chaîne, il transforme `x` en `a * x + b`, pour deux nombres `a` et `b` que tu peux calculer. Deux tours à la suite ont encore cette forme. Alors, combien d'étapes faut-il pour obtenir l'effet de 2 tours, de 4 tours, de 8 tours ?"
+    }
+  ]
+}

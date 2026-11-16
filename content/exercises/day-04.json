@@ -1,0 +1,262 @@
+{
+  "day": 4,
+  "concept": "Chaînes de caractères",
+  "exercises": [
+    {
+      "id": "d04-debutant",
+      "day": 4,
+      "level": "debutant",
+      "title": "Message à l'envers",
+      "concept": "Parcourir une chaîne",
+      "statement": "L'imprimante d'étiquettes écrit tout à l'envers. Écris une fonction `{fn}` qui reçoit un texte et le renvoie **retourné** : le dernier caractère devient le premier.\n\nLes espaces et les accents comptent comme n'importe quel caractère.",
+      "fn": { "javascript": "inverser", "python": "inverser" },
+      "starter": {
+        "javascript": "function inverser(texte) {\n  // Renvoie le texte à l'envers\n}\n",
+        "python": "def inverser(texte):\n    # Renvoie le texte à l'envers\n    pass\n"
+      },
+      "solution": {
+        "javascript": "function inverser(texte) {\n  let resultat = \"\";\n  for (const caractere of texte) {\n    resultat = caractere + resultat;\n  }\n  return resultat;\n}\n",
+        "python": "def inverser(texte):\n    resultat = \"\"\n    for caractere in texte:\n        resultat = caractere + resultat\n    return resultat\n"
+      },
+      "tests": [
+        { "args": ["Noël"], "expected": "lëoN" },
+        { "args": ["ho"], "expected": "oh" },
+        { "args": [""], "expected": "" },
+        { "args": ["Père Noël"], "expected": "lëoN erèP" },
+        { "args": ["a b"], "expected": "b a", "hidden": true }
+      ],
+      "hint": "Pars d'un texte vide. Pour chaque caractère du texte d'origine, colle-le **devant** ce que tu as déjà construit."
+    },
+    {
+      "id": "d04-intermediaire",
+      "day": 4,
+      "level": "intermediaire",
+      "title": "Le mot de passe du coffre",
+      "concept": "Comparer une chaîne à son miroir",
+      "statement": "Le coffre des vœux s'ouvre avec un **palindrome** : un texte qui se lit pareil dans les deux sens.\n\nÉcris une fonction `{fn}` qui renvoie `true` (`True` en Python) si le texte est un palindrome, `false` sinon.\n\nRègles :\n- les espaces sont ignorés ;\n- les majuscules et les minuscules sont équivalentes ;\n- les accents sont **conservés** : `e` et `é` sont deux lettres différentes ;\n- le texte vide est un palindrome.",
+      "fn": { "javascript": "estPalindrome", "python": "est_palindrome" },
+      "starter": {
+        "javascript": "function estPalindrome(texte) {\n  // Renvoie true si le texte est un palindrome\n}\n",
+        "python": "def est_palindrome(texte):\n    # Renvoie True si le texte est un palindrome\n    pass\n"
+      },
+      "solution": {
+        "javascript": "function estPalindrome(texte) {\n  const propre = texte.toLowerCase().split(\" \").join(\"\");\n  const lettres = [...propre];\n  let debut = 0;\n  let fin = lettres.length - 1;\n  while (debut < fin) {\n    if (lettres[debut] !== lettres[fin]) {\n      return false;\n    }\n    debut++;\n    fin--;\n  }\n  return true;\n}\n",
+        "python": "def est_palindrome(texte):\n    propre = texte.lower().replace(\" \", \"\")\n    debut = 0\n    fin = len(propre) - 1\n    while debut < fin:\n        if propre[debut] != propre[fin]:\n            return False\n        debut += 1\n        fin -= 1\n    return True\n"
+      },
+      "tests": [
+        { "args": ["radar"], "expected": true },
+        { "args": ["Noël"], "expected": false },
+        { "args": ["Engage le jeu que je le gagne"], "expected": true },
+        { "args": ["Kayak"], "expected": true },
+        { "args": [""], "expected": true },
+        { "args": ["ab"], "expected": false, "hidden": true },
+        { "args": ["A"], "expected": true, "hidden": true }
+      ],
+      "hint": "Commence par nettoyer le texte (minuscules, sans espaces). Ensuite compare le premier caractère au dernier, le deuxième à l'avant-dernier, et ainsi de suite jusqu'au milieu."
+    },
+    {
+      "id": "d04-confirme",
+      "day": 4,
+      "level": "confirme",
+      "title": "Le palindrome dans le givre",
+      "concept": "Plus long sous-texte palindrome",
+      "statement": "Sur la vitre du coffre, le givre a dessiné une longue suite de lettres. Quelque part dedans se cache un palindrome : Pixel pense que c'est le mot de passe.\n\nÉcris `{fn}(texte)` qui renvoie le **plus long sous-texte palindrome**, c'est-à-dire une suite de caractères **consécutifs** du texte qui se lit pareil dans les deux sens.\n\nRègles :\n- la comparaison est **exacte** : majuscules, minuscules, espaces, ponctuation et accents sont des caractères comme les autres (`\"A\"` et `\"a\"` sont différents) ;\n- un seul caractère est déjà un palindrome ;\n- en cas d'égalité de longueur, on garde celui qui **commence le plus tôt** dans le texte ;\n- pour le texte vide, renvoie le texte vide ;\n- le texte ne contient pas d'émoji.\n\nExemple : `\"cbbd\"` donne `\"bb\"`.",
+      "fn": {
+        "javascript": "plusLongPalindrome",
+        "python": "plus_long_palindrome"
+      },
+      "starter": {
+        "javascript": "function plusLongPalindrome(texte) {\n  // Renvoie le plus long palindrome contenu dans le texte\n}\n",
+        "python": "def plus_long_palindrome(texte):\n    # Renvoie le plus long palindrome contenu dans le texte\n    pass\n"
+      },
+      "solution": {
+        "javascript": "function plusLongPalindrome(texte) {\n  const c = [...texte];\n  let debut = 0;\n  let longueur = 0;\n  for (let centre = 0; centre < c.length; centre++) {\n    for (const decalage of [0, 1]) {\n      let g = centre;\n      let d = centre + decalage;\n      while (g >= 0 && d < c.length && c[g] === c[d]) {\n        g--;\n        d++;\n      }\n      if (d - g - 1 > longueur) {\n        longueur = d - g - 1;\n        debut = g + 1;\n      }\n    }\n  }\n  return c.slice(debut, debut + longueur).join(\"\");\n}\n",
+        "python": "def plus_long_palindrome(texte):\n    debut = 0\n    longueur = 0\n    for centre in range(len(texte)):\n        for decalage in (0, 1):\n            g = centre\n            d = centre + decalage\n            while g >= 0 and d < len(texte) and texte[g] == texte[d]:\n                g -= 1\n                d += 1\n            if d - g - 1 > longueur:\n                longueur = d - g - 1\n                debut = g + 1\n    return texte[debut:debut + longueur]\n"
+      },
+      "tests": [
+        {
+          "args": [
+            "babad"
+          ],
+          "expected": "bab"
+        },
+        {
+          "args": [
+            "cbbd"
+          ],
+          "expected": "bb"
+        },
+        {
+          "args": [
+            "abacdc"
+          ],
+          "expected": "aba"
+        },
+        {
+          "args": [
+            "ab ba"
+          ],
+          "expected": "ab ba"
+        },
+        {
+          "args": [
+            "Aba"
+          ],
+          "expected": "A"
+        },
+        {
+          "args": [
+            ""
+          ],
+          "expected": ""
+        },
+        {
+          "args": [
+            "forgeeksskeegfor"
+          ],
+          "expected": "geeksskeeg",
+          "hidden": true
+        },
+        {
+          "args": [
+            "abc"
+          ],
+          "expected": "a",
+          "hidden": true
+        },
+        {
+          "args": [
+            "aaaa"
+          ],
+          "expected": "aaaa",
+          "hidden": true
+        },
+        {
+          "args": [
+            "zéé kayak noël"
+          ],
+          "expected": " kayak ",
+          "hidden": true
+        }
+      ],
+      "hint": "Tout palindrome a un centre : une lettre (longueur impaire) ou l'espace entre deux lettres (longueur paire). Pour chaque centre possible, élargis tant que les deux bords sont égaux, et retiens le meilleur. Attention à l'égalité : ne remplace que si c'est **strictement** plus long."
+    },
+    {
+      "id": "d04-expert",
+      "day": 4,
+      "level": "expert",
+      "title": "Le mot de passe en morceaux",
+      "concept": "Découpage minimal en palindromes",
+      "statement": "Le coffre-fort des vœux est devenu plus exigeant : il n'accepte le texte gravé dans le givre que s'il est tapé **morceau par morceau**, et chaque morceau doit être un palindrome (il se lit pareil dans les deux sens). Pixel veut appuyer sur « valider » le moins souvent possible.\n\nÉcris une fonction `{fn}(texte)` qui renvoie le **plus petit nombre de morceaux** dans lesquels on peut découper `texte`, de sorte que chaque morceau soit un palindrome. Les morceaux se suivent, sans rien sauter ni réordonner, et recouvrent tout le texte.\n\nPrécisions :\n- Un caractère seul est un palindrome : une réponse existe toujours.\n- Le texte ne contient que des lettres minuscules sans accent. Un texte vide demande `0` morceau.\n- Le texte peut faire quelques centaines de caractères : essayer tous les découpages possibles prendrait plus que la nuit de Noël.\n\nExemple : `\"noelle\"` se découpe en `n`, `o`, `elle` : la réponse est `3`. Pour `\"aab\"`, c'est `2` (`aa`, `b`), et pour `\"kayak\"`, `1`.\n",
+      "fn": {
+        "javascript": "morceauxMinimum",
+        "python": "morceaux_minimum"
+      },
+      "starter": {
+        "javascript": "function morceauxMinimum(texte) {\n  // Renvoie le plus petit nombre de morceaux palindromes\n}\n",
+        "python": "def morceaux_minimum(texte):\n    # Renvoie le plus petit nombre de morceaux palindromes\n    pass\n"
+      },
+      "solution": {
+        "javascript": "function morceauxMinimum(texte) {\n  const n = texte.length;\n  // pal[i][j] : le bout qui va de i à j (inclus) est-il un palindrome ?\n  const pal = Array.from({ length: n }, () => new Array(n).fill(false));\n  for (let i = n - 1; i >= 0; i--) {\n    for (let j = i; j < n; j++) {\n      pal[i][j] = texte[i] === texte[j] && (j - i < 2 || pal[i + 1][j - 1]);\n    }\n  }\n  // mini[j] : nombre minimal de morceaux pour les j premiers caractères\n  const mini = new Array(n + 1).fill(0);\n  for (let j = 1; j <= n; j++) {\n    mini[j] = j;\n    for (let i = 0; i < j; i++) {\n      if (pal[i][j - 1] && mini[i] + 1 < mini[j]) mini[j] = mini[i] + 1;\n    }\n  }\n  return mini[n];\n}\n",
+        "python": "def morceaux_minimum(texte):\n    n = len(texte)\n    # pal[i][j] : le bout qui va de i à j (inclus) est-il un palindrome ?\n    pal = [[False] * n for _ in range(n)]\n    for i in range(n - 1, -1, -1):\n        for j in range(i, n):\n            pal[i][j] = texte[i] == texte[j] and (j - i < 2 or pal[i + 1][j - 1])\n    # mini[j] : nombre minimal de morceaux pour les j premiers caractères\n    mini = [0] * (n + 1)\n    for j in range(1, n + 1):\n        mini[j] = j\n        for i in range(j):\n            if pal[i][j - 1] and mini[i] + 1 < mini[j]:\n                mini[j] = mini[i] + 1\n    return mini[n]\n"
+      },
+      "tests": [
+        {
+          "args": [
+            "kayak"
+          ],
+          "expected": 1
+        },
+        {
+          "args": [
+            "noelle"
+          ],
+          "expected": 3
+        },
+        {
+          "args": [
+            "aab"
+          ],
+          "expected": 2
+        },
+        {
+          "args": [
+            "givre"
+          ],
+          "expected": 5
+        },
+        {
+          "args": [
+            ""
+          ],
+          "expected": 0,
+          "hidden": true
+        },
+        {
+          "args": [
+            "a"
+          ],
+          "expected": 1,
+          "hidden": true
+        },
+        {
+          "args": [
+            "abba"
+          ],
+          "expected": 1,
+          "hidden": true
+        },
+        {
+          "args": [
+            "abcbaelle"
+          ],
+          "expected": 2,
+          "hidden": true
+        },
+        {
+          "args": [
+            "aaaaaaab"
+          ],
+          "expected": 2,
+          "hidden": true
+        },
+        {
+          "args": [
+            "banana"
+          ],
+          "expected": 2,
+          "hidden": true
+        },
+        {
+          "args": [
+            "ababbaaaabbaabbaabaabbaabbbabb"
+          ],
+          "expected": 5,
+          "hidden": true
+        },
+        {
+          "args": [
+            "aaabbababbabbbbbaabbaaabbbbaaababbabbbabaaabaababbaababbabbb"
+          ],
+          "expected": 13,
+          "hidden": true
+        },
+        {
+          "args": [
+            "acbccabcabbabbcabcabababbbcababaaaaacaccacacbcabaacbbcabaabbbaabbacbabaaabbacaabbababcacbc"
+          ],
+          "expected": 34,
+          "hidden": true
+        },
+        {
+          "args": [
+            "ressasserressasserressasserressasserressasserressasserressasserressasserx"
+          ],
+          "expected": 2,
+          "hidden": true
+        }
+      ],
+      "hint": "Deux questions se cachent ici. D'abord : quels bouts du texte sont des palindromes ? Un bout l'est si ses deux extrémités sont égales et si l'intérieur l'est aussi. Ensuite : si tu connais la meilleure réponse pour tous les débuts du texte plus courts, comment trouver celle du début suivant ?"
+    }
+  ]
+}

@@ -1,0 +1,876 @@
+{
+  "day": 7,
+  "concept": "Tri",
+  "exercises": [
+    {
+      "id": "d07-debutant",
+      "day": 7,
+      "level": "debutant",
+      "title": "Les étoiles les plus brillantes",
+      "concept": "Trier des nombres",
+      "statement": "Sur la carte de Mère Noëlle, chaque étoile a un **éclat** : un nombre entier. Pour s'y retrouver, il faut voir les plus brillantes en premier.\n\nÉcris une fonction `{fn}` qui reçoit une liste d'éclats et renvoie une **nouvelle liste** triée du **plus grand au plus petit**. Les doublons sont conservés. Une liste vide donne une liste vide.\n\nAttention : ce sont des **nombres**, pas du texte. `100` est plus grand que `9`.",
+      "fn": {"javascript":"trierEclats","python":"trier_eclats"},
+      "starter": {
+        "javascript": "function trierEclats(eclats) {\n  // Renvoie une nouvelle liste, du plus grand au plus petit\n}\n",
+        "python": "def trier_eclats(eclats):\n    # Renvoie une nouvelle liste, du plus grand au plus petit\n    pass\n"
+      },
+      "solution": {
+        "javascript": "function trierEclats(eclats) {\n  const copie = [...eclats];\n  copie.sort((a, b) => b - a);\n  return copie;\n}\n",
+        "python": "def trier_eclats(eclats):\n    return sorted(eclats, reverse=True)\n"
+      },
+      "tests": [
+        { "args": [[3,8,1,5]], "expected": [8,5,3,1] },
+        { "args": [[10,9,100]], "expected": [100,10,9] },
+        { "args": [[]], "expected": [] },
+        { "args": [[7,7,2]], "expected": [7,7,2] },
+        { "args": [[42]], "expected": [42], "hidden": true },
+        { "args": [[5,1000,20,3,200]], "expected": [1000,200,20,5,3], "hidden": true }
+      ],
+      "hint": "Ton langage sait déjà trier : cherche comment lui demander l'ordre décroissant. En JavaScript, vérifie bien comment `sort` compare deux nombres quand on ne lui précise rien."
+    },
+    {
+      "id": "d07-intermediaire",
+      "day": 7,
+      "level": "intermediaire",
+      "title": "Le classement du ciel",
+      "concept": "Trier selon plusieurs critères",
+      "statement": "Chaque étoile de la carte est décrite par un objet (un dictionnaire en Python) avec trois champs : `nom` (texte en minuscules, sans accent), `eclat` et `distance` (entiers).\n\nÉcris une fonction `{fn}` qui reçoit une liste d'étoiles et renvoie la liste de leurs **noms**, classés ainsi :\n\n- d'abord par `eclat` **décroissant** (les plus brillantes en premier) ;\n- à éclat égal, par `distance` **croissante** (les plus proches en premier) ;\n- à éclat et distance égaux, par `nom` dans l'ordre **alphabétique**.\n\nDeux étoiles n'ont jamais le même nom. La liste d'origine ne doit pas être modifiée. Une liste vide donne une liste vide.",
+      "fn": {"javascript":"classerEtoiles","python":"classer_etoiles"},
+      "starter": {
+        "javascript": "function classerEtoiles(etoiles) {\n  // Renvoie la liste des noms, dans l'ordre du classement\n}\n",
+        "python": "def classer_etoiles(etoiles):\n    # Renvoie la liste des noms, dans l'ordre du classement\n    pass\n"
+      },
+      "solution": {
+        "javascript": "function classerEtoiles(etoiles) {\n  const copie = [...etoiles];\n  copie.sort((a, b) => {\n    if (a.eclat !== b.eclat) {\n      return b.eclat - a.eclat;\n    }\n    if (a.distance !== b.distance) {\n      return a.distance - b.distance;\n    }\n    return a.nom < b.nom ? -1 : 1;\n  });\n  return copie.map((etoile) => etoile.nom);\n}\n",
+        "python": "def classer_etoiles(etoiles):\n    def cle(etoile):\n        return (-etoile[\"eclat\"], etoile[\"distance\"], etoile[\"nom\"])\n\n    classees = sorted(etoiles, key=cle)\n    return [etoile[\"nom\"] for etoile in classees]\n"
+      },
+      "tests": [
+        { "args": [[{"nom":"vega","eclat":5,"distance":25},{"nom":"sirius","eclat":9,"distance":8},{"nom":"polaris","eclat":5,"distance":430}]], "expected": ["sirius","vega","polaris"] },
+        { "args": [[{"nom":"mira","eclat":3,"distance":300},{"nom":"atria","eclat":3,"distance":300},{"nom":"deneb","eclat":3,"distance":100}]], "expected": ["deneb","atria","mira"] },
+        { "args": [[]], "expected": [] },
+        { "args": [[{"nom":"rigel","eclat":7,"distance":860}]], "expected": ["rigel"] },
+        { "args": [[{"nom":"zeta","eclat":2,"distance":10},{"nom":"alya","eclat":10,"distance":900},{"nom":"bora","eclat":2,"distance":10},{"nom":"naos","eclat":10,"distance":90},{"nom":"izar","eclat":100,"distance":2000}]], "expected": ["izar","naos","alya","bora","zeta"], "hidden": true },
+        { "args": [[{"nom":"b","eclat":5,"distance":10},{"nom":"a","eclat":5,"distance":9}]], "expected": ["a","b"], "hidden": true }
+      ],
+      "hint": "Compare deux étoiles critère par critère : ne passe au critère suivant que si le précédent est à égalité. En Python, une clé de tri peut être un tuple ; un nombre négatif inverse l'ordre."
+    },
+    {
+      "id": "d07-confirme",
+      "day": 7,
+      "level": "confirme",
+      "title": "Le palmarès des étoiles",
+      "concept": "Tri stable et classement avec ex æquo",
+      "statement": "La carte du ciel est finie, mais Mère Noëlle veut un vrai **palmarès** pour décider quelles cheminées éclairer en premier. Chaque étoile est un objet (un dictionnaire en Python) avec `nom` (texte), `eclat` et `distance` (entiers).\n\nÉcris une fonction `{fn}(etoiles, n)` qui renvoie le palmarès sous la forme d'une liste de paires `[nom, rang]`.\n\nRègles :\n\n- les étoiles d'`eclat` **0 ou négatif** sont éteintes : elles sont ignorées, comme si elles n'existaient pas ;\n- on classe d'abord par `eclat` **décroissant**, puis, à éclat égal, par `distance` **croissante** ;\n- deux étoiles qui ont le **même éclat et la même distance** sont **ex æquo** : elles partagent le même rang, et leur ordre dans le résultat est celui de la liste d'origine (tri **stable**) ;\n- le rang d'une étoile est `1` + le nombre d'étoiles allumées **strictement meilleures** qu'elle. Trois étoiles ex æquo en tête ont donc toutes le rang `1`, et la suivante a le rang `4` ;\n- le résultat ne garde que les étoiles de rang **inférieur ou égal à `n`** (les ex æquo de la dernière place sont donc tous gardés). Avec `n = 0`, ou sans étoile allumée, le résultat est une liste vide.\n\nPlusieurs étoiles peuvent porter le même nom : les noms ne servent jamais à départager. La liste d'origine ne doit pas être modifiée.\n\nExemple : avec `vega` (5, 25), `sirius` (9, 8) et `altair` (5, 25) et `n = 5`, le résultat est `[[\"sirius\", 1], [\"vega\", 2], [\"altair\", 2]]`.",
+      "fn": {
+        "javascript": "classerAvecExAequo",
+        "python": "classer_avec_ex_aequo"
+      },
+      "starter": {
+        "javascript": "function classerAvecExAequo(etoiles, n) {\n  // Renvoie les paires [nom, rang] des étoiles allumées de rang <= n\n}\n",
+        "python": "def classer_avec_ex_aequo(etoiles, n):\n    # Renvoie les paires [nom, rang] des étoiles allumées de rang <= n\n    pass\n"
+      },
+      "solution": {
+        "javascript": "function classerAvecExAequo(etoiles, n) {\n  const visibles = etoiles.filter((e) => e.eclat > 0);\n  const tri = [...visibles].sort((a, b) => b.eclat - a.eclat || a.distance - b.distance);\n  const resultat = [];\n  let rang = 0;\n  for (let i = 0; i < tri.length; i++) {\n    const different =\n      i === 0 || tri[i].eclat !== tri[i - 1].eclat || tri[i].distance !== tri[i - 1].distance;\n    if (different) {\n      rang = i + 1;\n    }\n    if (rang > n) {\n      break;\n    }\n    resultat.push([tri[i].nom, rang]);\n  }\n  return resultat;\n}\n",
+        "python": "def classer_avec_ex_aequo(etoiles, n):\n    visibles = [e for e in etoiles if e[\"eclat\"] > 0]\n    tri = sorted(visibles, key=lambda e: (-e[\"eclat\"], e[\"distance\"]))\n    resultat = []\n    rang = 0\n    for i in range(len(tri)):\n        different = (\n            i == 0\n            or tri[i][\"eclat\"] != tri[i - 1][\"eclat\"]\n            or tri[i][\"distance\"] != tri[i - 1][\"distance\"]\n        )\n        if different:\n            rang = i + 1\n        if rang > n:\n            break\n        resultat.append([tri[i][\"nom\"], rang])\n    return resultat\n"
+      },
+      "tests": [
+        {
+          "args": [
+            [
+              {
+                "nom": "vega",
+                "eclat": 5,
+                "distance": 25
+              },
+              {
+                "nom": "sirius",
+                "eclat": 9,
+                "distance": 8
+              },
+              {
+                "nom": "altair",
+                "eclat": 5,
+                "distance": 25
+              },
+              {
+                "nom": "deneb",
+                "eclat": 5,
+                "distance": 40
+              }
+            ],
+            10
+          ],
+          "expected": [
+            [
+              "sirius",
+              1
+            ],
+            [
+              "vega",
+              2
+            ],
+            [
+              "altair",
+              2
+            ],
+            [
+              "deneb",
+              4
+            ]
+          ]
+        },
+        {
+          "args": [
+            [
+              {
+                "nom": "vega",
+                "eclat": 5,
+                "distance": 25
+              },
+              {
+                "nom": "sirius",
+                "eclat": 9,
+                "distance": 8
+              },
+              {
+                "nom": "altair",
+                "eclat": 5,
+                "distance": 25
+              },
+              {
+                "nom": "deneb",
+                "eclat": 5,
+                "distance": 40
+              }
+            ],
+            2
+          ],
+          "expected": [
+            [
+              "sirius",
+              1
+            ],
+            [
+              "vega",
+              2
+            ],
+            [
+              "altair",
+              2
+            ]
+          ]
+        },
+        {
+          "args": [
+            [
+              {
+                "nom": "vega",
+                "eclat": 5,
+                "distance": 25
+              },
+              {
+                "nom": "sirius",
+                "eclat": 9,
+                "distance": 8
+              },
+              {
+                "nom": "altair",
+                "eclat": 5,
+                "distance": 25
+              },
+              {
+                "nom": "deneb",
+                "eclat": 5,
+                "distance": 40
+              }
+            ],
+            0
+          ],
+          "expected": []
+        },
+        {
+          "args": [
+            [],
+            3
+          ],
+          "expected": []
+        },
+        {
+          "args": [
+            [
+              {
+                "nom": "nova",
+                "eclat": 0,
+                "distance": 1
+              },
+              {
+                "nom": "mira",
+                "eclat": 3,
+                "distance": 5
+              }
+            ],
+            5
+          ],
+          "expected": [
+            [
+              "mira",
+              1
+            ]
+          ]
+        },
+        {
+          "args": [
+            [
+              {
+                "nom": "zeta",
+                "eclat": 4,
+                "distance": 7
+              },
+              {
+                "nom": "alya",
+                "eclat": 4,
+                "distance": 7
+              },
+              {
+                "nom": "mira",
+                "eclat": 4,
+                "distance": 7
+              }
+            ],
+            1
+          ],
+          "expected": [
+            [
+              "zeta",
+              1
+            ],
+            [
+              "alya",
+              1
+            ],
+            [
+              "mira",
+              1
+            ]
+          ],
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              {
+                "nom": "a",
+                "eclat": 9,
+                "distance": 1
+              },
+              {
+                "nom": "b",
+                "eclat": 9,
+                "distance": 1
+              },
+              {
+                "nom": "c",
+                "eclat": 9,
+                "distance": 1
+              },
+              {
+                "nom": "d",
+                "eclat": 7,
+                "distance": 2
+              },
+              {
+                "nom": "e",
+                "eclat": 7,
+                "distance": 2
+              },
+              {
+                "nom": "f",
+                "eclat": 5,
+                "distance": 3
+              },
+              {
+                "nom": "g",
+                "eclat": 0,
+                "distance": 0
+              }
+            ],
+            4
+          ],
+          "expected": [
+            [
+              "a",
+              1
+            ],
+            [
+              "b",
+              1
+            ],
+            [
+              "c",
+              1
+            ],
+            [
+              "d",
+              4
+            ],
+            [
+              "e",
+              4
+            ]
+          ],
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              {
+                "nom": "x",
+                "eclat": 2,
+                "distance": 9
+              },
+              {
+                "nom": "y",
+                "eclat": 2,
+                "distance": 3
+              },
+              {
+                "nom": "z",
+                "eclat": 2,
+                "distance": 9
+              },
+              {
+                "nom": "w",
+                "eclat": 1,
+                "distance": 1
+              },
+              {
+                "nom": "v",
+                "eclat": 2,
+                "distance": 3
+              }
+            ],
+            3
+          ],
+          "expected": [
+            [
+              "y",
+              1
+            ],
+            [
+              "v",
+              1
+            ],
+            [
+              "x",
+              3
+            ],
+            [
+              "z",
+              3
+            ]
+          ],
+          "hidden": true
+        }
+      ],
+      "hint": "Trie une copie avec deux critères, en gardant l'ordre d'origine à égalité complète. Ensuite, parcours la liste triée en comparant chaque étoile à la précédente : si elle est identique, le rang ne bouge pas ; sinon, il vaut sa position + 1. Attention : ce n'est pas la même chose qu'un rang qui augmente de 1 à chaque changement."
+    },
+    {
+      "id": "d07-expert",
+      "day": 7,
+      "level": "expert",
+      "title": "Le désordre de la carte",
+      "concept": "Compter les inversions (tri par fusion)",
+      "statement": "Mère Noëlle veut ranger les étoiles de la carte par **éclat croissant**. Mais la vieille carte est fragile : le seul geste permis, c'est d'**échanger deux étoiles voisines**. Avant de s'y mettre, elle veut savoir combien de gestes il faudra, au minimum.\n\nÉcris une fonction `{fn}(eclats)` qui renvoie le **plus petit nombre d'échanges entre voisines** nécessaire pour trier la liste par ordre croissant.\n\nPrécisions :\n- `eclats` est une liste d'entiers (positifs, nuls ou négatifs). Deux étoiles de même éclat n'ont jamais besoin d'être échangées entre elles.\n- Une liste vide, ou déjà triée, demande `0` échange.\n- La carte compte des centaines de milliers d'étoiles : comparer chaque étoile à toutes les autres serait bien trop long. Il existe une méthode qui compte **pendant** qu'elle trie.\n\nExemple : `[3, 1, 2]` demande `2` échanges (le `3` doit passer derrière le `1`, puis derrière le `2`). `[4, 3, 2, 1]` en demande `6`, et `[2, 2, 1]` en demande `2`.\n",
+      "fn": {
+        "javascript": "echangesMinimum",
+        "python": "echanges_minimum"
+      },
+      "starter": {
+        "javascript": "function echangesMinimum(eclats) {\n  // Renvoie le nombre minimal d'échanges entre voisines\n}\n",
+        "python": "def echanges_minimum(eclats):\n    # Renvoie le nombre minimal d'échanges entre voisines\n    pass\n"
+      },
+      "solution": {
+        "javascript": "function echangesMinimum(eclats) {\n  // Trie la liste et renvoie [liste triée, nombre de paires à l'envers].\n  function trier(liste) {\n    if (liste.length < 2) return [liste, 0];\n    const milieu = liste.length >> 1;\n    const [gauche, a] = trier(liste.slice(0, milieu));\n    const [droite, b] = trier(liste.slice(milieu));\n    const fusion = [];\n    let total = a + b;\n    let i = 0;\n    let j = 0;\n    while (i < gauche.length || j < droite.length) {\n      if (j >= droite.length || (i < gauche.length && gauche[i] <= droite[j])) {\n        fusion.push(gauche[i++]);\n      } else {\n        // droite[j] passe devant tout ce qui reste à gauche : autant de paires à l'envers.\n        total += gauche.length - i;\n        fusion.push(droite[j++]);\n      }\n    }\n    return [fusion, total];\n  }\n  return trier(eclats)[1];\n}\n",
+        "python": "def echanges_minimum(eclats):\n    # Trie la liste et renvoie (liste triée, nombre de paires à l'envers).\n    def trier(liste):\n        if len(liste) < 2:\n            return liste, 0\n        milieu = len(liste) // 2\n        gauche, a = trier(liste[:milieu])\n        droite, b = trier(liste[milieu:])\n        fusion = []\n        total = a + b\n        i = j = 0\n        while i < len(gauche) or j < len(droite):\n            if j >= len(droite) or (i < len(gauche) and gauche[i] <= droite[j]):\n                fusion.append(gauche[i])\n                i += 1\n            else:\n                # droite[j] passe devant tout ce qui reste à gauche : autant de paires à l'envers.\n                total += len(gauche) - i\n                fusion.append(droite[j])\n                j += 1\n        return fusion, total\n\n    return trier(eclats)[1]\n"
+      },
+      "tests": [
+        {
+          "args": [
+            [
+              3,
+              1,
+              2
+            ]
+          ],
+          "expected": 2
+        },
+        {
+          "args": [
+            [
+              1,
+              2,
+              3
+            ]
+          ],
+          "expected": 0
+        },
+        {
+          "args": [
+            [
+              2,
+              2,
+              1
+            ]
+          ],
+          "expected": 2
+        },
+        {
+          "args": [
+            [
+              4,
+              3,
+              2,
+              1
+            ]
+          ],
+          "expected": 6
+        },
+        {
+          "args": [
+            []
+          ],
+          "expected": 0,
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              7
+            ]
+          ],
+          "expected": 0,
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              5,
+              5,
+              5,
+              5
+            ]
+          ],
+          "expected": 0,
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              -3,
+              4,
+              -8,
+              0,
+              4,
+              -3
+            ]
+          ],
+          "expected": 6,
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              20,
+              9,
+              25,
+              41,
+              3,
+              4,
+              34,
+              6,
+              23,
+              37,
+              3,
+              32,
+              13,
+              2,
+              5,
+              27,
+              26,
+              4,
+              15,
+              5,
+              35,
+              27,
+              3,
+              36,
+              7,
+              14,
+              40,
+              40,
+              37,
+              3
+            ]
+          ],
+          "expected": 191,
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              36,
+              37,
+              25,
+              3,
+              14,
+              2,
+              35,
+              8,
+              18,
+              26,
+              9,
+              34,
+              7,
+              36,
+              19,
+              35,
+              43,
+              11,
+              6,
+              37,
+              36,
+              40,
+              12,
+              23,
+              6,
+              35,
+              45,
+              4,
+              36,
+              3,
+              39,
+              13,
+              31,
+              43,
+              34,
+              27,
+              49,
+              20,
+              29,
+              37,
+              29,
+              23,
+              19,
+              15,
+              50,
+              11,
+              44,
+              49,
+              15,
+              5,
+              36,
+              19,
+              33,
+              31,
+              21,
+              46,
+              28,
+              18,
+              38,
+              4
+            ]
+          ],
+          "expected": 790,
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              7,
+              32,
+              26,
+              10,
+              48,
+              21,
+              9,
+              31,
+              26,
+              2,
+              42,
+              4,
+              48,
+              35,
+              36,
+              50,
+              20,
+              21,
+              44,
+              22,
+              38,
+              31,
+              37,
+              29,
+              4,
+              5,
+              17,
+              30,
+              44,
+              42,
+              4,
+              3,
+              46,
+              44,
+              19,
+              41,
+              36,
+              43,
+              28,
+              18,
+              45,
+              24,
+              42,
+              22,
+              1,
+              29,
+              22,
+              10,
+              39,
+              7,
+              31,
+              3,
+              13,
+              49,
+              18,
+              8,
+              47,
+              15,
+              25,
+              25,
+              31,
+              5,
+              10,
+              28,
+              25,
+              35,
+              17,
+              8,
+              27,
+              35,
+              17,
+              45,
+              26,
+              22,
+              43,
+              24,
+              14,
+              9,
+              5,
+              11,
+              9,
+              14,
+              42,
+              14,
+              0,
+              31,
+              37,
+              11,
+              16,
+              18,
+              0,
+              9,
+              26,
+              34,
+              23,
+              39,
+              36,
+              20,
+              8,
+              44,
+              32,
+              39,
+              41,
+              43,
+              47,
+              3,
+              29,
+              49,
+              43,
+              35,
+              25,
+              25,
+              25,
+              25,
+              6,
+              30,
+              40,
+              25,
+              3,
+              12
+            ]
+          ],
+          "expected": 3597,
+          "hidden": true
+        },
+        {
+          "args": [
+            [
+              150,
+              149,
+              148,
+              147,
+              146,
+              145,
+              144,
+              143,
+              142,
+              141,
+              140,
+              139,
+              138,
+              137,
+              136,
+              135,
+              134,
+              133,
+              132,
+              131,
+              130,
+              129,
+              128,
+              127,
+              126,
+              125,
+              124,
+              123,
+              122,
+              121,
+              120,
+              119,
+              118,
+              117,
+              116,
+              115,
+              114,
+              113,
+              112,
+              111,
+              110,
+              109,
+              108,
+              107,
+              106,
+              105,
+              104,
+              103,
+              102,
+              101,
+              100,
+              99,
+              98,
+              97,
+              96,
+              95,
+              94,
+              93,
+              92,
+              91,
+              90,
+              89,
+              88,
+              87,
+              86,
+              85,
+              84,
+              83,
+              82,
+              81,
+              80,
+              79,
+              78,
+              77,
+              76,
+              75,
+              74,
+              73,
+              72,
+              71,
+              70,
+              69,
+              68,
+              67,
+              66,
+              65,
+              64,
+              63,
+              62,
+              61,
+              60,
+              59,
+              58,
+              57,
+              56,
+              55,
+              54,
+              53,
+              52,
+              51,
+              50,
+              49,
+              48,
+              47,
+              46,
+              45,
+              44,
+              43,
+              42,
+              41,
+              40,
+              39,
+              38,
+              37,
+              36,
+              35,
+              34,
+              33,
+              32,
+              31,
+              30,
+              29,
+              28,
+              27,
+              26,
+              25,
+              24,
+              23,
+              22,
+              21,
+              20,
+              19,
+              18,
+              17,
+              16,
+              15,
+              14,
+              13,
+              12,
+              11,
+              10,
+              9,
+              8,
+              7,
+              6,
+              5,
+              4,
+              3,
+              2,
+              1
+            ]
+          ],
+          "expected": 11175,
+          "hidden": true
+        }
+      ],
+      "hint": "Le nombre d'échanges est égal au nombre de paires d'étoiles « à l'envers » : la plus brillante placée avant la moins brillante. Coupe la liste en deux moitiés, compte dans chacune, puis demande-toi ce que tu apprends au moment de fusionner deux moitiés déjà triées."
+    }
+  ]
+}
