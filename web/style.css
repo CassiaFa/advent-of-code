@@ -843,3 +843,22 @@ dialog.modal[open] { animation: modal-in .18s ease both; }
 .palier--non { opacity: .78; }
 .verdict { margin-top: 14px !important; color: var(--text-2); font-size: 15px; line-height: 1.55; }
 .score__ring { font-size: 20px; }
+
+/* fin du test de niveau : chaque erreur, avec la réponse choisie et la bonne */
+.corrections { list-style: none; margin: 0; padding: 0 12px 12px; display: grid; gap: 10px; }
+.corrections .test { padding: 14px 14px 0; }
+.correction__titre { font: 600 12px/1 var(--f-ui); letter-spacing: .12em; text-transform: uppercase; color: var(--text-3); }
+.correction__enonce p { margin-top: 8px !important; font-size: 15px; color: var(--text); }
+.correction__enonce .codeblock { margin-top: 8px; font-size: 13px; }
+.corrections .test__detail { padding: 12px 0 14px; align-items: center; font-family: var(--f-ui); font-size: 15px; }
+.corrections .test__detail dd { display: flex; align-items: center; gap: 8px; white-space: normal; }
+.corrections .test__detail .why { align-items: flex-start; }
+/* un bloc de code trop long défile dans sa boîte au lieu d'élargir la fenêtre */
+.corrections > li, .correction__enonce, .corrections .test__detail dd { min-width: 0; }
+.corrections .test__detail dd > :last-child { min-width: 0; overflow-wrap: anywhere; }
+@container app (max-width: 760px) {
+  .corrections { padding: 0 8px 8px; }
+  .corrections .test { padding: 12px 12px 0; }
+  .corrections .test__detail { grid-template-columns: minmax(0, 1fr); gap: 4px; }
+  .corrections .test__detail dt { margin-top: 6px; }
+}

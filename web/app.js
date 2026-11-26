@@ -1104,8 +1104,20 @@ function openPlacement() {
       </div>
       ${
         erreurs.length
-          ? `<details class="hint"><summary>${ico("bulb")}À retenir<small>${pluriel(erreurs.length, "question")}</small></summary>
-              <ul class="review">${erreurs.map(({ q, k }) => `<li><strong>Question ${k + 1}.</strong> ${inline(q.explain)}</li>`).join("")}</ul></details>`
+          ? `<details class="hint" open><summary>${ico("bulb")}Tes erreurs<small>${pluriel(erreurs.length, "question")}</small></summary>
+              <ol class="corrections">${erreurs
+                .map(
+                  ({ q, k }) => `<li class="test test--ko">
+                    <p class="correction__titre">Question ${k + 1}</p>
+                    <div class="prose correction__enonce">${md(q.prompt)}</div>
+                    <dl class="test__detail">
+                      <dt>Ta réponse</dt><dd class="v-got"><span class="test__ic ic-ko">${ico("cross", { label: "fausse" })}</span>${inline(q.options[reponses[k]] ?? "Pas de réponse")}</dd>
+                      <dt>Bonne réponse</dt><dd class="v-exp"><span class="test__ic ic-ok">${ico("check", { label: "juste" })}</span>${inline(q.options[q.answer])}</dd>
+                      <dd class="why">${ico("bulb")}<span>${inline(q.explain)}</span></dd>
+                    </dl>
+                  </li>`
+                )
+                .join("")}</ol></details>`
           : '<p class="muted" style="margin-top: 20px">Sans faute, bravo !</p>'
       }
       <div class="modal__foot">
